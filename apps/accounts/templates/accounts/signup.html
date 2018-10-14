@@ -1,69 +1,16 @@
+{% extends 'base.html' %}
 {% load staticfiles %}
 {% load bootstrap3 %}
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Registrate en CINEMAPP</title>
-    <!-- Tell the browser to be responsive to screen width -->
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <!-- Bootstrap 3.3.7 -->
-    <link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="{% static 'bower_components/font-awesome/css/font-awesome.min.css' %}">
-    <!-- Ionicons -->
-    <link rel="stylesheet" href="{% static 'bower_components/Ionicons/css/ionicons.min.css' %}">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="{% static 'dist/css/AdminLTE.min.css' %}">
-    <!-- Material Design -->
-    <link rel="stylesheet" href="{% static 'dist/css/bootstrap-material-design.min.css' %}">
-    <link rel="stylesheet" href="{% static 'dist/css/ripples.min.css' %}">
-    <link rel="stylesheet" href="{% static 'dist/css/MaterialAdminLTE.min.css' %}">
 
 
-    <!-- Google Font -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
-</head>
-<body class="hold-transition register-page">
-<div class="register-box">
-    <div class="register-logo">
-        <a href="{% url 'accounts:home' %}">CINEM<b>APP</b></a>
-    </div>
+{% block titulo %}Registrar Usuario{% endblock titulo %}
+{% block titulo_panel %}Registrar Usuario{% endblock titulo_panel %}
+{% block descripcion_pagina %} Registra los usuarios de la aplicación {% endblock descripcion_pagina %}
 
-    <div class="register-box-body">
-        <p class="login-box-msg">Registrate en CINEMAPP</p>
-
-        <form role="form" method="post"> {% csrf_token %}
-            {% bootstrap_form form %}
-
-            <input type="submit" class="btn btn-success" value="Ingresar"/>
-
-        </form>
-
-        <div class="social-auth-links text-center">
-            <p>- OR -</p>
-            <a href="#" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-facebook"></i> Sign up using
-                Facebook</a>
-            <a href="#" class="btn btn-block btn-social btn-google btn-flat"><i class="fa fa-google-plus"></i> Sign up using
-                Google+</a>
-        </div>
-
-        <a href="login.html" class="text-center">I already have a membership</a>
-    </div>
-    <!-- /.form-box -->
-</div>
-<!-- /.register-box -->
-
-<!-- jQuery 3 -->
-<script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
-<!-- Bootstrap 3.3.7 -->
-<script src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
-<!-- Material Design -->
-<script src="{% static 'dist/js/material.min.js' %}"></script>
-<script src="{% static 'dist/js/ripples.min.js' %}"></script>
-<script>
-    $.material.init();
-</script>
-</body>
-</html>
+{% block contenido_panel %}
+<form method="post" action="{% url 'accounts:registro' %}">
+    {% csrf_token %}
+    {% bootstrap_form form  %}
+    <button type="submit" class="btn btn-success">Registrar</button>
+</form>
+{% endblock contenido_panel %}
