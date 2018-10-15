@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+
+
+{% block titulo %}Registrar Sucursal{% endblock titulo %}
+{% block titulo_panel %}Registrar Sucursal{% endblock titulo_panel %}
+{% block descripcion_pagina %} Registra las sucursales de CinemaPP {% endblock descripcion_pagina %}
+
+{% block contenido_panel %}
+<form method="post" action="{% url 'sucursales:crear' %}">
+    {% csrf_token %}
+    {% bootstrap_form form  %}
+    <button type="submit" class="btn btn-success">Registrar</button>
+</form>
+{% endblock contenido_panel %}
