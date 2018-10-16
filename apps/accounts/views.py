@@ -12,16 +12,25 @@ def signup(request):
     if True:
         if request.method == 'POST':
             form = SignUpForm(request.POST)
-            if form.is_valid():
-                messages.success(request, 'Usuario registrado exitosamente')
-                form.save()
-                return render(request, 'accounts/signup.html', {'form': SignUpForm()})
+            user_data = FormEmpleado(request.POST)
+            if form.is_valid() and user_data.is_valid():
+                messages.success(request, 'Empleado registrado exitosamente')
+
+                user = form.save(commit=False)
+                user.save()
+
+                user_extra = user_data.save(commit=False)
+                user_extra.user = user
+                user_extra.save()
+
+                return render(request, 'accounts/signup.html', {'form': SignUpForm(), 'form_empleado': FormEmpleado()})
             else:
                 messages.error(request, 'Por favor corrige los errores')
-                return render(request, 'accounts/signup.html', {'form': form})
+                return render(request, 'accounts/signup.html', {'form': form, 'form_empleado': user_data})
         else:
             form = SignUpForm()
-            return render(request, 'accounts/signup.html', {'form': form})
+            form_empleado = FormEmpleado()
+            return render(request, 'accounts/signup.html', {'form': form, 'form_empleado': form_empleado, 'empleados': listar_empleados()})
     # En caso de que el usuario no sea admin se redirije al home y se muestra mensaje de error
     else:
         messages.error(request, 'No estas autorizado para realizar esta acción')
@@ -32,7 +41,7 @@ def signup_cliente(request):
 
     if request.method == 'POST':
         form = SignUpForm(request.POST)
-        user_data = SignUpFormCliente(request.POST)
+        user_data = FormCliente(request.POST)
         if form.is_valid() and user_data.is_valid():
 
             user = form.save(commit=False)
@@ -50,7 +59,7 @@ def signup_cliente(request):
             return render(request, 'accounts/signup_cliente.html', {'form': form, 'user_form': user_data})
     else:
         form = SignUpForm()
-        user_data = SignUpFormCliente()
+        user_data = FormCliente()
         return render(request, 'accounts/signup_cliente.html', {'form': form, 'user_form': user_data})
 
 
@@ -61,3 +70,48 @@ def home(request):
         return render(request, 'accounts/home.html', {'user': usuario})
     else:
         return render(request, 'accounts/home.html', {'user': usuario})
+
+
+def listar_empleados():
+    return Empleado.get_info()
+
+
+def editar_empleado(request, idUser):
+    empleado = Empleado.objects.get(id=idUser)
+    user = User.objects.get(id=empleado.id)
+    usuario = request.user
+
+    if True:
+
+        if request.method == 'POST':
+
+            form = EditUserForm(request.POST, instance=user)
+            form_empleado = FormEmpleado(request.POST, instance=empleado)
+            if form.is_valid() and form_empleado.is_valid():
+                form.save()
+                form_empleado.save()
+                messages.success(request, 'Has modificado el empleado exitosamente!')
+                return redirect('accounts:registro')
+            else:
+                messages.error(request, 'Por favor corrige los errores')
+                return render(request, 'accounts/editar_empleado.html', {'form': form, 'form_empleado':form_empleado})
+
+        else:
+            form = EditUserForm(instance=user)
+            form_empleado = FormEmpleado(instance=empleado)
+            return render(request, 'accounts/editar_empleado.html', {'form': form, 'form_empleado':form_empleado})
+
+    else:
+        messages.error(request, 'No estas autorizado para realizar esta acción')
+        return redirect('accounts:home')
+
+
+
+
+
+
+
+
+
+
+

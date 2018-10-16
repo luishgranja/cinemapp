@@ -11,5 +11,7 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(redirect_authenticated_user=True, template_name='accounts/login.html'),name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('dashboard/', home, name='home'),
+    path('editar/empleado/<int:idUser>', editar_empleado, name='modificar_empleado'),
+
 
 ]

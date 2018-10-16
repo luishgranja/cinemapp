@@ -9,13 +9,26 @@ class SignUpForm(UserCreationForm):
         fields = ('first_name', 'last_name', 'cedula', 'username', 'email', 'password1', 'password2',
                   'telefono')
 
+    def __init__(self, *args, **kwargs):
+        super(SignUpForm, self).__init__(*args, **kwargs)
 
-class SignUpFormCliente(forms.ModelForm):
+        for fieldname in ['username', 'password1', 'password2']:
+            self.fields[fieldname].help_text = None
+
+
+class FormCliente(forms.ModelForm):
     class Meta:
         model = Cliente
         fields = ('tarjeta',)
 
-class SignUpFormEmpleado(forms.ModelForm):
+
+class FormEmpleado(forms.ModelForm):
     class Meta:
         model = Empleado
-        fields = ('cargo','sucursal')
+        fields = ('cargo', 'sucursal')
+
+
+class EditUserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'cedula', 'username', 'email', 'telefono', 'is_active')

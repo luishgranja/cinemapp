@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+
+{% block miga_pan %}
+
+    <li><a href="{% url 'accounts:home'%}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
+    <li><a href="{% url 'accounts:registro'%}"><i class="fa fa-user"></i> GESTIONAR EMPLEADOS</a></li>
+    <li class="active">EDITAR EMPLEADO</li>
+{% endblock miga_pan %}
+
+{% block titulo %}Editar empleado{% endblock titulo %}
+{% block titulo_panel %}Editar Empleado{% endblock titulo_panel %}
+{% block descripcion_pagina %} Edita los empleados de la empresa {% endblock descripcion_pagina %}
+
+{% block contenido_panel %}
+
+    <form method="POST"> {% csrf_token %}
+
+    {%   bootstrap_form form %}
+    {%   bootstrap_form form_empleado %}
+    <button type="submit" class="btn btn-success">Modificar</button>
+    </form>
+
+{% endblock contenido_panel %}

@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from apps.sucursales.models import Sucursal
 
 
 class User(AbstractUser):
@@ -11,6 +12,15 @@ class User(AbstractUser):
                        'is_cliente']
     USERNAME_FIELD = 'username'
 
+    @staticmethod
+    def get_empleados():
+        try:
+            empleados = User.objects.filter(is_cliente=False)
+            return empleados
+        except User.DoesNotExist:
+            return None
+
+
 
 class Cliente(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, related_name='cliente')
@@ -20,7 +30,15 @@ class Cliente(models.Model):
 
 class Empleado(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, related_name='empleado')
-    cargos = (('gerente', 'Gerente'), ('operador', 'Operador'))
+    cargos = (('Gerente', 'Gerente'), ('Operador', 'Operador'))
     cargo = models.CharField(max_length=9, choices=cargos)
-    sucursal = models.ForeignKey('sucursales.Sucursal', related_name='empleados', on_delete=models.CASCADE, blank=True,
+    sucursal = models.ForeignKey(Sucursal, related_name='empleados', on_delete=models.CASCADE, blank=True,
                                  null=True)
+
+    @staticmethod
+    def get_info():
+        try:
+            empleados = Empleado.objects.all()
+            return empleados
+        except User.DoesNotExist:
+            return None
