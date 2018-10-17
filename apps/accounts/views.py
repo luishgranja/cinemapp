@@ -78,7 +78,7 @@ def listar_empleados():
 
 def editar_empleado(request, idUser):
     empleado = Empleado.objects.get(id=idUser)
-    user = User.objects.get(id=empleado.id)
+    user = User.objects.get(id=empleado.user.id)
     usuario = request.user
 
     if True:

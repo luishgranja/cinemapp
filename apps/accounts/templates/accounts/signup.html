@@ -4,12 +4,10 @@
 
 
 {% block titulo %}Gestión de empleados{% endblock titulo %}
-{% block titulo_panel %}Registrar Empleados{% endblock titulo_panel %}
-{% block descripcion_pagina %} Registra los empleados de la aplicación {% endblock descripcion_pagina %}
+{% block descripcion_pagina %} Gestiona los empleados CINEMAPP {% endblock descripcion_pagina %}
 {% block miga_pan %}
-
     <li><a href="{% url 'accounts:home'%}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
-    <li class="active">REGISTRAR EMPLEADO</li>
+    <li class="active">GESTIONAR EMPLEADOS</li>
 {% endblock miga_pan %}
 
 {% block css %}
@@ -109,7 +107,7 @@
                             <td>{{ empleado.user.telefono }}</td>
                             <td>{%  if empleado.user.is_active %} Activo {% else %} Inactivo {% endif %}</td>
                             <td>
-                                <a href="{% url 'accounts:modificar_empleado' empleado.user.id %}" class="btn-sm btn-sm-info">Modificar</a>
+                                <a href="{% url 'accounts:modificar_empleado' empleado.id %}" class="btn-sm btn-sm-info">Modificar</a>
                             </td>
                         </tr>
                     {% endfor %}
