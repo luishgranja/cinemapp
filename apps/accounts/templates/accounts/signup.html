@@ -12,65 +12,71 @@
 
 {% block css %}
     <link rel="stylesheet" href="{%  static 'bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
+    {{ form_empleado.media.css }}
+    <style media="screen">
+        .select2-container {
+            width: 100% !important;
+        }
+    </style>
 {% endblock css %}
 
 {% block contenido %}
 
-        <div class="col-md-12">
-            <div class="box box-primary">
-                <div class="box-header">
-                    <h3 class="box-title">Registrar empleados</h3>
-                </div>
-                <div class="box-body">
-                        <form method="post" action="{% url 'accounts:registro' %}"> {% csrf_token %}
-
-                            <div class="row">
-                                <div class="col-sm-4" autofocus>
-                                    {% bootstrap_field form.first_name%}
-                                </div>
-                                <div class="col-sm-4">
-                                    {% bootstrap_field form.last_name%}
-                                </div>
-                                <div class="col-sm-2">
-                                    {% bootstrap_field form.cedula%}
-                                </div>
-                                <div class="col-sm-2">
-                                    {% bootstrap_field form.telefono%}
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-sm-2">
-                                    {% bootstrap_field form.username%}
-                                </div>
-                                <div class="col-sm-4">
-                                    {% bootstrap_field form.email%}
-                                </div>
-                                <div class="col-sm-2">
-                                    {% bootstrap_field form_empleado.cargo%}
-                                </div>
-                                <div class="col-sm-4">
-                                    {% bootstrap_field form_empleado.sucursal%}
-                                </div>
-                            </div>
-
-
-                            <div class="row content-md-center">
-                                <div class="col-sm-4">
-                                    {% bootstrap_field form.password1%}
-                                </div>
-                                <div class="col-sm-4">
-                                    {% bootstrap_field form.password2%}
-                                </div>
-
-                            </div>
-
-
-                            <button type="submit" class="btn btn-success">Registrar</button>
-                        </form>
-                    </div>
-                </div>
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title">Registrar empleados</h3>
             </div>
+            <div class="box-body">
+                <form method="post" action="{% url 'accounts:registro' %}"> {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-sm-4">
+                            {% bootstrap_field form.first_name%}
+                        </div>
+                        <div class="col-sm-4">
+                            {% bootstrap_field form.last_name%}
+                        </div>
+                        <div class="col-sm-2">
+                            {% bootstrap_field form.cedula%}
+                        </div>
+                        <div class="col-sm-2">
+                            {% bootstrap_field form.telefono%}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-2">
+                            {% bootstrap_field form.username%}
+                        </div>
+                        <div class="col-sm-4">
+                            {% bootstrap_field form.email%}
+                        </div>
+                        <div class="col-sm-2">
+                            {% bootstrap_field form_empleado.cargo%}
+                        </div>
+                        <div class="col-sm-4">
+                            {% bootstrap_field form_empleado.sucursal%}
+                        </div>
+                    </div>
+
+
+                    <div class="row content-md-center">
+                        <div class="col-sm-4">
+                            {% bootstrap_field form.password1%}
+                        </div>
+                        <div class="col-sm-4">
+                            {% bootstrap_field form.password2%}
+                        </div>
+
+                    </div>
+
+
+                    <button type="submit" class="btn btn-success">Registrar</button>
+                </form>
+            </div>
+        </div>
+    </div>
 
 
     <div class="col-md-12">
@@ -106,8 +112,13 @@
                             <td>{{ empleado.user.email }}</td>
                             <td>{{ empleado.user.telefono }}</td>
                             <td>{%  if empleado.user.is_active %} Activo {% else %} Inactivo {% endif %}</td>
-                            <td>
-                                <a href="{% url 'accounts:modificar_empleado' empleado.id %}" class="btn-sm btn-sm-info">Modificar</a>
+                            <td><div class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">Acciones <span class="caret"></span><div class="ripple-container"></div></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="{% url 'accounts:modificar_empleado' empleado.id %}">Editar empleado</a></li>
+                                    <li><a href="#">Cambiar cotraseña</a></li>
+                                </ul>
+                            </div>
                             </td>
                         </tr>
                     {% endfor %}
@@ -126,7 +137,7 @@
 
     <script src="{% static 'bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
-
+    {{ form_empleado.media.js }}
     <script>
         $(function () {
             $('#tabla_empleados').DataTable()

@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
+from django_select2.forms import Select2Widget
 from apps.accounts.models import *
 
 
@@ -26,6 +27,11 @@ class FormEmpleado(forms.ModelForm):
     class Meta:
         model = Empleado
         fields = ('cargo', 'sucursal')
+
+        widgets = {
+            'cargo': Select2Widget(),
+            'sucursal': Select2Widget()
+        }
 
 
 class EditUserForm(forms.ModelForm):
