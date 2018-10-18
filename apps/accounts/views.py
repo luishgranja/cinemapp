@@ -23,7 +23,7 @@ def signup(request):
                 user_extra.user = user
                 user_extra.save()
 
-                return render(request, 'accounts/signup.html', {'form': SignUpForm(), 'form_empleado': FormEmpleado()})
+                return render(request, 'accounts/signup.html', {'form': SignUpForm(), 'form_empleado': FormEmpleado(), 'empleados': listar_empleados()})
             else:
                 messages.error(request, 'Por favor corrige los errores')
                 return render(request, 'accounts/signup.html', {'form': form, 'form_empleado': user_data})

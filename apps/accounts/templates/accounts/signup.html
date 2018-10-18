@@ -12,6 +12,7 @@
 
 {% block css %}
     <link rel="stylesheet" href="{%  static 'bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
+    <link href="{% static 'bower_components/datatables.net-bs/responsive/responsive.dataTables.min.css' %}" rel="stylesheet">
     {{ form_empleado.media.css }}
     <style media="screen">
         .select2-container {
@@ -137,10 +138,14 @@
 
     <script src="{% static 'bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'bower_components/datatables.net-bs/responsive/dataTables.responsive.min.js' %}"></script>
     {{ form_empleado.media.js }}
     <script>
         $(function () {
-            $('#tabla_empleados').DataTable()
+            $('#tabla_empleados').DataTable({
+                    responsive: true
+                }
+            )
         })
     </script>
 
