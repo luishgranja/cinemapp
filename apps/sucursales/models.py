@@ -9,3 +9,11 @@ class Sucursal(models.Model):
 
     def __str__(self):
         return self.nombre
+
+    @staticmethod
+    def get_info():
+        try:
+            sucursales = Sucursal.objects.all()
+            return sucursales
+        except Sucursal.DoesNotExist:
+            return None

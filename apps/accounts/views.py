@@ -81,10 +81,9 @@ def editar_empleado(request, idUser):
     user = User.objects.get(id=empleado.user.id)
     usuario = request.user
 
+
     if True:
-
         if request.method == 'POST':
-
             form = EditUserForm(request.POST, instance=user)
             form_empleado = FormEmpleado(request.POST, instance=empleado)
             if form.is_valid() and form_empleado.is_valid():
@@ -104,6 +103,34 @@ def editar_empleado(request, idUser):
     else:
         messages.error(request, 'No estas autorizado para realizar esta acción')
         return redirect('accounts:home')
+
+def editar_perfil(request):
+    usuario = request.user
+
+    if usuario.is_cliente:
+        cliente = Cliente.objects.get(user_id=usuario.id)
+        if request.method == 'POST':
+            form = EditarUsuario(request.POST, instance=usuario)
+            form_cliente = FormCliente(request.POST, instance=cliente)
+            if form.is_valid() and form_cliente.is_valid():
+                form.save()
+                form_cliente.save()
+                messages.success(request, 'Has modificado tu perfil exitosamente!')
+                return redirect('accounts:home')
+            else:
+                messages.error(request, 'Por favor corrige los errores')
+                return render(request, 'accounts/editar_perfil_cliente.html', {'form': form, 'form_cliente':form_cliente})
+
+        else:
+            form = EditarUsuario(instance=usuario)
+            form_cliente = FormCliente(instance=cliente)
+            return render(request, 'accounts/editar_perfil_cliente.html', {'form': form,  'form_cliente':form_cliente})
+    else:
+        messages.error(request, 'No estas autorizado para realizar esta acción')
+        return redirect('accounts:home')
+
+
+
 
 
 

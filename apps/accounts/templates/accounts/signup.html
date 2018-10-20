@@ -62,14 +62,15 @@
                     </div>
 
 
-                    <div class="row content-md-center">
+                    <div class="row">
+                        <div class="col-md-8 col-md-offset-3">
                         <div class="col-sm-4">
                             {% bootstrap_field form.password1%}
                         </div>
                         <div class="col-sm-4">
                             {% bootstrap_field form.password2%}
                         </div>
-
+                        </div>
                     </div>
 
 
@@ -113,13 +114,7 @@
                             <td>{{ empleado.user.email }}</td>
                             <td>{{ empleado.user.telefono }}</td>
                             <td>{%  if empleado.user.is_active %} Activo {% else %} Inactivo {% endif %}</td>
-                            <td><div class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">Acciones <span class="caret"></span><div class="ripple-container"></div></a>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="{% url 'accounts:modificar_empleado' empleado.id %}">Editar empleado</a></li>
-                                    <li><a href="#">Cambiar contraseña</a></li>
-                                </ul>
-                            </div>
+                            <td><a href="{% url 'accounts:modificar_empleado' empleado.id %}">Editar Empleado</a>
                             </td>
                         </tr>
                     {% endfor %}
@@ -143,7 +138,7 @@
     <script>
         $(function () {
             $('#tabla_empleados').DataTable({
-                    responsive: true
+                    responsive: false
                 }
             )
         })

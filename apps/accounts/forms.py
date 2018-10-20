@@ -38,3 +38,8 @@ class EditUserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'cedula', 'username', 'email', 'telefono', 'is_active')
+
+class EditarUsuario(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'username', 'email', 'telefono')
