@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="{% static 'dist/css/skins/all-md-skins.min.css' %}">
 
     <link rel="stylesheet" href="{% static 'plugins/toastr/toastr.min.css' %}">
+    <link rel="stylesheet" href="{% static 'dist/css/estilos.css' %}">
     <!-- Google Font -->
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
@@ -29,14 +30,14 @@
     {% block css %}{% endblock css %}
 </head>
 
-<body class="hold-transition skin-blue sidebar-mini sidebar-collapse">
+<body class="hold-transition skin-black sidebar-mini sidebar-collapse layout-boxed">
 <div class="wrapper">
 
     <!-- Main Header -->
     <header class="main-header">
 
         <!-- Logo -->
-        <a href="index2.html" class="logo">
+        <a href="{% url 'accounts:home' %}" class="logo">
             <!-- mini logo for sidebar mini 50x50 pixels -->
             <span class="logo-mini"><b>C</b>INE</span>
             <!-- logo for regular state and mobile devices -->
@@ -55,7 +56,6 @@
     </header>
 
     {% include 'menu.html' %}
-
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->

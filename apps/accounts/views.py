@@ -52,7 +52,7 @@ def signup_cliente(request):
             user_extra.user = user
             user_extra.save()
 
-            # login(request, request.user)
+            login(request, user)
             return redirect('accounts:login')
         else:
             messages.error(request, 'Por favor corrige los errores')

@@ -32,18 +32,23 @@
                 <form method="post" action="{% url 'sucursales:crear' %}"> {% csrf_token %}
 
                     <div class="row">
-                        <div class="col-md-12 col-md-offset-1">
-                        <div class="col-sm-4">
-                            {% bootstrap_field form.nombre%}
-                        </div>
-                        <div class="col-sm-4">
-                            {% bootstrap_field form.direccion%}
-                        </div>
+
                         <div class="col-sm-2">
-                            {% bootstrap_field form.telefono%}
-                        </div>
+                            <br><br> <!-- br para poder que el activo quede en linea con el formulario -->
+                                {% bootstrap_field form.is_active%}
                             </div>
-                    </div>
+                            <div class="col-sm-4">
+                                {% bootstrap_field form.nombre%}
+                            </div>
+                            <div class="col-sm-4">
+                                {% bootstrap_field form.direccion%}
+                            </div>
+                            <div class="col-sm-2">
+                                {% bootstrap_field form.telefono%}
+                            </div>
+
+
+                        </div>
                     <button type="submit" class="btn btn-success">Registrar</button>
                 </form>
             </div>
@@ -74,16 +79,13 @@
                             <td>{{ sucursal.nombre }}</td>
                             <td>{{ sucursal.direccion }}</td>
                             <td>{{ sucursal.telefono }}</td>
-                            <td> </td>
-                            <td>{%  if sucursal.is_active %} Activo {% else %} Inactivo {% endif %}</td>
-                            <td><div class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">Acciones <span class="caret"></span><div class="ripple-container"></div></a>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="#">Editar sucursal</a></li>
-                                    <li><a href="#">Cambiar gerente</a></li>
-                                </ul>
-                            </div>
+                            <td>{{ sucursal.gerente }}</td>
+                            <td>
+                                {%  if sucursal.is_active %} <span class="badge bg-green">Activo</span>
+                                 {% else %} <span class="badge bg-red">Inactivo</span>
+                                {% endif %}
                             </td>
+                            <td><a href="{% url 'sucursales:editar_sucursal' sucursal.id %}">Editar sucursal</a></td>
                         </tr>
                     {% endfor %}
 
@@ -106,7 +108,7 @@
     <script>
         $(function () {
             $('#tabla_sucursales').DataTable({
-                    responsive: false
+                    responsive: true
                 }
             )
         })
