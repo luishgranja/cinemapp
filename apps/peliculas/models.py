@@ -1,26 +1,48 @@
 from django.db import models
+from django.template.defaultfilters import slugify
 
-# Create your models here.
 
-class ImagenPelicula(models.Model):
-    imagen = models.ImageField(upload_to = 'peliculas/')
+class Genero(models.Model):
+    nombre = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
-        return self.imagen.url
+        return self.nombre
+
+    @staticmethod
+    def get_generos():
+        try:
+            generos = Genero.objects.all()
+            return generos
+        except Genero.DoesNotExist:
+            return None
+
+    def get_genero(id_genero):
+        return Genero.objects.get(id=id_genero)
+
 
 class Pelicula(models.Model):
-    nombre = models.CharField(max_length=50)
+    nombre = models.CharField(max_length=50, unique=True)
     nombre_director = models.CharField(max_length=20)
-    GENEROS = (
-        ('a', 'Hola'),
-        ('b', 'Hello'),
-        ('c', 'Bonjour'),
-        ('d', 'Boas'),
-    )
-    genero = models.CharField(max_length=15, choices=GENEROS)
+    genero = models.ManyToManyField(Genero, blank=True)
     sinopsis = models.TextField(max_length=300)
     reparto = models.CharField(max_length=100)
     calificacion = models.DecimalField(max_digits=3, decimal_places=2, default=0)
-    imagen = models.OneToOneField(ImagenPelicula, blank=True, on_delete=models.CASCADE)
+    imagen = models.ImageField(upload_to='peliculas/', blank=True, default='/peliculas/default.jpg')
+    is_active = models.BooleanField(default=True)
+    slug = models.SlugField(unique=True, default='')
+    is_estreno = models.BooleanField(default=True)
 
+    def save(self, *args):
+        self.slug = slugify(self.nombre)
+        super(Pelicula, self).save(*args)
 
+    @staticmethod
+    def get_peliculas():
+        try:
+            peliculas = Pelicula.objects.all()
+            return peliculas
+        except Pelicula.DoesNotExist:
+            return None
+
+    def get_pelicula(slug):
+        return Pelicula.objects.get(slug=slug)

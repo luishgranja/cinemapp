@@ -5,8 +5,8 @@
 {% block miga_pan %}
 
     <li><a href="{% url 'accounts:home'%}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
-    <li><a href="{% url 'sucursales:crear'%}"><i class="fa fa-building-o"></i> GESTIONAR SUCURSALES</a></li>
-    <li class="active">EDITAR SUCURSAL</li>
+    <li><a href="{% url 'peliculas:crear'%}"><i class="fa fa-building-o"></i> GESTIONAR PELÍCULAS</a></li>
+    <li class="active">EDITAR PELÍCULA</li>
 {% endblock miga_pan %}
 
 {% block titulo %}Editar sucursal{% endblock titulo %}
@@ -29,7 +29,7 @@
                 <h3 class="box-title">Editar sucursal</h3>
             </div>
             <div class="box-body">
-                <form method="POST"> {% csrf_token %}
+                <form method="POST" enctype="multipart/form-data"> {% csrf_token %}
                     {% bootstrap_form form %}
                     <button type="submit" class="btn btn-success">Modificar</button>
                 </form>

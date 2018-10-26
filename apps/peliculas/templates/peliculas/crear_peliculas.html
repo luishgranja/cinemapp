@@ -29,33 +29,35 @@
                 <h3 class="box-title">Registrar peliculas</h3>
             </div>
             <div class="box-body">
-                <form method="post" action="{% url 'peliculas:crear' %}"> {% csrf_token %}
+                <form method="post" action="{% url 'peliculas:crear' %}" enctype="multipart/form-data"> {% csrf_token %}
 
                     <div class="row">
-
-                        <div class="col-sm-2">
-                            <br><br> <!-- br para poder que el activo quede en linea con el formulario -->
+                        <div class="col-sm-4">
                             {% bootstrap_field form.nombre%}
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-2">
                             {% bootstrap_field form.nombre_director%}
                         </div>
+                        <div class="col-sm-6">
+                            {% bootstrap_field form.reparto%}
+                        </div>
+                    </div>
+
+                    <div class="row">
                         <div class="col-sm-4">
                             {% bootstrap_field form.sinopsis%}
                         </div>
-                        <div class="col-sm-2">
-                            {% bootstrap_field form.reparto%}
-                        </div>
-
-
-                    </div>
-                    <div class="row">
-
-                        <div class="col-sm-2">
+                        <br><br><br>
+                        <div class="col-sm-6">
                             {% bootstrap_field form.genero%}
                         </div>
-                        <div class="col-sm-4">
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-8">
                             {% bootstrap_field form.imagen%}
+                        </div>
+                        <div class="col-sm-4">
+                            {% bootstrap_field form.is_active%}
                         </div>
                     </div>
                     <button type="submit" class="btn btn-success">Registrar</button>
@@ -77,9 +79,10 @@
                         <th>Nombre</th>
                         <th>Director</th>
                         <th>Género</th>
-                        <th>Sinopsis</th>
                         <th>Reparto</th>
                         <th>Calificación</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -87,8 +90,9 @@
                         <tr>
                             <td>{{ pelicula.nombre}}</td>
                             <td>{{ pelicula.nombre_director}}</td>
-                            <td>{{ pelicula.genero }}</td>
-                            <td>{{ pelicula.sinopsis }}</td>
+                            <td>
+                                {% for gen in pelicula.genero.all %} {{ gen }}, {% endfor %}
+                            </td>
                             <td>{{ pelicula.reparto }}</td>
                             <td>{{ pelicula.calificacion }}</td>
                             <td>
@@ -96,7 +100,20 @@
                                 {% else %} <span class="badge bg-red">Inactivo</span>
                                 {% endif %}
                             </td>
-                            <td><a href="{% url 'peliculas:editar_pelicula' pelicula.id %}">Editar pelicula</a></td>
+                            <td>
+
+
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                        <span class="caret"></span>
+                                        <div class="ripple-container"></div>Opciones</button>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="{% url 'peliculas:editar_pelicula' pelicula.id %}">Editar pelicula</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'peliculas:ver_pelicula' pelicula.slug %}">Ver película</a></li>
+                                    </ul>
+                                </div>
+
+                            </td>
                         </tr>
                     {% endfor %}
 
