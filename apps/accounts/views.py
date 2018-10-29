@@ -1,4 +1,4 @@
-from django.db.models import QuerySet
+from django.http.response import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -7,6 +7,49 @@ from django.contrib import messages
 from apps.peliculas.models import *
 from apps.peliculas.models import Pelicula
 from apps.sucursales.models import *
+
+
+def get_sucursales_disponibles(request):
+    if request.is_ajax():
+        id_cargo = request.GET.get('id_cargo', None)
+
+    sucursales = Sucursal.objects.all()
+    gerentes = Empleado.objects.filter(cargo='Gerente')
+    sucursales_no_gerente = []
+    sucursales_total = []
+
+    for sucursal in sucursales:
+        id_sucursal = sucursal.id
+        flag = 0
+        sucursales_total.append({'id': sucursal.id, 'text': sucursal.nombre})
+        for gerente in gerentes:
+            if gerente.sucursal is not None and gerente.sucursal.id == id_sucursal:
+                flag += 1
+        if flag == 0:
+            sucursales_no_gerente.append({'id': sucursal.id, 'text': sucursal.nombre})
+
+    sucursales_no_gerente_response = {'sucursales': sucursales_no_gerente}
+    sucursal_total_response ={'sucursales': sucursales_total}
+
+    if id_cargo == 'Gerente':
+        return JsonResponse(sucursales_no_gerente_response)
+    elif id_cargo == 'Operador':
+        return JsonResponse(sucursal_total_response)
+
+
+@login_required
+def home(request):
+    usuario = request.user
+    if usuario.is_staff:
+        return render(request, 'accounts/home_admin.html', {'user': usuario, 'datos': datos_dashboard()})
+    elif usuario.is_cliente:
+        return render(request, 'accounts/home_cliente.html', {'user': usuario, 'sucursales': Sucursal.get_info(),
+                                                              'peliculas1': Pelicula.get_peliculas().filter(is_estreno=True), 'peliculas2': Pelicula.get_peliculas().filter(is_estreno=False)})
+    elif usuario.get_cargo_empleado() == 'Gerente':
+        return render(request, 'accounts/home_gerente.html', {'user': usuario, 'datos': datos_dashboard_gerente()})
+    elif usuario.get_cargo_empleado() == 'Operador':
+        return render(request, 'accounts/home_operador.html', {'user': usuario, 'datos':
+            datos_dashboard_operador(), 'peliculas': Pelicula.get_peliculas().filter(is_estreno=True)})
 
 
 def signup(request):
@@ -56,8 +99,9 @@ def signup_cliente(request):
             user_extra = user_data.save(commit=False)
             user_extra.user = user
             user_extra.save()
+            if request.user.is_anonymous:
+                login(request, user)
 
-            login(request, user)
             return redirect('accounts:login')
         else:
             messages.error(request, 'Por favor corrige los errores')
@@ -68,31 +112,12 @@ def signup_cliente(request):
         return render(request, 'accounts/signup_cliente.html', {'form': form, 'user_form': user_data})
 
 
-@login_required
-def home(request):
-    usuario = request.user
-    if usuario.is_staff:
-        return render(request, 'accounts/home_admin.html', {'user': usuario, 'datos':
-            datos_dashboard()})
-    elif usuario.is_cliente:
-        return render(request, 'accounts/home_cliente.html', {'user': usuario, 'sucursales': Sucursal.get_info(),
-                                                              'peliculas1': Pelicula.get_peliculas().filter(
-                                                                  is_estreno=True), 'peliculas2': Pelicula.get_peliculas().filter(
-                                                                  is_estreno=False)})
-    elif usuario.get_cargo_empleado() == 'Gerente':
-        return render(request, 'accounts/home_gerente.html', {'user': usuario, 'datos':
-            datos_dashboard_gerente()})
-    elif usuario.get_cargo_empleado() == 'Operador':
-        return render(request, 'accounts/home_operador.html', {'user': usuario, 'datos':
-            datos_dashboard_operador(), 'peliculas': Pelicula.get_peliculas().filter(is_estreno=True)})
-
-
 def listar_empleados():
     return Empleado.get_info()
 
 
-def editar_empleado(request, idUser):
-    empleado = Empleado.objects.get(id=idUser)
+def editar_empleado(request, id_user):
+    empleado = Empleado.objects.get(id=id_user)
     user = User.objects.get(id=empleado.user.id)
     usuario = request.user
 
@@ -147,7 +172,6 @@ def editar_perfil(request):
 
 
 def datos_dashboard():
-    datos = {}
     num_empleados = Empleado.objects.all().count()
     num_peliculas_estreno = Pelicula.objects.filter(is_estreno=True).count()
     num_sucursales = Sucursal.objects.all().count()
@@ -161,11 +185,10 @@ def datos_dashboard():
         id_sucursal = sucursal.id
         flag = 0
         for gerente in gerentes:
-            if not gerente.sucursal is None:
-                if gerente.sucursal.id == id_sucursal:
-                    flag += 1
-            if flag == 0:
-                sucursales_no_gerente.append({'nombre': sucursal.nombre, 'id': sucursal.id})
+            if gerente.sucursal is not None and gerente.sucursal.id == id_sucursal:
+                flag += 1
+        if flag == 0:
+            sucursales_no_gerente.append({'nombre': sucursal.nombre, 'id': sucursal.id})
 
     datos = {
         'num_empleados': num_empleados,
@@ -177,8 +200,8 @@ def datos_dashboard():
 
     return datos
 
+
 def datos_dashboard_gerente():
-    datos = {}
     num_peliculas_estreno = Pelicula.objects.filter(is_estreno=True).count()
     num_salas = 0
     datos = {
@@ -188,8 +211,8 @@ def datos_dashboard_gerente():
 
     return datos
 
+
 def datos_dashboard_operador():
-    datos = {}
     num_peliculas_estreno = Pelicula.objects.filter(is_estreno=True).count()
     datos = {
         'num_peliculas_estreno': num_peliculas_estreno,

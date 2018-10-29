@@ -64,17 +64,17 @@
 
                     <div class="row">
                         <div class="col-md-8 col-md-offset-3">
-                        <div class="col-sm-4">
-                            {% bootstrap_field form.password1%}
-                        </div>
-                        <div class="col-sm-4">
-                            {% bootstrap_field form.password2%}
-                        </div>
+                            <div class="col-sm-4">
+                                {% bootstrap_field form.password1%}
+                            </div>
+                            <div class="col-sm-4">
+                                {% bootstrap_field form.password2%}
+                            </div>
                         </div>
                     </div>
 
 
-                    <button type="submit" class="btn btn-success">Registrar</button>
+                    <button type="submit" class="btn btn-success" id="registrar">Registrar</button>
                 </form>
             </div>
         </div>
@@ -113,9 +113,9 @@
                             <td>{{ empleado.user.username }}</td>
                             <td>{{ empleado.user.email }}</td>
                             <td>{{ empleado.user.telefono }}</td>
-                             <td>
+                            <td>
                                 {%  if empleado.user.is_active %} <span class="badge bg-green">Activo</span>
-                                 {% else %} <span class="badge bg-red">Inactivo</span>
+                                {% else %} <span class="badge bg-red">Inactivo</span>
                                 {% endif %}
                             </td>
                             <td><a href="{% url 'accounts:modificar_empleado' empleado.id %}">Editar Empleado</a>
@@ -146,6 +146,22 @@
                 }
             )
         })
+    </script>
+
+    <script type="application/javascript">
+
+        $('#id_cargo').change(function(){
+
+            var selector = document.getElementById('id_cargo');
+            var id_cargo = selector[selector.selectedIndex].value;
+
+            $.get('{% url 'accounts:get_sucursales_disponibles' %}', {"csrfmiddlewaretoken":'{{ csrf_token }}','id_cargo': id_cargo}, function(data){
+                $('#id_sucursal').empty();
+                $("#id_sucursal").select2({
+                    data: data.sucursales
+                });
+            });
+        });
     </script>
 
 {% endblock js %}

@@ -32,6 +32,7 @@
                 <form method="POST"> {% csrf_token %}
                     {%   bootstrap_form form %}
                     {%   bootstrap_form form_empleado %}
+                    <button type="button" class="btn btn-block btn-danger btn-xs cambiar-sucursal">Cambiar sucursal<div class="ripple-container"></div></button>
                     <button type="submit" class="btn btn-success">Modificar</button>
                 </form>
             </div>
@@ -44,6 +45,34 @@
     <script>
         $(function () {
             $('.select2').select2()})
-        </script>
+
+    $('#id_sucursal').prop("disabled", true);
+
+         $('#id_cargo').change(function(){
+             $('#id_sucursal').empty();
+        $('#id_sucursal').prop("disabled", true);});
+
+
+    </script>
+
+
     {{ form_empleado.media.js }}
+
+    <script type="application/javascript">
+
+        $('.cambiar-sucursal').click(function(){
+
+            var selector = document.getElementById('id_cargo');
+            var id_cargo = selector[selector.selectedIndex].value;
+
+            $.get('{% url 'accounts:get_sucursales_disponibles' %}', {"csrfmiddlewaretoken":'{{ csrf_token }}','id_cargo': id_cargo}, function(data){
+                $('#id_sucursal').empty();
+                 $('#id_sucursal').prop("disabled", false);
+
+                $("#id_sucursal").select2({
+                    data: data.sucursales
+                });
+            });
+        });
+    </script>
 {% endblock js %}

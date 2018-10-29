@@ -3,7 +3,7 @@ from .forms import *
 from django.contrib import messages
 
 
-def crearPelicula(request):
+def crear_pelicula(request):
     # Usuario que hizo la peticion a la funcion (usuario que esta en la sesion)
     usuario = request.user
     # Validacion para cuando el administrador (is_staff)
@@ -64,7 +64,15 @@ def listar_pelicula(slug):
 
 
 def ver_pelicula(request, slug):
-    return render(request,'peliculas/consultar_pelicula.html',{'peli': listar_pelicula(slug)})
+    usuario = request.user
+
+    if usuario.is_staff or not usuario.is_cliente:
+        base_template_name = 'base.html'
+    elif usuario.is_anonymous or usuario.is_cliente:
+        base_template_name = 'base_cliente.html'
+
+    return render(request, 'peliculas/consultar_pelicula.html',{'peli': listar_pelicula(slug),
+                                                                'base_template_name': base_template_name})
 
 
 def listar_generos():

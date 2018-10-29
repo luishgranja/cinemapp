@@ -3,7 +3,7 @@ from apps.sucursales.forms import *
 from django.contrib import messages
 
 # Create your views here.
-def createSucursal(request):
+def crear_sucursal(request):
     # Usuario que hizo la peticion a la funcion (usuario que esta en la sesion)
     usuario = request.user
     # Validacion para cuando el administrador (is_staff)

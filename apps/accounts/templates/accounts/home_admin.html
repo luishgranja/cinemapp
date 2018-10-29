@@ -66,13 +66,12 @@
 
 {% if not datos.sucursales_no_gerente %}
 {% else %}
-<div class="callout callout-warning row">
-  <h4>Recomendación!</h4>
-  <p>Hay sucursales que no tienen asignado gerente.</p>
+    <div class="callout callout-warning row">
+    <h4>Recomendación!</h4>
+    <p>Hay sucursales que no tienen asignado gerente.</p>
   <ul>
     {% for sucursal in datos.sucursales_no_gerente %}
-
-   <li> <a style="color:white" href="{% url 'sucursales:editar_sucursal' sucursal.id %}"> {{sucursal.nombre}}</a></li>
+    <li> <a style="color:white" href="{% url 'sucursales:editar_sucursal' sucursal.id %}"> {{sucursal.nombre}}</a></li>
     {% endfor %}
   </ul>
 </div>

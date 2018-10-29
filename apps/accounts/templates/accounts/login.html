@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Log in</title>
+  <title>Log in | CINEMAPP</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.7 -->
@@ -26,7 +26,7 @@
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
-<body class="hold-transition login-page" style="background-image:url({% static 'img/bg1.png' %})" >
+<body class="hold-transition login-page" style="background-image:url({% static 'img/bg.png' %})" >
 <div class="login-box">
   <div class="login-logo">
     CINEM<b>APP</b>
@@ -34,6 +34,21 @@
   <!-- /.login-logo -->
   <div class="login-box-body">
     <p class="login-box-msg">INICIA SESIÓN</p>
+
+      {% if form.errors %}
+    {% for field in form %}
+        {% for error in field.errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+        <div class="alert alert-danger">
+            <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+{% endif %}
 
     <form method="post"> {% csrf_token %}
       <div class="form-group has-feedback">

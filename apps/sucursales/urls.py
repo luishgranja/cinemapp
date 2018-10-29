@@ -6,7 +6,7 @@ app_name = 'sucursales'
 
 urlpatterns = [
 
-    path('crear/', createSucursal, name='crear'),
+    path('gestion-sucursales', crear_sucursal, name='crear'),
     path('editar/<int:id_sucursal>', editar_sucursal, name='editar_sucursal'),
 
 ]

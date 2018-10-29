@@ -9,8 +9,8 @@
 {% block titulo %}Ver películas{% endblock titulo %}
 
 {% block contenido %}
- {% for peli in peliculas %}
-    <div class="col-md-6">
+    {% for peli in peliculas %}
+        <div class="col-md-6">
             <div class="box box-primary">
                 <div class="box-body">
                     <div class="row">
@@ -18,20 +18,17 @@
                             <img src="{{ peli.imagen.url | default_if_none:'#' }}" width="170" height="251"/>
                         </div>
                         <div class="col-md-6">
-                            <div class="sp-layer sp-static" data-position="topRight" data-horizontal="30" data-vertical="30" data-width="240">
-                                <h3><b> {{ peli.nombre }}</b></h3>
-                                <p>{{ peli.sinopsis }}</p>
-                                <p><b>Reparto: </b>{{ peli.reparto }}</p>
-                                <p><b>Director(a): </b>{{ peli.nombre_director }}</p>
-                                <p><b>Género: </b>{% for gen in peli.genero.all %} {{ gen }}, {% endfor %} </p>
-                                <p><b>Calificación: </b>{{ peli.calificacion }}</p>
-                            </div>
+                            <h3><b> {{ peli.nombre }}</b></h3>
+                            <p>{{ peli.sinopsis }}</p>
+                            <p><b>Reparto: </b>{{ peli.reparto }}</p>
+                            <p><b>Director(a): </b>{{ peli.nombre_director }}</p>
+                            <p><b>Género: </b>{% for gen in peli.genero.all %} {{ gen }}, {% endfor %} </p>
+                            <p><b>Calificación: </b>{{ peli.calificacion }}</p>
                         </div>
                     </div>
                 </div>
             </div>
-
-    </div>
+        </div>
     {% endfor %}
 
 {% endblock contenido %}

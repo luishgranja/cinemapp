@@ -5,10 +5,20 @@
 {% block miga_pan %}{% endblock miga_pan %}
 {% block titulo %}Dashboard{% endblock titulo %}
 
+{% block css %}
+    <style>
+        img {
+            border-radius: 8px;
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+{% endblock css %}
+
 {% block contenido %}
 
     <!-- Content Header (Page header) -->
-    <div class="modal modal-success fade" id="cartelera">
+    <div class="modal modal-success fade in" id="cartelera">
         <div class="modal-dialog" style="width: 70%">
             <div class="modal-content">
                 <div class="modal-header">
@@ -22,7 +32,7 @@
                         <div class="row">
                             <div class="box-body">
                                 <div class="col-md-3 col-md-offset-1">
-                                    <img src="{{ peli.imagen.url | default_if_none:'#' }}" width="170" height="251"/>
+                                    <a href="{% url 'peliculas:ver_pelicula' peli.slug %}" ><img src="{{ peli.imagen.url | default_if_none:'#' }}" width="170" height="251"/></a>
                                 </div>
                                 <div class="col-md-5">
                                     <p style="font-size: 20px"><b> {{ peli.nombre }}</b></p>
@@ -37,6 +47,7 @@
                                 </div>
                             </div>
                         </div>
+                        <hr>
                     {% endfor %}
 
 
@@ -50,7 +61,7 @@
         <!-- /.modal-dialog -->
     </div>
     <!-- /.modal -->
-     <!-- Content Header (Page header) -->
+    <!-- Content Header (Page header) -->
     <div class="modal modal-success fade" id="estrenos">
         <div class="modal-dialog" style="width: 70%">
             <div class="modal-content">
