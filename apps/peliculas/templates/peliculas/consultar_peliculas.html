@@ -8,67 +8,31 @@
 
 {% block titulo %}Ver películas{% endblock titulo %}
 
-{% block css %}
-    <link rel="stylesheet" type="text/css" href="{% static 'plugins/slider-pro-master/dist/css/slider-pro.min.css'%}" media="screen"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'plugins/slider-pro-master/libs/fancybox/jquery.fancybox.css'%}" media="screen"/>
-{% endblock css %}
-
-
 {% block contenido %}
-
-    <div class="col-md-12">
-        <div class="box box-primary">
-            <div class="box-body">
-
-                <div id="pelicula" class="slider-pro">
-                    <div class="sp-slides">
-                        {% for peli in peliculas %}
-                        <div class="sp-slide">
-                            <div class="sp-layer sp-static" data-horizontal="30" data-vertical="30">
-                                    <img src="{{ peli.imagen.url | default_if_none:'#' }}" width="170" height="251"/>
-                            </div>
-
+ {% for peli in peliculas %}
+    <div class="col-md-6">
+            <div class="box box-primary">
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-5 col-md-offset-1">
+                            <img src="{{ peli.imagen.url | default_if_none:'#' }}" width="170" height="251"/>
+                        </div>
+                        <div class="col-md-6">
                             <div class="sp-layer sp-static" data-position="topRight" data-horizontal="30" data-vertical="30" data-width="240">
                                 <h3><b> {{ peli.nombre }}</b></h3>
                                 <p>{{ peli.sinopsis }}</p>
                                 <p><b>Reparto: </b>{{ peli.reparto }}</p>
                                 <p><b>Director(a): </b>{{ peli.nombre_director }}</p>
-                                <p><b>Género: </b>{{ peli.genero }}</p>
+                                <p><b>Género: </b>{% for gen in peli.genero.all %} {{ gen }}, {% endfor %} </p>
                                 <p><b>Calificación: </b>{{ peli.calificacion }}</p>
                             </div>
                         </div>
-                        {% endfor %}
                     </div>
                 </div>
             </div>
-        </div>
+
     </div>
+    {% endfor %}
 
 {% endblock contenido %}
 
-{% block js %}
-    <script type="text/javascript" src="{% static 'plugins/slider-pro-master/dist/js/jquery.sliderPro.min.js'%}"></script>
-    <script type="text/javascript" src="{% static 'plugins/slider-pro-master/libs/fancybox/jquery.fancybox.pack.js'%}"></script>
-    <script type="text/javascript">
-        $( document ).ready(function( $ ) {
-            $( '#pelicula' ).sliderPro({
-                width: 960,
-                height: 400,
-                autoHeight: true,
-                fade: true,
-                updateHash: true
-            });
-            // instantiate fancybox when a link is clicked
-            $( '#pelicula .sp-lightbox' ).on( 'click', function( event ) {
-                event.preventDefault();
-                // check if the clicked link is also used in swiping the slider
-                // by checking if the link has the 'sp-swiping' class attached.
-                // if the slider is not being swiped, open the lightbox programmatically,
-                // at the correct index
-                if ( $( '#pelicula' ).hasClass( 'sp-swiping' ) === false ) {
-                    $.fancybox.open( this );
-                }
-            });
-        });
-    </script>
-{% endblock js %}

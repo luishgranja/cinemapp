@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+
+{% block miga_pan %}{% endblock miga_pan %}
+{% block titulo %}Dashboard{% endblock titulo %}
+
+{% block contenido %}
+<div class="row">
+  <a class="btn btn-app">
+    <i class="fa fa-ticket"></i> Vender boletas
+    <div class="ripple-container"></div>
+  </a>
+
+  <div class="col-lg-3 col-xs-6">
+    <div class="small-box bg-olive">
+      <div class="inner">
+        <h3>{{datos.num_peliculas_estreno}}</h3>
+        <p>Películas en estreno</p>
+      </div>
+      <div class="icon">
+        <i class="fa fa-video-camera"></i>
+      </div>
+      <a href="#" class="small-box-footer">Más información <i class="fa fa-arrow-circle-right"></i></a>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <div class="box box-solid">
+      <div class="box-body">
+        <div id="carousel-peliculas" class="carousel slide" data-ride="carousel">
+          <ol class="carousel-indicators">
+            {% for peli in peliculas %}
+            {% if forloop.counter0 == 0 %} <li data-target="#carousel-peliculas" data-slide-to="0" class="active"></li>
+            {% else %} <li data-target="#carousel-peliculas" data-slide-to="{{forloop.counter}}" class=""></li>
+            {% endif %}
+            {% endfor %}
+          </ol>
+          <div class="carousel-inner">
+            {% for peli in peliculas %}
+              {% if forloop.counter0 == 0 %}
+            <div class="item active">
+              <img src="{{ peli.imagen.url }}" alt="First slide">
+              <div class="carousel-caption">
+                <b>{{peli.nombre}}</b>
+              </div>
+            </div>
+            {% else %}
+            <div class="item">
+              <img src="{{ peli.imagen.url }}" alt="Second slide">
+              <div class="carousel-caption">
+                <b>{{peli.nombre}}</b>
+              </div>
+            </div>
+          </div>
+            {% endif %}
+          {% endfor %}
+          <a class="left carousel-control" href="#carousel-peliculas" data-slide="prev">
+            <span class="fa fa-angle-left"></span>
+          </a>
+          <a class="right carousel-control" href="#carousel-peliculas" data-slide="next">
+            <span class="fa fa-angle-right"></span>
+          </a>
+        </div>
+      </div>
+      <!-- /.box-body -->
+    </div>
+    <!-- /.box -->
+  </div>
+</div>
+{% endblock contenido %}

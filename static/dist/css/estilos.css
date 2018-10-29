@@ -6,3 +6,9 @@
 .login-logo, .register-logo{
   text-shadow: 1px 1px #D3D3D3 !important;
 }
+
+.modal-dialog {
+  position: relative;
+  width: 900px !important;
+  margin: 10px;
+}

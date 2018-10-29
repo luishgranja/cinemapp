@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% block titulo %} Dashboard {% endblock titulo %}
+
+{% block miga_pan %}{% endblock miga_pan %}
+{% block contenido %}
+<div class="row">
+  <div class="col-lg-3 col-xs-6">
+    <div class="small-box bg-navy">
+      <div class="inner">
+        <h3>{{datos.num_empleados}}</h3>
+        <p>Empleados registrados</p>
+      </div>
+      <div class="icon">
+        <i class="fa fa-user-plus"></i>
+      </div>
+      <a href="{% url 'accounts:registro' %}" class="small-box-footer">Más información <i class="fa fa-arrow-circle-right"></i></a>
+    </div>
+  </div>
+
+  <div class="col-lg-3 col-xs-6">
+    <div class="small-box bg-olive">
+      <div class="inner">
+        <h3>{{datos.num_peliculas_estreno}}</h3>
+
+        <p>Películas en estreno</p>
+      </div>
+      <div class="icon">
+        <i class="fa fa-video-camera"></i>
+      </div>
+      <a href="{% url 'peliculas:crear' %}" class="small-box-footer">Más información <i class="fa fa-arrow-circle-right"></i></a>
+    </div>
+  </div>
+
+  <div class="col-lg-3 col-xs-6">
+    <!-- small box -->
+    <div class="small-box bg-maroon-gradient">
+      <div class="inner">
+        <h3>{{datos.num_sucursales}}</h3>
+
+        <p>Sucursales registradas</p>
+      </div>
+      <div class="icon">
+        <i class="fa fa-sitemap"></i>
+      </div>
+      <a href="{% url 'sucursales:crear' %}" class="small-box-footer">Más información <i class="fa fa-arrow-circle-right"></i></a>
+    </div>
+  </div>
+
+  <div class="col-lg-3 col-xs-6">
+    <!-- small box -->
+    <div class="small-box bg-purple-gradient">
+      <div class="inner">
+        <h3>{{datos.num_clientes}}</h3>
+
+        <p>Clientes registrados</p>
+      </div>
+      <div class="icon">
+        <i class="fa fa-user-circle"></i>
+      </div>
+      <a href="#" class="small-box-footer">Más información<i class="fa fa-arrow-circle-right"></i></a>
+    </div>
+  </div>
+</div>
+
+{% if not datos.sucursales_no_gerente %}
+{% else %}
+<div class="callout callout-warning row">
+  <h4>Recomendación!</h4>
+  <p>Hay sucursales que no tienen asignado gerente.</p>
+  <ul>
+    {% for sucursal in datos.sucursales_no_gerente %}
+
+   <li> <a style="color:white" href="{% url 'sucursales:editar_sucursal' sucursal.id %}"> {{sucursal.nombre}}</a></li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+{% endblock contenido %}

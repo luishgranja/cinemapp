@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django_select2.forms import Select2Widget
 from apps.accounts.models import *
+from django import forms
 
 
 class SignUpForm(UserCreationForm):
