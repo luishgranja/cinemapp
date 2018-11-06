@@ -9,6 +9,16 @@ from apps.peliculas.models import Pelicula
 from apps.sucursales.models import *
 
 
+def checkusername(request):
+    if request.is_ajax():
+        username = request.GET.get('username', None)
+    if username:
+        u = User.objects.filter(username=username).count()
+        if u==0: response = True #Si el username esta disponible es True
+        else: response = False
+    return JsonResponse({'response': response})
+
+
 def get_sucursales_disponibles(request):
     if request.is_ajax():
         id_cargo = request.GET.get('id_cargo', None)
@@ -117,8 +127,8 @@ def listar_empleados():
 
 
 def editar_empleado(request, id_user):
-    empleado = Empleado.objects.get(id=id_user)
-    user = User.objects.get(id=empleado.user.id)
+    empleado = Empleado.objects.get(id = id_user)
+    user = User.objects.get(empleado = empleado)
     usuario = request.user
 
     if True:
@@ -145,10 +155,10 @@ def editar_empleado(request, id_user):
 
 
 def editar_perfil(request):
-    usuario = request.user
 
-    if usuario.is_cliente:
-        cliente = Cliente.objects.get(user_id=usuario.id)
+    usuario = request.user
+    if usuario.is_cliente or usuario.is_staff:
+        cliente = Cliente.objects.get(user = usuario)
         if request.method == 'POST':
             form = EditarUsuario(request.POST, instance=usuario)
             form_cliente = FormCliente(request.POST, instance=cliente)

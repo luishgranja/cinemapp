@@ -43,3 +43,11 @@
     </div>
 
 {% endblock contenido %}
+
+{% block js %}
+<script type="text/javascript">
+  var url_api = '{% url 'accounts:checkusername' %}';
+  var token = '{{ csrf_token }}';
+</script>
+<script src="{% static 'dist/js/check_username.js' %}"></script>
+{% endblock js %}

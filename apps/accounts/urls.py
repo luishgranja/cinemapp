@@ -14,6 +14,7 @@ urlpatterns = [
     path('editar/empleado/<int:id_user>', editar_empleado, name='modificar_empleado'),
     path('editar-perfil-empleado', editar_perfil, name='editar_perfil_empleado'),
     path('editar-perfil', editar_perfil, name='editar_perfil_cliente'),
-    path('consulta_sucursales', get_sucursales_disponibles, name= 'get_sucursales_disponibles')
+    path('consulta_sucursales', get_sucursales_disponibles, name= 'get_sucursales_disponibles'),
+    path('consulta_username', checkusername, name='checkusername'),
 
 ]
