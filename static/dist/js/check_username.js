@@ -29,4 +29,4 @@ function check_username(){
       $div_username.append('<label class="control-label username-error" for="inputError"><i class="fa fa-times-circle-o"></i> Username no disponible</label>')
     }
   });
-};
+}

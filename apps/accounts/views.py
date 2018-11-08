@@ -2,10 +2,10 @@ from django.http.response import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
-from apps.accounts.forms import *
 from django.contrib import messages
+from apps.accounts.forms import *
+from apps.accounts.models import *
 from apps.peliculas.models import *
-from apps.peliculas.models import Pelicula
 from apps.sucursales.models import *
 
 
@@ -46,14 +46,23 @@ def get_sucursales_disponibles(request):
     elif id_cargo == 'Operador':
         return JsonResponse(sucursal_total_response)
 
+def notificaciones(user):
+    notis = Notificacion.objects.filter(usuario=user)
+    num_notis = notis.filter(leido=False).count()
+
+    notificaciones = {
+        'num_notis': num_notis,
+        'notis': notis
+    }
+    return notificaciones
 
 @login_required
 def home(request):
     usuario = request.user
     if usuario.is_staff:
-        return render(request, 'accounts/home_admin.html', {'user': usuario, 'datos': datos_dashboard()})
+        return render(request, 'accounts/home_admin.html', {'notis':notificaciones(usuario),'user': usuario, 'datos': datos_dashboard()})
     elif usuario.is_cliente:
-        return render(request, 'accounts/home_cliente.html', {'user': usuario, 'sucursales': Sucursal.get_info(),
+        return render(request, 'accounts/home_cliente.html', {'notis':notificaciones(usuario),'user': usuario, 'sucursales': Sucursal.get_info(),
                                                               'peliculas1': Pelicula.get_peliculas().filter(is_estreno=True), 'peliculas2': Pelicula.get_peliculas().filter(is_estreno=False)})
     elif usuario.get_cargo_empleado() == 'Gerente':
         return render(request, 'accounts/home_gerente.html', {'user': usuario, 'datos': datos_dashboard_gerente()})
@@ -66,7 +75,7 @@ def signup(request):
     # Usuario que hizo la peticion a la funcion (usuario que esta en la sesion)
     usuario = request.user
     # Validacion para cuando el administrador (is_staff)
-    if True:
+    if usuario.is_staff:
         if request.method == 'POST':
             form = SignUpForm(request.POST)
             user_data = FormEmpleado(request.POST)
@@ -131,7 +140,7 @@ def editar_empleado(request, id_user):
     user = User.objects.get(empleado = empleado)
     usuario = request.user
 
-    if True:
+    if usuario.is_staff:
         if request.method == 'POST':
             form = EditUserForm(request.POST, instance=user)
             form_empleado = FormEmpleado(request.POST, instance=empleado)
