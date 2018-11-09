@@ -119,9 +119,29 @@
         <!-- Default to the left -->
         <strong>Copyright &copy; 2018 <a href="#">CINEMAPP</a>.</strong> Todos los derechos reservados.
     </footer>
-
 </div>
 <!-- ./wrapper -->
+
+<!-- modal notificaciones -->
+    <div class="modal fade" id="modal-noti">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">×</span></button>
+                <h4 class="modal-title"></h4>
+              </div>
+              <div class="modal-body">
+                <p>One fine body…</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cerrar</button>
+              </div>
+            </div>
+            <!-- /.modal-content -->
+          </div>
+          <!-- /.modal-dialog -->
+    </div>
 
 <!-- jQuery 3 -->
 <script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
@@ -158,6 +178,26 @@
         });
     {% endfor %}
 </script>
+
+<!-- Script para notificaciones -->
+<script>
+    $('.notificaciones').on('click','.modal-notificacion',function () {
+        noti($(this));
+    });
+
+    function noti($elemento) {
+        let titulo = $elemento.data('titulo');
+        let mensaje = $elemento.data('mensaje');
+        let icono = $elemento.data('icono');
+
+        const modal = $('#modal-noti');
+        modal.find('.modal-title').text('');
+        modal.find('.modal-title').append('<i class="' + icono + '"></i>  '+titulo)
+        modal.find('.modal-body').text(mensaje);
+    }
+
+</script>
+
 
 {% block js %}{% endblock js %}
 

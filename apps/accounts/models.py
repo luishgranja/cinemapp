@@ -77,18 +77,19 @@ class Empleado(models.Model):
 
 class Notificacion(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='notificaciones')
+    titulo = models.CharField(max_length=50, blank=True)
     mensaje = models.TextField(max_length=300)
     fecha_envio = models.DateTimeField(auto_now_add=True)
     leido = models.BooleanField(default=False)
-    tipo = models.CharField(max_length=2) #1:warning 2:error 3:compras 4:promociones 5:peliculas
-
+    # 1:warning 2:error 3:compras 4:promociones 5:peliculas
+    tipo = models.CharField(max_length=2)
 
     def get_icono(self):
-        opciones ={
-            '1':'fa fa-exclamation-triangle text-yellow',
-            '2':'fa fa-exclamation-circle text-red',
-            '3':'fa fa-shopping-cart text-green',
-            '4':'fa fa-tags text-maroon',
-            '5':'fa fa-video-camera text-purple'
+        opciones = {
+            '1': 'fa fa-exclamation-triangle text-yellow',
+            '2': 'fa fa-exclamation-circle text-red',
+            '3': 'fa fa-shopping-cart text-green',
+            '4': 'fa fa-tags text-maroon',
+            '5': 'fa fa-video-camera text-purple'
         }
         return opciones[self.tipo]

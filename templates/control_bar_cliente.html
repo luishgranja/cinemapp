@@ -47,18 +47,23 @@
         <li class="header">Tienes {{notis.num_notis}} notificaciones</li>
         <li>
           <!-- Inner Menu: contains the notifications -->
-          <ul class="menu">
-            {% for n in notis.notis %}
+          <ul class="menu notificaciones">
 
+            {% for n in notis.notis %}
             <li>
-              <a href="#" title="{{n.fecha_envio}}">
+              <a href="#" class="modal-notificacion" title="{{n.fecha_envio}}" data-target="#modal-noti" data-toggle="modal"
+                    data-titulo="{{ n.titulo }}"
+                    data-mensaje="{{ n.mensaje }}"
+                    data-icono="{{ n.get_icono }}">
                 <h5 style="margin-top: 0px;">
                   <small><i class="fa fa-clock-o"></i> Hace {{n.fecha_envio|timesince }}</small>
                 </h5>
                 <i class='{{ n.get_icono }}'></i> {{n.mensaje}}
-                <div class="ripple-container"></div></a>
+                <div class="ripple-container"></div>
+              </a>
               </li>
               {% endfor %}
+
             </ul>
           </li>
           <li class="footer"><a href="{% url 'accounts:notificaciones' %}">Ver todas</a></li>

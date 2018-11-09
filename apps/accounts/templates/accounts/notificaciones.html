@@ -11,8 +11,8 @@
 
     <!-- timeline time label -->
     <li class="time-label">
-        <span class="bg-red">
-            10 Feb. 2014
+        <span class="bg-green">
+            Notificaciones <i class="fa fa-bell"></i>
         </span>
     </li>
     <!-- /.timeline-label -->
@@ -25,7 +25,7 @@
         <div class="timeline-item">
             <span class="time"><i class="fa fa-clock-o"></i> <a title='{{n.fecha_envio}}'> Hace {{n.fecha_envio|timesince}}</a></span>
 
-            <h3 class="timeline-header">Notificacion</h3>
+            <h3 class="timeline-header">{{ n.titulo }}</h3>
 
             <div class="timeline-body">
                 {{n.mensaje}}
