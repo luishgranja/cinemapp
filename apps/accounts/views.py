@@ -56,6 +56,12 @@ def notificaciones(user):
     }
     return notificaciones
 
+def consultar_notificaciones(request):
+    usuario = request.user
+    if request.method == 'GET':
+        return render(request, 'accounts/notificaciones.html',
+        {'notis':notificaciones(usuario)})
+
 @login_required
 def home(request):
     usuario = request.user

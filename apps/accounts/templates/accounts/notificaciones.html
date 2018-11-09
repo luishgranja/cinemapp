@@ -1,0 +1,38 @@
+{% extends 'base_cliente.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+
+{% block miga_pan %}{% endblock miga_pan %}
+{% block titulo %}Notificaciones{% endblock titulo %}
+
+{% block contenido %}
+
+<ul class="timeline">
+
+    <!-- timeline time label -->
+    <li class="time-label">
+        <span class="bg-red">
+            10 Feb. 2014
+        </span>
+    </li>
+    <!-- /.timeline-label -->
+
+    <!-- timeline item -->
+    {% for n in notis.notis %}
+    <li>
+        <!-- timeline icon -->
+        <i class="{{n.get_icono}}"></i>
+        <div class="timeline-item">
+            <span class="time"><i class="fa fa-clock-o"></i> <a title='{{n.fecha_envio}}'> Hace {{n.fecha_envio|timesince}}</a></span>
+
+            <h3 class="timeline-header">Notificacion</h3>
+
+            <div class="timeline-body">
+                {{n.mensaje}}
+            </div>
+        </div>
+    </li>
+    {% endfor %}
+
+</ul>
+{% endblock contenido %}

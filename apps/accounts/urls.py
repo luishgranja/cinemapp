@@ -16,5 +16,6 @@ urlpatterns = [
     path('editar-perfil', editar_perfil, name='editar_perfil_cliente'),
     path('consulta_sucursales', get_sucursales_disponibles, name= 'get_sucursales_disponibles'),
     path('consulta_username', checkusername, name='checkusername'),
+    path('notificaciones', consultar_notificaciones, name='notificaciones'),
 
 ]

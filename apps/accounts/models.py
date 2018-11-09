@@ -1,7 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from .utilities import *
-
 
 class User(AbstractUser):
     is_cliente = models.BooleanField(default=False)
