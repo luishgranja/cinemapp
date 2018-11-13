@@ -181,22 +181,11 @@
 
 <!-- Script para notificaciones -->
 <script>
-    $('.notificaciones').on('click','.modal-notificacion',function () {
-        noti($(this));
-    });
-
-    function noti($elemento) {
-        let titulo = $elemento.data('titulo');
-        let mensaje = $elemento.data('mensaje');
-        let icono = $elemento.data('icono');
-
-        const modal = $('#modal-noti');
-        modal.find('.modal-title').text('');
-        modal.find('.modal-title').append('<i class="' + icono + '"></i>  '+titulo)
-        modal.find('.modal-body').text(mensaje);
-    }
-
+    const url_api = '{% url 'accounts:notificacion_leida' %}';
+    const token = '{{ csrf_token }}';
 </script>
+
+<script src="{% static 'dist/js/notificaciones.js' %}"></script>
 
 
 {% block js %}{% endblock js %}

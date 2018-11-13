@@ -9,12 +9,26 @@ from apps.peliculas.models import *
 from apps.sucursales.models import *
 
 
+# Funcion para cambiar el estado de una notificacion a leida
+
+def notificacion_leida(request):
+    if request.is_ajax():
+        id_notificacion = request.GET.get('id', None)
+        if id_notificacion:
+            notificacion = Notificacion.objects.filter(id=id_notificacion).update(leido=True)
+        return JsonResponse({'response':'ok'})
+
+
+# Funcion para verificar que un username esta disponible
+# Devuelve true si esta disponible, false si NO esta disponible
+
 def checkusername(request):
     if request.is_ajax():
         username = request.GET.get('username', None)
     if username:
         u = User.objects.filter(username=username).count()
-        if u==0: response = True #Si el username esta disponible es True
+        # Si el username esta disponible es True
+        if u==0: response = True
         else: response = False
     return JsonResponse({'response': response})
 
@@ -46,8 +60,11 @@ def get_sucursales_disponibles(request):
     elif id_cargo == 'Operador':
         return JsonResponse(sucursal_total_response)
 
+
+# Consulta todas las notificaciones que el usuario NO ha leido
 def notificaciones(user):
-    notis = Notificacion.objects.filter(usuario=user)
+    notis_all = Notificacion.objects.filter(usuario=user)
+    notis = notis_all & Notificacion.objects.filter(leido=False)
     num_notis = notis.filter(leido=False).count()
 
     notificaciones = {
@@ -56,11 +73,19 @@ def notificaciones(user):
     }
     return notificaciones
 
+# Consulta todas las notificaciones del usuario
+def notis_all(user):
+    notis = Notificacion.objects.filter(usuario=user)
+    notificaciones = {
+        'notis_all': notis
+    }
+    return notificaciones
+
 def consultar_notificaciones(request):
     usuario = request.user
     if request.method == 'GET':
         return render(request, 'accounts/notificaciones.html',
-        {'notis':notificaciones(usuario)})
+        {'notis_all':notis_all(usuario), 'notis':notificaciones(usuario)})
 
 @login_required
 def home(request):
@@ -142,8 +167,8 @@ def listar_empleados():
 
 
 def editar_empleado(request, id_user):
-    empleado = Empleado.objects.get(id = id_user)
-    user = User.objects.get(empleado = empleado)
+    empleado = Empleado.objects.get(id=id_user)
+    user = User.objects.get(empleado=empleado)
     usuario = request.user
 
     if usuario.is_staff:

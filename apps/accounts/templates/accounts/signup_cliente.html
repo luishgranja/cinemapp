@@ -67,8 +67,8 @@
   <script src="{% static 'dist/js/material.min.js' %}"></script>
   <script src="{% static 'dist/js/ripples.min.js' %}"></script>
   <script type="text/javascript">
-    var url_api = '{% url 'accounts:checkusername' %}';
-    var token = '{{ csrf_token }}';
+    const url_api = '{% url 'accounts:checkusername' %}';
+    const token = '{{ csrf_token }}';
   </script>
   <script src="{% static 'dist/js/check_username.js' %}"></script>
   <script>

@@ -41,20 +41,25 @@
       <!-- Menu toggle button -->
       <a href="#" class="dropdown-toggle" data-toggle="dropdown">
         <i class="fa fa-bell-o"></i>
-        <span class="label label-warning">{% if notis.num_notis == 0 %}{% else %}{{notis.num_notis}}{% endif %}</span>
+        <span class="label label-warning" id="num_notis">{% if notis.num_notis == 0 %}{% else %}{{notis.num_notis}}{% endif %}</span>
       </a>
       <ul class="dropdown-menu">
-        <li class="header">Tienes {{notis.num_notis}} notificaciones</li>
+        <li class="header" id="label_notificaciones">
+        {% if notis.num_notis == 0 %} Has leído todas las notificaciones
+        {% else %}Tienes {{notis.num_notis}} notificaciones sin leer
+        {% endif %}
+        </li>
         <li>
           <!-- Inner Menu: contains the notifications -->
           <ul class="menu notificaciones">
 
             {% for n in notis.notis %}
             <li>
-              <a href="#" class="modal-notificacion" title="{{n.fecha_envio}}" data-target="#modal-noti" data-toggle="modal"
+              <a href="#" id="noti_{{n.id}}" class="modal-notificacion" title="{{n.fecha_envio}}" data-target="#modal-noti" data-toggle="modal"
                     data-titulo="{{ n.titulo }}"
                     data-mensaje="{{ n.mensaje }}"
-                    data-icono="{{ n.get_icono }}">
+                    data-icono="{{ n.get_icono }}"
+                    data-id="{{ n.id }}">
                 <h5 style="margin-top: 0px;">
                   <small><i class="fa fa-clock-o"></i> Hace {{n.fecha_envio|timesince }}</small>
                 </h5>
