@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import *
 from django.contrib import messages
+from django.http import HttpResponse
 
 
 def crear_pelicula(request):
@@ -95,3 +96,18 @@ def crear_genero(request):
         return render(request, 'peliculas/gestion_generos.html', {'form': form, 'generos':listar_generos()})
 
 
+def busqueda_peliculas(request):
+    usuario = request.user
+    if request.method == 'GET':
+        nombre_pelicula = request.GET.get('q')
+        peliculas = Pelicula.objects.filter(slug__icontains=nombre_pelicula)
+
+        return render(request, 'peliculas/busqueda_peliculas.html', {'peliculas': peliculas,
+                                                                     'nombre_pelicula': nombre_pelicula})
+
+
+def get_template(usuario):
+    if usuario.is_staff or not usuario.is_cliente:
+        return 'base.html'
+    elif usuario.is_anonymous or usuario.is_cliente:
+        return 'base_cliente.html'

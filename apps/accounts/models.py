@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
+
 class User(AbstractUser):
     is_cliente = models.BooleanField(default=False)
     telefono = models.CharField(max_length=11)
@@ -22,8 +23,7 @@ class User(AbstractUser):
         if self.is_staff:
             return 'Administrador'
         else:
-            id_empleado = self.id
-            cargo = Empleado.get_cargo(id_empleado)
+            cargo = Empleado.get_cargo(self.id)
             return cargo
 
 
@@ -75,6 +75,7 @@ class Empleado(models.Model):
         else:
             return 'Operador'
 
+
 class Notificacion(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='notificaciones')
     titulo = models.CharField(max_length=50, blank=True)
@@ -93,3 +94,6 @@ class Notificacion(models.Model):
             '5': 'fa fa-video-camera text-purple'
         }
         return opciones[self.tipo]
+
+    class Meta:
+        ordering = ['-fecha_envio']
