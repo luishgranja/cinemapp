@@ -22,9 +22,12 @@
   <link rel="stylesheet" href="{% static 'dist/css/bootstrap-material-design.min.css' %}">
   <link rel="stylesheet" href="{% static 'dist/css/ripples.min.css' %}">
   <link rel="stylesheet" href="{% static 'dist/css/MaterialAdminLTE.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/toastr/toastr.min.css' %}">
 
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+<script src='https://www.google.com/recaptcha/api.js'></script>
+
 </head>
 
 <body class="hold-transition register-page" style="background-image:url({% static 'img/bg.png' %})">
@@ -51,10 +54,28 @@
         {% endfor %}
         {% endif %}
 
-        <form method="post"> {% csrf_token %}
+        {% if user_form.errors %}
+        {% for field in user_form %}
+        {% for error in field.errors %}
+        <div class="alert alert-danger">
+          <strong>{{ error|escape }}</strong>
+        </div>
+        {% endfor %}
+        {% endfor %}
+        {% for error in user_form.non_field_errors %}
+        <div class="alert alert-danger">
+          <strong>{{ error|escape }}</strong>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <form method="post" id="formulario" onsubmit="return validacion()"> {% csrf_token %}
           {% bootstrap_form form layout='inline'%}
           {% bootstrap_form user_form layout='inline'%}
-          <button type="submit" class="btn btn-primary btn-raised btn-block btn-flat">Registrarse</button>
+
+
+    <div class="g-recaptcha" data-sitekey="6LetuIkUAAAAAImaRg4v8bqLpKw-o1cCdLVNZoYs"></div>
+            <button type="submit" class="btn btn-primary btn-raised btn-block btn-flat">Registrarse</button>
         </form>
       </div>
     </div>
@@ -71,8 +92,30 @@
     const token = '{{ csrf_token }}';
   </script>
   <script src="{% static 'dist/js/check_username.js' %}"></script>
+ <script src="{% static 'dist/js/validacion_registro.js' %}"></script>
+  <script src="{% static 'plugins/toastr/toastr.min.js' %}"></script>
+
+
   <script>
   $.material.init();
+</script>
+
+  <script>
+    {% for msg in messages %}
+        $(document).ready(function () {
+            setTimeout(function () {
+                toastr.options = {
+                    "closeButtons": true,
+                    "progressBar": true,
+                    "preventDuplicates": true,
+                    "showEasing": "swing",
+                    "extendedTimeOut": 30000,
+                    "timeOut": 4000
+                }
+                toastr["{{ msg.tags }}"]("{{ msg }}")
+            }, 500);
+        });
+    {% endfor %}
 </script>
 
 

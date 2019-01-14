@@ -19,12 +19,14 @@
   <link rel="stylesheet" href="{% static 'dist/css/bootstrap-material-design.min.css' %}">
   <link rel="stylesheet" href="{% static 'dist/css/ripples.min.css' %}">
   <link rel="stylesheet" href="{% static 'dist/css/MaterialAdminLTE.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/toastr/toastr.min.css' %}">
 
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+<script src='https://www.google.com/recaptcha/api.js'></script>
 </head>
 <body class="hold-transition login-page" style="background-image:url({% static 'img/bg.png' %})" >
 <div class="login-box">
@@ -61,7 +63,12 @@
       </div>
       <div class="row">
         <!-- /.col -->
+          <div class="col-md-16">
+              <div class="g-recaptcha" data-sitekey="6LetuIkUAAAAAImaRg4v8bqLpKw-o1cCdLVNZoYs"></div>
+          </div>
+
         <div class="col-xs-15">
+
           <button type="submit" class="btn btn-primary btn-raised btn-block btn-flat">Iniciar sesión</button>
         </div>
         <!-- /.col -->
@@ -82,8 +89,27 @@
 <!-- Material Design -->
 <script src="{% static 'dist/js/material.min.js' %}"></script>
 <script src="{% static 'dist/js/ripples.min.js' %}"></script>
+<script src="{% static 'plugins/toastr/toastr.min.js' %}"></script>
 <script>
     $.material.init();
+</script>
+
+<script>
+    {% for msg in messages %}
+        $(document).ready(function () {
+            setTimeout(function () {
+                toastr.options = {
+                    "closeButtons": true,
+                    "progressBar": true,
+                    "preventDuplicates": true,
+                    "showEasing": "swing",
+                    "extendedTimeOut": 30000,
+                    "timeOut": 4000
+                }
+                toastr["{{ msg.tags }}"]("{{ msg }}")
+            }, 500);
+        });
+    {% endfor %}
 </script>
 </body>
 </html>

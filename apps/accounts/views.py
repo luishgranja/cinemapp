@@ -7,6 +7,7 @@ from apps.accounts.forms import *
 from apps.accounts.models import *
 from apps.peliculas.models import *
 from apps.sucursales.models import *
+from apps.accounts.decorators import check_recaptcha
 
 
 # Funcion para cambiar el estado de una notificacion a leida
@@ -28,7 +29,7 @@ def checkusername(request):
     if username:
         u = User.objects.filter(username=username).count()
         # Si el username esta disponible es True
-        if u==0: response = True
+        if u == 0: response = True
         else: response = False
     return JsonResponse({'response': response})
 
@@ -101,7 +102,6 @@ def home(request):
         return render(request, 'accounts/home_operador.html', {'user': usuario, 'datos':
             datos_dashboard_operador(), 'peliculas': Pelicula.get_peliculas().filter(is_estreno=True)})
 
-
 def signup(request):
     # Usuario que hizo la peticion a la funcion (usuario que esta en la sesion)
     usuario = request.user
@@ -136,11 +136,12 @@ def signup(request):
         return redirect('accounts:home')
 
 
+@check_recaptcha
 def signup_cliente(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         user_data = FormCliente(request.POST)
-        if form.is_valid() and user_data.is_valid():
+        if form.is_valid() and user_data.is_valid() and request.recaptcha_is_valid:
 
             user = form.save(commit=False)
             user.is_cliente = True
@@ -195,10 +196,9 @@ def editar_empleado(request, id_user):
 
 
 def editar_perfil(request):
-
     usuario = request.user
     if usuario.is_cliente or usuario.is_staff:
-        cliente = Cliente.objects.get(user = usuario)
+        cliente = Cliente.objects.get(user=usuario)
         if request.method == 'POST':
             form = EditarUsuario(request.POST, instance=usuario)
             form_cliente = FormCliente(request.POST, instance=cliente)
