@@ -8,6 +8,7 @@ from apps.accounts.models import *
 from apps.peliculas.models import *
 from apps.sucursales.models import *
 from apps.accounts.decorators import check_recaptcha
+from apps.peliculas.views import *
 
 
 # Funcion para cambiar el estado de una notificacion a leida
@@ -86,7 +87,7 @@ def consultar_notificaciones(request):
     usuario = request.user
     if request.method == 'GET':
         return render(request, 'accounts/notificaciones.html',
-        {'notis_all':notis_all(usuario), 'notis':notificaciones(usuario)})
+        {'notis_all':notis_all(usuario), 'notis':notificaciones(usuario), 'sucursales': Sucursal.get_info()})
 
 @login_required
 def home(request):
@@ -95,12 +96,12 @@ def home(request):
         return render(request, 'accounts/home_admin.html', {'notis':notificaciones(usuario),'user': usuario, 'datos': datos_dashboard()})
     elif usuario.is_cliente:
         return render(request, 'accounts/home_cliente.html', {'notis':notificaciones(usuario),'user': usuario, 'sucursales': Sucursal.get_info(),
-                                                              'peliculas1': Pelicula.get_peliculas().filter(is_estreno=True), 'peliculas2': Pelicula.get_peliculas().filter(is_estreno=False)})
+                                                              'peliculas1': listar_peliculas_estreno(), 'peliculas2': listar_peliculas_proximo_estreno()})
     elif usuario.get_cargo_empleado() == 'Gerente':
         return render(request, 'accounts/home_gerente.html', {'user': usuario, 'datos': datos_dashboard_gerente()})
     elif usuario.get_cargo_empleado() == 'Operador':
         return render(request, 'accounts/home_operador.html', {'user': usuario, 'datos':
-            datos_dashboard_operador(), 'peliculas': Pelicula.get_peliculas().filter(is_estreno=True)})
+            datos_dashboard_operador(), 'peliculas': listar_peliculas_estreno()})
 
 def signup(request):
     # Usuario que hizo la peticion a la funcion (usuario que esta en la sesion)
@@ -210,12 +211,12 @@ def editar_perfil(request):
             else:
                 messages.error(request, 'Por favor corrige los errores')
                 return render(request, 'accounts/editar_perfil_cliente.html',
-                              {'form': form, 'form_cliente': form_cliente})
+                              {'form': form, 'form_cliente': form_cliente, 'sucursales': Sucursal.get_info()})
 
         else:
             form = EditarUsuario(instance=usuario)
             form_cliente = FormCliente(instance=cliente)
-            return render(request, 'accounts/editar_perfil_cliente.html', {'form': form, 'form_cliente': form_cliente})
+            return render(request, 'accounts/editar_perfil_cliente.html', {'form': form, 'form_cliente': form_cliente, 'sucursales': Sucursal.get_info()})
     else:
         messages.error(request, 'No estas autorizado para realizar esta acción')
         return redirect('accounts:home')

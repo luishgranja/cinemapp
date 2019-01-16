@@ -46,3 +46,17 @@ class Pelicula(models.Model):
 
     def get_pelicula(slug):
         return Pelicula.objects.get(slug=slug)
+
+    def get_peliculas_activas():
+        try:
+            peliculas = Pelicula.objects.filter(is_active=True)
+            return peliculas
+        except Pelicula.DoesNotExist:
+            return None
+
+    def get_pelicula_estreno(opcion):
+        try:
+            peliculas = Pelicula.objects.filter(is_estreno=opcion)
+            return peliculas
+        except Pelicula.DoesNotExist:
+            return None

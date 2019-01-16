@@ -32,6 +32,14 @@ def listar_peliculas():
     return Pelicula.get_peliculas()
 
 
+def listar_peliculas_estreno():
+    return Pelicula.get_pelicula_estreno(True) & Pelicula.get_peliculas_activas()
+
+
+def listar_peliculas_proximo_estreno():
+    return Pelicula.get_pelicula_estreno(False) & Pelicula.get_peliculas_activas()
+
+
 def editar_pelicula(request, id_pelicula):
     usuario = request.user
     pelicula = Pelicula.objects.get(id=id_pelicula)
@@ -56,8 +64,8 @@ def editar_pelicula(request, id_pelicula):
         return redirect('accounts:home')
 
 
-def consultar_peliculas(request):
-    return render(request,'peliculas/consultar_peliculas.html', {'peliculas': listar_peliculas()})
+def consultar_peliculas_estreno(request):
+    return render(request,'peliculas/consultar_peliculas.html', {'peliculas': listar_peliculas_estreno()})
 
 
 def listar_pelicula(slug):
