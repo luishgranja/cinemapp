@@ -7,16 +7,44 @@
 {% block contenido %}
 <div class="row">
     <div class="col-lg-3 col-xs-6">
-    <div class="small-box bg-olive">
+    <div class="small-box bg-blue-active">
       <div class="inner">
-        <h3>{{datos.num_peliculas_estreno}}</h3>
+        <h3>{{datos.num_peliculas_cartelera}}</h3>
 
-        <p>Películas en estreno</p>
+        <p>Películas en cartelera</p>
       </div>
       <div class="icon">
         <i class="fa fa-video-camera"></i>
       </div>
-      <a href="{% url 'peliculas:crear' %}" class="small-box-footer">Más información <i class="fa fa-arrow-circle-right"></i></a>
+      <a href="{% url 'peliculas:consultar_peliculas' %}" class="small-box-footer">Ver Cartelera <i class="fa fa-arrow-circle-right"></i></a>
+    </div>
+  </div>
+
+        <div class="col-lg-3 col-xs-6">
+    <div class="small-box bg-yellow-active">
+      <div class="inner">
+        <h3>{{datos.num_proximos_estrenos}}</h3>
+
+        <p>Próximos estrenos</p>
+      </div>
+      <div class="icon">
+        <i class="fa fa-video-camera"></i>
+      </div>
+      <a href="{% url 'peliculas:consultar_proximos_estrenos' %}" class="small-box-footer">Ver peliculas <i class="fa fa-arrow-circle-right"></i></a>
+    </div>
+  </div>
+
+    <div class="col-lg-3 col-xs-6">
+    <div class="small-box bg-purple-active">
+      <div class="inner">
+        <h3>0</h3>
+
+        <p>Funciones</p>
+      </div>
+      <div class="icon">
+        <i class="fa fa-file-movie-o"></i>
+      </div>
+      <a href="#" class="small-box-footer">Ver funciones <i class="fa fa-arrow-circle-right"></i></a>
     </div>
   </div>
 

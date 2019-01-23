@@ -3,7 +3,7 @@ from apps.sucursales.forms import *
 from django.contrib import messages
 from apps.accounts.decorators import check_recaptcha
 
-# Create your views here.
+
 @check_recaptcha
 def crear_sucursal(request):
     # Usuario que hizo la peticion a la funcion (usuario que esta en la sesion)

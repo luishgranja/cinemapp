@@ -24,16 +24,16 @@ function validarSucursales(){
 
     if (!regex_direccion.test(direccion)){
         contador_error += 1;
-        campo_apellido.parent().removeClass('has-success has-error');
-        campo_apellido.parent().addClass('has-error');
-        campo_apellido.parent().append('<label class="control-label error" for="inputError"><i class="fa fa-times-circle-o"></i> Director debe ser mayor a 6 caracteres y a-z</label>')
+        campo_direccion.parent().removeClass('has-success has-error');
+        campo_direccion.parent().addClass('has-error');
+        campo_direccion.parent().append('<label class="control-label error" for="inputError"><i class="fa fa-times-circle-o"></i> Dirección debe ser mayor a 6 caracteres y a-z</label>')
     }
 
     if(!regex_telefono.test(telefono)){
         contador_error += 1;
-        campo_cedula.parent().removeClass('has-success has-error');
-        campo_cedula.parent().addClass('has-error');
-        campo_cedula.parent().append('<label class="control-label error" for="inputError"><i class="fa fa-times-circle-o"></i> Teléfono deber ser entre 7 y 11 números</label>')
+        campo_telefono.parent().removeClass('has-success has-error');
+        campo_telefono.parent().addClass('has-error');
+        campo_telefono.parent().append('<label class="control-label error" for="inputError"><i class="fa fa-times-circle-o"></i> Teléfono deber ser entre 7 y 11 números</label>')
     }
 
 }

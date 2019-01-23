@@ -30,6 +30,7 @@
         </div>
         <div class="box-body">
             <form method="POST"> {% csrf_token %}
+                {%   bootstrap_form form_empleado_extra %}
                 {%   bootstrap_form form %}
                 {%   bootstrap_form form_empleado %}
                 <button type="button" class="btn btn-block btn-danger btn-xs cambiar-sucursal">Cambiar sucursal<div class="ripple-container"></div></button>

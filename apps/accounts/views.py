@@ -96,12 +96,12 @@ def home(request):
         return render(request, 'accounts/home_admin.html', {'notis':notificaciones(usuario),'user': usuario, 'datos': datos_dashboard()})
     elif usuario.is_cliente:
         return render(request, 'accounts/home_cliente.html', {'notis':notificaciones(usuario),'user': usuario, 'sucursales': Sucursal.get_info(),
-                                                              'peliculas1': listar_peliculas_estreno(), 'peliculas2': listar_peliculas_proximo_estreno()})
+                                                              'peliculas1': listar_cartelera(), 'peliculas2': listar_peliculas_proximo_estreno()})
     elif usuario.get_cargo_empleado() == 'Gerente':
         return render(request, 'accounts/home_gerente.html', {'user': usuario, 'datos': datos_dashboard_gerente()})
     elif usuario.get_cargo_empleado() == 'Operador':
         return render(request, 'accounts/home_operador.html', {'user': usuario, 'datos':
-            datos_dashboard_operador(), 'peliculas': listar_peliculas_estreno()})
+            datos_dashboard_operador(), 'peliculas': listar_cartelera()})
 
 def signup(request):
     # Usuario que hizo la peticion a la funcion (usuario que esta en la sesion)
@@ -174,22 +174,47 @@ def editar_empleado(request, id_user):
 
     if usuario.is_staff:
         if request.method == 'POST':
-            form = EditUserForm(request.POST, instance=user)
+            form = EditarEmpleado(request.POST, instance=user)
             form_empleado = FormEmpleado(request.POST, instance=empleado)
-            if form.is_valid() and form_empleado.is_valid():
+            form_empleado_extra = EditarEmpleadoExtra(request.POST, instance=user)
+            if form.is_valid() and form_empleado.is_valid() and form_empleado_extra.is_valid():
                 form.save()
                 form_empleado.save()
+                form_empleado_extra.save()
                 messages.success(request, 'Has modificado el empleado exitosamente!')
                 return redirect('accounts:registro')
             else:
                 messages.error(request, 'Por favor corrige los errores')
-                return render(request, 'accounts/editar_empleado.html', {'form': form, 'form_empleado': form_empleado})
+                return render(request, 'accounts/editar_empleado.html', {'form': form, 'form_empleado': form_empleado, 'form_empleado_extra': form_empleado_extra})
 
         else:
-            form = EditUserForm(instance=user)
+            form = EditarEmpleado(instance=user)
             form_empleado = FormEmpleado(instance=empleado)
-            return render(request, 'accounts/editar_empleado.html', {'form': form, 'form_empleado': form_empleado})
+            form_empleado_extra = EditarEmpleadoExtra(instance=user)
+            return render(request, 'accounts/editar_empleado.html', {'form': form, 'form_empleado': form_empleado, 'form_empleado_extra': form_empleado_extra})
 
+    else:
+        messages.error(request, 'No estas autorizado para realizar esta acción')
+        return redirect('accounts:home')
+
+def editar_perfil_empleado(request):
+    usuario = request.user
+    if not (request.user.is_anonymous or usuario.is_cliente):
+        mi_empleado = User.objects.get(id=usuario.id)
+        if request.method == 'POST':
+            form = EditarEmpleado(request.POST, instance=mi_empleado)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Has modificado tu perfil exitosamente!')
+                return redirect('accounts:home')
+            else:
+                messages.error(request, 'Por favor corrige los errores')
+                return render(request, 'accounts/editar_perfil_empleado.html',
+                              {'form': form})
+
+        else:
+            form = EditarEmpleado(instance=mi_empleado)
+            return render(request, 'accounts/editar_perfil_empleado.html', {'form': form})
     else:
         messages.error(request, 'No estas autorizado para realizar esta acción')
         return redirect('accounts:home')
@@ -197,10 +222,10 @@ def editar_empleado(request, id_user):
 
 def editar_perfil(request):
     usuario = request.user
-    if usuario.is_cliente or usuario.is_staff:
+    if not request.user.is_anonymous and usuario.is_cliente:
         cliente = Cliente.objects.get(user=usuario)
         if request.method == 'POST':
-            form = EditarUsuario(request.POST, instance=usuario)
+            form = EditarPerfilCliente(request.POST, instance=usuario)
             form_cliente = FormCliente(request.POST, instance=cliente)
             if form.is_valid() and form_cliente.is_valid():
                 form.save()
@@ -213,7 +238,7 @@ def editar_perfil(request):
                               {'form': form, 'form_cliente': form_cliente, 'sucursales': Sucursal.get_info()})
 
         else:
-            form = EditarUsuario(instance=usuario)
+            form = EditarPerfilCliente(instance=usuario)
             form_cliente = FormCliente(instance=cliente)
             return render(request, 'accounts/editar_perfil_cliente.html', {'form': form, 'form_cliente': form_cliente, 'sucursales': Sucursal.get_info()})
     else:
@@ -252,10 +277,12 @@ def datos_dashboard():
 
 
 def datos_dashboard_gerente():
-    num_peliculas_estreno = Pelicula.objects.filter(is_estreno=True).count()
+    num_peliculas_cartelera = (Pelicula.get_pelicula_estreno(True) & Pelicula.get_peliculas_activas()).count()
+    num_proximos_estrenos = (Pelicula.get_pelicula_estreno(False) & Pelicula.get_peliculas_activas()).count()
     num_salas = 0
     datos = {
-        'num_peliculas_estreno': num_peliculas_estreno,
+        'num_peliculas_cartelera': num_peliculas_cartelera,
+        'num_proximos_estrenos': num_proximos_estrenos,
         'num_salas': num_salas
     }
 
@@ -263,9 +290,8 @@ def datos_dashboard_gerente():
 
 
 def datos_dashboard_operador():
-    num_peliculas_estreno = Pelicula.objects.filter(is_estreno=True).count()
+    num_proximos_estrenos = (Pelicula.get_pelicula_estreno(False) & Pelicula.get_peliculas_activas()).count()
     datos = {
-        'num_peliculas_estreno': num_peliculas_estreno,
+        'num_proximos_estrenos': num_proximos_estrenos,
     }
-
     return datos

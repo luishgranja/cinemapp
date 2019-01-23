@@ -33,7 +33,7 @@ def listar_peliculas():
     return Pelicula.get_peliculas()
 
 
-def listar_peliculas_estreno():
+def listar_cartelera():
     return Pelicula.get_pelicula_estreno(True) & Pelicula.get_peliculas_activas()
 
 
@@ -65,9 +65,11 @@ def editar_pelicula(request, id_pelicula):
         return redirect('accounts:home')
 
 
-def consultar_peliculas_estreno(request):
-    return render(request,'peliculas/consultar_peliculas.html', {'peliculas': listar_peliculas_estreno()})
+def consultar_cartelera(request):
+    return render(request,'peliculas/consultar_peliculas.html', {'peliculas': listar_cartelera()})
 
+def consultar_proximos_estrenos(request):
+    return render(request,'peliculas/consultar_peliculas.html', {'peliculas': listar_peliculas_proximo_estreno()})
 
 def listar_pelicula(slug):
     return Pelicula.get_pelicula(slug)

@@ -5,7 +5,7 @@
 {% block miga_pan %}
 
     <li><a href="{% url 'accounts:home'%}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
-    <li><a href="{% url 'accounts:editar_empleado'%}"><i class="fa fa-user"></i> MI PERFIL</a></li>
+    <li><a href="{% url 'accounts:editar_perfil_empleado'%}"><i class="fa fa-user"></i> MI PERFIL</a></li>
     <li class="active">EDITAR PERFIL</li>
 {% endblock miga_pan %}
 
@@ -30,11 +30,7 @@
             </div>
             <div class="box-body">
                 <form method="POST"> {% csrf_token %}
-                    {% bootstrap_field form.first_name%}
-                    {% bootstrap_field form.last_name%}
-                    {% bootstrap_field form.telefono%}
-                    {% bootstrap_field form.username%}
-                    {% bootstrap_field form.email%}
+                    {%   bootstrap_form form %}
                     <button type="submit" class="btn btn-success">Modificar</button>
                 </form>
             </div>
