@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 from apps.sucursales.forms import *
 from django.contrib import messages
+from apps.accounts.decorators import check_recaptcha
 
 # Create your views here.
+@check_recaptcha
 def crear_sucursal(request):
     # Usuario que hizo la peticion a la funcion (usuario que esta en la sesion)
     usuario = request.user
@@ -10,7 +12,7 @@ def crear_sucursal(request):
     if True:
         if request.method == 'POST':
             form = CreateSurcursalForm(request.POST)
-            if form.is_valid():
+            if form.is_valid() and request.recaptcha_is_valid:
                 messages.success(request, 'Sucursal registrada exitosamente')
                 form.save()
                 return render(request, 'sucursales/crearSucursal.html', {'form': CreateSurcursalForm(), 'sucursales': listar_sucursales()})

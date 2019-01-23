@@ -4,75 +4,85 @@
 
 {% block miga_pan %}
 
-    <li><a href="{% url 'accounts:home'%}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
-    <li><a href="{% url 'accounts:registro'%}"><i class="fa fa-user"></i> GESTIONAR EMPLEADOS</a></li>
-    <li class="active">EDITAR EMPLEADO</li>
+<li><a href="{% url 'accounts:home'%}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
+<li><a href="{% url 'accounts:registro'%}"><i class="fa fa-user"></i> GESTIONAR EMPLEADOS</a></li>
+<li class="active">EDITAR EMPLEADO</li>
 {% endblock miga_pan %}
 
 {% block titulo %}Editar empleado{% endblock titulo %}
 {% block titulo_panel %}Editar Empleado{% endblock titulo_panel %}
 
 {% block css %}
-    {{ form_empleado.media.css }}
-    <style media="screen">
-        .select2-container {
-            width: 100% !important;
-        }
-    </style>
+{{ form_empleado.media.css }}
+<style media="screen">
+    .select2-container {
+        width: 100% !important;
+    }
+</style>
 {% endblock css %}
 
 {% block contenido %}
 
-    <div class="col-md-6 col-md-offset-3">
-        <div class="box box-primary">
-            <div class="box-header">
-                <h3 class="box-title">Editar empleado</h3>
-            </div>
-            <div class="box-body">
-                <form method="POST"> {% csrf_token %}
-                    {%   bootstrap_form form %}
-                    {%   bootstrap_form form_empleado %}
-                    <button type="button" class="btn btn-block btn-danger btn-xs cambiar-sucursal">Cambiar sucursal<div class="ripple-container"></div></button>
-                    <button type="submit" class="btn btn-success">Modificar</button>
-                </form>
-            </div>
+<div class="col-md-6 col-md-offset-3">
+    <div class="box box-primary">
+        <div class="box-header">
+            <h3 class="box-title">Editar empleado</h3>
+        </div>
+        <div class="box-body">
+            <form method="POST"> {% csrf_token %}
+                {%   bootstrap_form form %}
+                {%   bootstrap_form form_empleado %}
+                <button type="button" class="btn btn-block btn-danger btn-xs cambiar-sucursal">Cambiar sucursal<div class="ripple-container"></div></button>
+                <div class="g-recaptcha" data-sitekey="6LetuIkUAAAAAImaRg4v8bqLpKw-o1cCdLVNZoYs"></div>
+                <button type="submit" class="btn btn-success">Modificar</button>
+            </form>
         </div>
     </div>
+</div>
 
 {% endblock contenido %}
 
 {% block js %}
-    <script>
-        $(function () {
-            $('.select2').select2()})
+
+<script type="text/javascript">
+    const url_api = '{% url 'accounts:checkusername' %}';
+    const token = '{{ csrf_token }}';
+</script>
+<script src="{% static 'dist/js/check_username.js' %}"></script>
+<script src="{% static 'dist/js/validacion_registro.js' %}"></script>
+<script src="{% static 'plugins/toastr/toastr.min.js' %}"></script>
+
+<script>
+    $(function () {
+        $('.select2').select2()})
 
     $('#id_sucursal').prop("disabled", true);
 
-         $('#id_cargo').change(function(){
-             $('#id_sucursal').empty();
+    $('#id_cargo').change(function(){
+        $('#id_sucursal').empty();
         $('#id_sucursal').prop("disabled", true);});
 
 
-    </script>
+</script>
 
 
-    {{ form_empleado.media.js }}
+{{ form_empleado.media.js }}
 
-    <script type="application/javascript">
+<script type="application/javascript">
 
-        $('.cambiar-sucursal').click(function(){
+    $('.cambiar-sucursal').click(function(){
 
-            var selector = document.getElementById('id_cargo');
-            var id_cargo = selector[selector.selectedIndex].value;
+        var selector = document.getElementById('id_cargo');
+        var id_cargo = selector[selector.selectedIndex].value;
 
-            $.get('{% url 'accounts:get_sucursales_disponibles' %}', {"csrfmiddlewaretoken":'{{ csrf_token }}','id_cargo': id_cargo}, function(data){
-                $('#id_sucursal').empty();
-                 $('#id_sucursal').prop("disabled", false);
+        $.get('{% url 'accounts:get_sucursales_disponibles' %}', {"csrfmiddlewaretoken":'{{ csrf_token }}','id_cargo': id_cargo}, function(data){
+            $('#id_sucursal').empty();
+            $('#id_sucursal').prop("disabled", false);
 
-                $("#id_sucursal").select2({
-                    data: data.sucursales
-                });
+            $("#id_sucursal").select2({
+                data: data.sucursales
             });
         });
-    </script>
+    });
+</script>
 {% endblock js %}

@@ -7,8 +7,8 @@ from apps.accounts.forms import *
 from apps.accounts.models import *
 from apps.peliculas.models import *
 from apps.sucursales.models import *
-from apps.accounts.decorators import check_recaptcha
 from apps.peliculas.views import *
+from apps.accounts.decorators import check_recaptcha
 
 
 # Funcion para cambiar el estado de una notificacion a leida
@@ -111,12 +111,11 @@ def signup(request):
         if request.method == 'POST':
             form = SignUpForm(request.POST)
             user_data = FormEmpleado(request.POST)
-            if form.is_valid() and user_data.is_valid():
+            if form.is_valid() and user_data.is_valid() and request.recaptcha_is_valid:
                 messages.success(request, 'Empleado registrado exitosamente')
 
                 user = form.save(commit=False)
                 user.save()
-
                 user_extra = user_data.save(commit=False)
                 user_extra.user = user
                 user_extra.save()

@@ -26,6 +26,9 @@
     <!-- Google Font -->
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    <link rel="stylesheet" href="{% static 'plugins/toastr/toastr.min.css' %}">
+
+    <script src='https://www.google.com/recaptcha/api.js'></script>
     {{ form.media.css }}
     {% block css %}{% endblock css %}
 </head>
@@ -54,7 +57,7 @@
             {% include 'control_bar.html' %}
         </nav>
     </header>
-{% if user.is_staff %} {% include 'menus/menu_admin.html' %}
+    {% if user.is_staff %} {% include 'menus/menu_admin.html' %}
     {% elif not user.is_cliente and user.get_cargo_empleado == 'Gerente' %} {% include 'menus/menu_gerente.html' %}
     {% elif not user.is_cliente and user.get_cargo_empleado == 'Operador' %} {% include 'menus/menu_operador.html' %}
     {% endif %}
@@ -71,8 +74,8 @@
 
             <ol class="breadcrumb">
                 {% block miga_pan %}
-                    <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
-                    <li class="active">Here</li>
+                <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
+                <li class="active">Here</li>
                 {% endblock miga_pan %}
             </ol>
 
@@ -81,21 +84,21 @@
         <!-- Main content -->
         <section class="content container-fluid">
             {% block contenido %}
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="box box-primary">
-                            <div class="box-header">
-                                <h3 class="box-title">{% block titulo_panel %}{% endblock titulo_panel %}</h3>
-                            </div>
-                            <div class="box-body">
-                                {% block contenido_panel %}{% endblock contenido_panel %}
-                            </div>
-                            <div class="box-footer">
-                                {% block pie_panel %}{% endblock pie_panel %}
-                            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <h3 class="box-title">{% block titulo_panel %}{% endblock titulo_panel %}</h3>
+                        </div>
+                        <div class="box-body">
+                            {% block contenido_panel %}{% endblock contenido_panel %}
+                        </div>
+                        <div class="box-footer">
+                            {% block pie_panel %}{% endblock pie_panel %}
                         </div>
                     </div>
                 </div>
+            </div>
 
             {% endblock contenido %}
 
@@ -116,7 +119,7 @@
 
     <!-- Control Sidebar -->
     {% include 'control_panel.html' %}
-    
+
     <div class="control-sidebar-bg"></div>
 </div>
 <!-- ./wrapper -->
@@ -140,19 +143,19 @@
 
 <script>
     {% for msg in messages %}
-        $(document).ready(function () {
-            setTimeout(function () {
-                toastr.options = {
-                    "closeButtons": true,
-                    "progressBar": true,
-                    "preventDuplicates": true,
-                    "showEasing": "swing",
-                    "extendedTimeOut": 30000,
-                    "timeOut": 4000
-                }
-                toastr["{{ msg.tags }}"]("{{ msg }}")
-            }, 500);
-        });
+    $(document).ready(function () {
+        setTimeout(function () {
+            toastr.options = {
+                "closeButtons": true,
+                "progressBar": true,
+                "preventDuplicates": true,
+                "showEasing": "swing",
+                "extendedTimeOut": 30000,
+                "timeOut": 4000
+            }
+            toastr["{{ msg.tags }}"]("{{ msg }}")
+        }, 500);
+    });
     {% endfor %}
 </script>
 

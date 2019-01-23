@@ -1,6 +1,6 @@
 from django.db import models
 from django.template.defaultfilters import slugify
-
+from django.utils.safestring import mark_safe
 
 class Genero(models.Model):
     nombre = models.CharField(max_length=50, unique=True)
@@ -27,7 +27,7 @@ class Pelicula(models.Model):
     sinopsis = models.TextField(max_length=300)
     reparto = models.CharField(max_length=100)
     calificacion = models.DecimalField(max_digits=3, decimal_places=2, default=0)
-    imagen = models.ImageField(upload_to='peliculas/', blank=True, default='/peliculas/default.jpg')
+    imagen = models.ImageField(upload_to='peliculas/', null=True, blank=True, default='/peliculas/default.jpg')
     is_active = models.BooleanField(default=True)
     slug = models.SlugField(unique=True, default='')
     is_estreno = models.BooleanField(default=True)

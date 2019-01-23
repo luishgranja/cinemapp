@@ -2,16 +2,17 @@ from django.shortcuts import render, redirect
 from .forms import *
 from django.contrib import messages
 from django.http import HttpResponse
+from apps.accounts.decorators import check_recaptcha
 
-
+@check_recaptcha
 def crear_pelicula(request):
     # Usuario que hizo la peticion a la funcion (usuario que esta en la sesion)
     usuario = request.user
     # Validacion para cuando el administrador (is_staff)
-    if True:
+    if usuario.is_staff:
         if request.method == 'POST':
             form = CrearPeliculaForm(request.POST, request.FILES)
-            if form.is_valid():
+            if form.is_valid() and request.recaptcha_is_valid:
                 form.save()
                 messages.success(request, 'Película registrada exitosamente')
                 return render(request, 'peliculas/crear_peliculas.html', {'form': CrearPeliculaForm(), 'peliculas': listar_peliculas()})
@@ -87,14 +88,14 @@ def ver_pelicula(request, slug):
 def listar_generos():
     return Genero.get_generos()
 
-
+@check_recaptcha
 def crear_genero(request):
     usuario = request.user
     if request.method == 'POST':
         form = CrearGeneroForm(request.POST)
-        if form.is_valid():
+        if form.is_valid() and request.recaptcha_is_valid:
             form.save()
-            messages.success(request, 'Género creado exitosamente!')
+            messages.success(request, 'Género creado exitósamente!')
             return render(request, 'peliculas/gestion_generos.html', {'form': CrearGeneroForm(), 'generos':listar_generos()})
         else:
             messages.error(request, 'Por favor corrige los errores')

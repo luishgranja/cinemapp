@@ -22,99 +22,100 @@
   <link rel="stylesheet" href="{% static 'dist/css/bootstrap-material-design.min.css' %}">
   <link rel="stylesheet" href="{% static 'dist/css/ripples.min.css' %}">
   <link rel="stylesheet" href="{% static 'dist/css/MaterialAdminLTE.min.css' %}">
-    <link rel="stylesheet" href="{% static 'plugins/toastr/toastr.min.css' %}">
-
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
-<script src='https://www.google.com/recaptcha/api.js'></script>
+
+  <link rel="stylesheet" href="{% static 'plugins/toastr/toastr.min.css' %}">
+
+  <script src='https://www.google.com/recaptcha/api.js'></script>
 
 </head>
 
 <body class="hold-transition register-page" style="background-image:url({% static 'img/bg.png' %})">
-  <div class="col-md-4 col-md-offset-4">
-    <div class="row">
-      <div class="register-logo">
-        <a href="{% url 'accounts:login' %}">CINEM<b>APP</b></a>
+<div class="col-md-4 col-md-offset-4">
+  <div class="row">
+    <div class="register-logo">
+      <a href="{% url 'accounts:login' %}">CINEM<b>APP</b></a>
+    </div>
+    <div class="register-box-body">
+      <p class="login-box-msg">Registrarse en CINEMAPP</p>
+
+      {% if form.errors %}
+      {% for field in form %}
+      {% for error in field.errors %}
+      <div class="alert alert-danger">
+        <strong>{{ error|escape }}</strong>
       </div>
-      <div class="register-box-body">
-        <p class="login-box-msg">Registrarse en CINEMAPP</p>
-
-        {% if form.errors %}
-        {% for field in form %}
-        {% for error in field.errors %}
-        <div class="alert alert-danger">
-          <strong>{{ error|escape }}</strong>
-        </div>
-        {% endfor %}
-        {% endfor %}
-        {% for error in form.non_field_errors %}
-        <div class="alert alert-danger">
-          <strong>{{ error|escape }}</strong>
-        </div>
-        {% endfor %}
-        {% endif %}
-
-        {% if user_form.errors %}
-        {% for field in user_form %}
-        {% for error in field.errors %}
-        <div class="alert alert-danger">
-          <strong>{{ error|escape }}</strong>
-        </div>
-        {% endfor %}
-        {% endfor %}
-        {% for error in user_form.non_field_errors %}
-        <div class="alert alert-danger">
-          <strong>{{ error|escape }}</strong>
-        </div>
-        {% endfor %}
-        {% endif %}
-
-        <form method="post" id="formulario" onsubmit="return validacion()"> {% csrf_token %}
-          {% bootstrap_form form layout='inline'%}
-          {% bootstrap_form user_form layout='inline'%}
-
-
-    <div class="g-recaptcha" data-sitekey="6LetuIkUAAAAAImaRg4v8bqLpKw-o1cCdLVNZoYs"></div>
-            <button type="submit" class="btn btn-primary btn-raised btn-block btn-flat">Registrarse</button>
-        </form>
+      {% endfor %}
+      {% endfor %}
+      {% for error in form.non_field_errors %}
+      <div class="alert alert-danger">
+        <strong>{{ error|escape }}</strong>
       </div>
+      {% endfor %}
+      {% endif %}
+
+      {% if user_form.errors %}
+      {% for field in user_form %}
+      {% for error in field.errors %}
+      <div class="alert alert-danger">
+        <strong>{{ error|escape }}</strong>
+      </div>
+      {% endfor %}
+      {% endfor %}
+      {% for error in user_form.non_field_errors %}
+      <div class="alert alert-danger">
+        <strong>{{ error|escape }}</strong>
+      </div>
+      {% endfor %}
+      {% endif %}
+
+      <form method="post" id="formulario" onsubmit="return validacion()"> {% csrf_token %}
+        {% bootstrap_form form layout='inline'%}
+        {% bootstrap_form user_form layout='inline'%}
+
+
+        <div class="g-recaptcha" data-sitekey="6LetuIkUAAAAAImaRg4v8bqLpKw-o1cCdLVNZoYs"></div>
+        <button type="submit" class="btn btn-primary btn-raised btn-block btn-flat">Registrarse</button>
+      </form>
     </div>
   </div>
-  <!-- jQuery 3 -->
-  <script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
-  <!-- Bootstrap 3.3.7 -->
-  <script src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
-  <!-- Material Design -->
-  <script src="{% static 'dist/js/material.min.js' %}"></script>
-  <script src="{% static 'dist/js/ripples.min.js' %}"></script>
-  <script type="text/javascript">
+</div>
+<!-- jQuery 3 -->
+<script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+<!-- Material Design -->
+<script src="{% static 'dist/js/material.min.js' %}"></script>
+<script src="{% static 'dist/js/ripples.min.js' %}"></script>
+<script type="text/javascript">
     const url_api = '{% url 'accounts:checkusername' %}';
     const token = '{{ csrf_token }}';
-  </script>
-  <script src="{% static 'dist/js/check_username.js' %}"></script>
- <script src="{% static 'dist/js/validacion_registro.js' %}"></script>
-  <script src="{% static 'plugins/toastr/toastr.min.js' %}"></script>
+</script>
+<script src="{% static 'dist/js/check_username.js' %}"></script>
+<script src="{% static 'dist/js/validacion_registro.js' %}"></script>
+<script src="{% static 'plugins/toastr/toastr.min.js' %}"></script>
 
 
-  <script>
-  $.material.init();
+<script>
+    $.material.init();
 </script>
 
-  <script>
+<script>
     {% for msg in messages %}
-        $(document).ready(function () {
-            setTimeout(function () {
-                toastr.options = {
-                    "closeButtons": true,
-                    "progressBar": true,
-                    "preventDuplicates": true,
-                    "showEasing": "swing",
-                    "extendedTimeOut": 30000,
-                    "timeOut": 4000
-                }
-                toastr["{{ msg.tags }}"]("{{ msg }}")
-            }, 500);
-        });
+    $(document).ready(function () {
+        setTimeout(function () {
+            toastr.options = {
+                "closeButtons": true,
+                "progressBar": true,
+                "preventDuplicates": true,
+                "showEasing": "swing",
+                "extendedTimeOut": 30000,
+                "timeOut": 4000
+            }
+            toastr["{{ msg.tags }}"]("{{ msg }}")
+        }, 500);
+    });
     {% endfor %}
 </script>
 

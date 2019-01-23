@@ -30,6 +30,7 @@
             <div class="box-body">
                 <form method="POST"> {% csrf_token %}
                     {% bootstrap_form form %}
+                    <div class="g-recaptcha" data-sitekey="6LetuIkUAAAAAImaRg4v8bqLpKw-o1cCdLVNZoYs"></div>
                     <button type="submit" class="btn btn-success">Modificar</button>
                 </form>
             </div>
@@ -39,5 +40,8 @@
 {% endblock contenido %}
 
 {% block js %}
+
+<script src="{% static 'dist/js/validacion_registro.js' %}"></script>
+<script src="{% static 'plugins/toastr/toastr.min.js' %}"></script>
     {{ form.media.js }}
 {% endblock js %}

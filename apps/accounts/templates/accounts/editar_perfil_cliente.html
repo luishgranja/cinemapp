@@ -4,50 +4,51 @@
 
 {% block miga_pan %}
 
-    <li><a href="{% url 'accounts:home'%}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
-    <li><a href="{% url 'accounts:editar_perfil_cliente'%}"><i class="fa fa-user"></i> MI PERFIL</a></li>
-    <li class="active">EDITAR PERFIL</li>
+<li><a href="{% url 'accounts:home'%}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
+<li><a href="{% url 'accounts:editar_perfil_cliente'%}"><i class="fa fa-user"></i> MI PERFIL</a></li>
+<li class="active">EDITAR PERFIL</li>
 {% endblock miga_pan %}
 
 {% block titulo %}Editar mi perfil{% endblock titulo %}
 {% block titulo_panel %}Editar perfil{% endblock titulo_panel %}
 
 {% block css %}
-    {{ form_empleado.media.css }}
-    <style media="screen">
-        .select2-container {
-            width: 100% !important;
-        }
-    </style>
+{{ form_empleado.media.css }}
+<style media="screen">
+    .select2-container {
+        width: 100% !important;
+    }
+</style>
 {% endblock css %}
 
 {% block contenido %}
 
-    <div class="col-md-6 col-md-offset-3">
-        <div class="box box-primary">
-            <div class="box-header">
-                <h3 class="box-title">Editar mi perfil</h3>
-            </div>
-            <div class="box-body">
-                <form method="POST"> {% csrf_token %}
-                    {% bootstrap_field form.first_name%}
-                    {% bootstrap_field form.last_name%}
-                    {% bootstrap_field form.telefono%}
-                    {% bootstrap_field form.username%}
-                    {% bootstrap_field form.email%}
-                    {% bootstrap_field form_cliente.tarjeta%}
-                    <button type="submit" class="btn btn-success">Modificar</button>
-                </form>
-            </div>
+<div class="col-md-6 col-md-offset-3">
+    <div class="box box-primary">
+        <div class="box-header">
+            <h3 class="box-title">Editar mi perfil</h3>
+        </div>
+        <div class="box-body">
+            <form method="POST"> {% csrf_token %}
+                {% bootstrap_field form.first_name%}
+                {% bootstrap_field form.last_name%}
+                {% bootstrap_field form.telefono%}
+                {% bootstrap_field form.username%}
+                {% bootstrap_field form.email%}
+                {% bootstrap_field form_cliente.tarjeta%}
+                <div class="g-recaptcha" data-sitekey="6LetuIkUAAAAAImaRg4v8bqLpKw-o1cCdLVNZoYs"></div>
+                <button type="submit" class="btn btn-success">Modificar</button>
+            </form>
         </div>
     </div>
+</div>
 
 {% endblock contenido %}
 
 {% block js %}
 <script type="text/javascript">
-  var url_api = '{% url 'accounts:checkusername' %}';
-  var token = '{{ csrf_token }}';
+    var url_api = '{% url 'accounts:checkusername' %}';
+    var token = '{{ csrf_token }}';
 </script>
 <script src="{% static 'dist/js/check_username.js' %}"></script>
 {% endblock js %}
