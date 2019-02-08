@@ -101,7 +101,7 @@ def home(request):
         return render(request, 'accounts/home_gerente.html', {'user': usuario, 'datos': datos_dashboard_gerente()})
     elif usuario.get_cargo_empleado() == 'Operador':
         return render(request, 'accounts/home_operador.html', {'user': usuario, 'datos':
-            datos_dashboard_operador(), 'peliculas': listar_cartelera()})
+            datos_dashboard_operador(), 'peliculas': listar_cartelera(), 'form_saldo': CargarSaldoForm()})
 
 def signup(request):
     # Usuario que hizo la peticion a la funcion (usuario que esta en la sesion)
@@ -295,3 +295,34 @@ def datos_dashboard_operador():
         'num_proximos_estrenos': num_proximos_estrenos,
     }
     return datos
+
+
+def consultar_cliente(request):
+
+    if request.is_ajax():
+        cedula = request.GET.get('cedula', None)
+        try:
+            cliente = User.objects.get(cedula=cedula)
+            nombre = cliente.get_full_name()
+            saldo = cliente.cliente.saldo
+            return JsonResponse({'saldo': saldo, 'nombre': nombre})
+        except (User.cliente.RelatedObjectDoesNotExist, User.DoesNotExist):
+            return JsonResponse({'saldo': '--------', 'nombre': 'No existe un cliente con la cédula ingresada'})
+
+
+def cargar_saldo(request):
+    if request.is_ajax():
+        cedula = request.GET.get('cedula', None)
+        saldo = request.GET.get('saldo', 0)
+        try:
+            cliente = User.objects.get(cedula=cedula)
+            saldo_actual = cliente.cliente.saldo
+
+            cliente.cliente.saldo = int(saldo) + saldo_actual
+            cliente.cliente.save()
+            return JsonResponse({'saldo': 0})
+
+        except (User.cliente.RelatedObjectDoesNotExist, User.DoesNotExist):
+            return JsonResponse({'saldo': 0})
+
+    return JsonResponse({'error':'error'})

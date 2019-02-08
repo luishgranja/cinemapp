@@ -110,6 +110,7 @@ class EditarEmpleado(forms.ModelForm):
 
         return self.cleaned_data
 
+
 class EditarEmpleadoExtra(forms.ModelForm):
     class Meta:
         model = User
@@ -130,7 +131,6 @@ class EditarEmpleadoExtra(forms.ModelForm):
             self.add_error('username', 'Nombre de usuario no disponible')
 
         return self.cleaned_data
-
 
 
 class EditarPerfilCliente(forms.ModelForm):
@@ -167,3 +167,10 @@ class EditarPerfilCliente(forms.ModelForm):
             self.add_error('username','Nombre de usuario no disponible')
 
         return self.cleaned_data
+
+
+class CargarSaldoForm(forms.Form):
+    cliente = forms.CharField(label='Cedula del cliente')
+    saldo_actual = forms.CharField(label='Saldo actual', widget=forms.TextInput(attrs={'disabled': True}))
+    nombre_cliente = forms.CharField(label='Nombre del cliente', widget=forms.TextInput(attrs={'disabled': True}))
+    saldo = forms.IntegerField(label='Saldo a cargar',widget=forms.NumberInput(attrs={'step': 1000}))

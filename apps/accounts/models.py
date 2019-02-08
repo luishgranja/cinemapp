@@ -11,6 +11,9 @@ class User(AbstractUser):
                        'is_cliente']
     USERNAME_FIELD = 'username'
 
+    def __str__(self):
+        return self.cedula + ' - ' + self.get_full_name()
+
     @staticmethod
     def get_empleados():
         try:
@@ -29,7 +32,7 @@ class User(AbstractUser):
 
 class Cliente(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, related_name='cliente')
-    saldo = models.DecimalField(max_digits=7, decimal_places=2, default=0)
+    saldo = models.IntegerField(default=0)
     tarjeta = models.CharField(max_length=16)
 
     def __str__(self):

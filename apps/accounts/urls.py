@@ -18,6 +18,8 @@ urlpatterns = [
     path('api/consulta_sucursales', get_sucursales_disponibles, name= 'get_sucursales_disponibles'),
     path('api/consulta_username', checkusername, name='checkusername'),
     path('notificaciones', consultar_notificaciones, name='notificaciones'),
-    path('api/notificacion_leida', notificacion_leida, name='notificacion_leida')
+    path('api/notificacion_leida', notificacion_leida, name='notificacion_leida'),
+    path('api/consultar_cliente', consultar_cliente, name='consultar_cliente'),
+    path('api/cargar_saldo', cargar_saldo, name='cargar_saldo')
 
 ]

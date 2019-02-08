@@ -26,7 +26,6 @@
     <!-- Google Font -->
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
-    <link rel="stylesheet" href="{% static 'plugins/toastr/toastr.min.css' %}">
 
     <script src='https://www.google.com/recaptcha/api.js'></script>
     {{ form.media.css }}
@@ -136,6 +135,8 @@
 <script>
     $.material.init();
 </script>
+<!-- FastClick -->
+<script src="{% static 'bower_components/fastclick/lib/fastclick.js' %}"></script>
 <!-- AdminLTE App -->
 <script src="{% static 'dist/js/adminlte.min.js' %}"></script>
 <script src="{% static 'plugins/toastr/toastr.min.js' %}"></script>

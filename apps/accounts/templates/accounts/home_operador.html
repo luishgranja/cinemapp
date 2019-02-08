@@ -7,19 +7,19 @@
 
 {% block css %}
     <style>
-    .MultiCarousel-inner{
-        height: 320px;
-    }
-    .MultiCarousel{
+        .MultiCarousel-inner{
+            height: 320px;
+        }
+        .MultiCarousel{
             width: 97% !important;
-    }
+        }
 
-    .content-header{
-        padding: 0px;
-    }
-    .content-header>h1{
-        display: none;
-    }
+        .content-header{
+            padding: 0px;
+        }
+        .content-header>h1{
+            display: none;
+        }
         img {
             border-radius: 8px;
             max-width: 100%;
@@ -31,7 +31,7 @@
 
 {% block contenido %}
 
-     <div class="box">
+    <div class="box">
         <div class="box-header with-border">
             <h3 class="box-title">Películas en Cartelera</h3>
 
@@ -56,19 +56,19 @@
                                 </div>
                             {% endfor %}
                         </div>
-                    {% if peliculas.count > 6 %}
-                    <button class="btn btn-primary leftLst"><</button>
-                    <button class="btn btn-primary rightLst">></button>
-                    {%  endif %}
+                        {% if peliculas.count > 6 %}
+                            <button class="btn btn-primary leftLst"><</button>
+                            <button class="btn btn-primary rightLst">></button>
+                        {%  endif %}
                     </div>
                 </div>
             </div>
-    </div>
+        </div>
     </div>
 
-        <div class="row">
+    <div class="row">
 
-                <div class="col-lg-3 col-xs-6">
+        <div class="col-lg-3 col-xs-6">
             <div class="small-box bg-purple-active">
                 <div class="inner">
                     <h3>0</h3>
@@ -91,11 +91,11 @@
                 <div class="icon">
                     <i class="fa fa-video-camera"></i>
                 </div>
-                <a href="{% url 'peliculas:consultar_proximos_estrenos' %}" class="small-box-footer">Ver películas <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="{% url 'peliculas:consultar_proximos_estrenos' %}" class="small-box-footer" target="_blank">Ver películas <i class="fa fa-arrow-circle-right"></i></a>
             </div>
         </div>
 
-            <div class="col-lg-3 col-xs-6">
+        <div class="col-lg-3 col-xs-6">
             <div class="small-box bg-light-blue-active">
                 <div class="inner">
                     <h3>$</h3>
@@ -104,11 +104,11 @@
                 <div class="icon">
                     <i class="fa fa-money"></i>
                 </div>
-                <a href="#" class="small-box-footer">Añadir saldo <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="#" class="small-box-footer" data-toggle="modal" data-target="#modal-saldo">Añadir saldo <i class="fa fa-arrow-circle-right"></i></a>
             </div>
         </div>
 
-                    <div class="col-lg-3 col-xs-6">
+        <div class="col-lg-3 col-xs-6">
             <div class="small-box bg-teal-active">
                 <div class="inner">
                     <h3><i class="fa fa-user"></i></h3>
@@ -117,15 +117,75 @@
                 <div class="icon">
                     <i class="fa fa-user-plus"></i>
                 </div>
-                <a href="{% url 'accounts:registro_cliente' %}" class="small-box-footer">Crear cuenta <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="{% url 'accounts:registro_cliente' %}" class="small-box-footer" target="_blank">Crear cuenta <i class="fa fa-arrow-circle-right"></i></a>
             </div>
         </div>
 
     </div>
+
+    <!--modal-saldo-->
+
+    <div class="modal fade" id="modal-saldo">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Cargar saldo</h4>
+                </div>
+                <div class="modal-body">
+                    {% bootstrap_field form_saldo.cliente %}
+                    {% bootstrap_field form_saldo.saldo_actual %}
+                    {% bootstrap_field form_saldo.nombre_cliente %}
+                    <button type="button" class="btn btn-primary consultar-saldo">Consultar saldo</button>
+                    {% bootstrap_field form_saldo.saldo %}
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary cargar-saldo">Cargar saldo</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
 
 
 {% endblock contenido %}
 
 {% block js %}
     <script src="{% static 'dist/js/carousel.js' %}"></script>
+
+    <script type="application/javascript">
+
+        $('.consultar-saldo').click(function(){
+
+            var cedula = document.getElementById('id_cliente').value;
+            var saldo_actual = document.getElementById('id_saldo_actual');
+            var nombre_cliente = document.getElementById('id_nombre_cliente');
+
+            $.get('{% url 'accounts:consultar_cliente' %}', {"csrfmiddlewaretoken":'{{ csrf_token }}','cedula': cedula}, function(data){
+
+                nombre_cliente.value = data.nombre;
+                saldo_actual.value = data.saldo;
+
+            });
+        });
+
+        $('.cargar-saldo').click(function(){
+
+            var cedula = document.getElementById('id_cliente').value;
+            var saldo = document.getElementById('id_saldo').value;
+            console.log(cedula,saldo);
+            $.get('{% url 'accounts:cargar_saldo' %}', {"csrfmiddlewaretoken":'{{ csrf_token }}','saldo': saldo, 'cedula': cedula}, function(data){
+
+                console.log('ok')
+
+            });
+        });
+
+    </script>
+
 {% endblock js %}
