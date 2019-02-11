@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% load mathfilters %}
+
+{% block titulo %}Gestión de Salas{% endblock titulo %}
+{% block descripcion_pagina %} Gestiona las salas CINEMAPP {% endblock descripcion_pagina %}
+{% block miga_pan %}
+    <li><a href="{% url 'accounts:home'%}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
+    <li class="active">GESTIONAR SALAS</li>
+{% endblock miga_pan %}
+
+{% block css %}
+    <link rel="stylesheet" href="{%  static 'bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
+    <link href="{% static 'bower_components/datatables.net-bs/responsive/responsive.dataTables.min.css' %}" rel="stylesheet">
+    {{ form.media.css }}
+    <style media="screen">
+        .select2-container {
+            width: 100% !important;
+            height: : 100% !important;
+        }
+
+
+.rectangulo {
+background-color: black;
+  width: 250px;
+  margin: 10px;
+  margin-left: auto;
+  margin-right: auto;
+
+}
+
+.flex-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.flex-container > div {
+  background-color: white;
+  color: white;
+  width: 15px;
+  margin: 0px;
+  text-align: center;
+  line-height: 15px;
+}
+
+input[type='checkbox'] {
+content: '';
+display: inline-block;
+-webkit-appearance: none;
+-moz-appearance: none;
+margin:0;
+background: rgb(223, 214, 223);
+width: 13px;
+height: 13px;
+
+}
+input[type='checkbox']:checked {
+text-align: center;
+background: rgb(159,218,64);
+}
+input[type=checkbox]:hover {
+  filter: brightness(10%);
+
+}
+
+    </style>
+{% endblock css %}
+
+{% block contenido %}
+
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title">Registrar Sala</h3>
+            </div>
+            <div class="box-body">
+                <form method="post" action="{% url 'salas:crear' %}" enctype="multipart/form-data"> {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-sm-4">
+                            {% bootstrap_field form.tipo_sala%}
+                        </div>
+                        <div class="col-sm-2">
+                            {% bootstrap_field form.num_sala%}
+                        </div>
+                        <div class="col-sm-6">
+                            {% bootstrap_field form.sucursal%}
+                        </div>
+                        <div class="col-sm-6">
+                            {% bootstrap_field form.is_active%}
+                        </div>
+                    </div>
+
+                    <div class="rectangulo">
+                       <center>
+                        <font color="white" size="5">Pantalla</font></center> 
+                    </div>
+
+
+
+                <p id="text" style="display:none">Checkbox is CHECKED!</p>
+                   
+
+                        <div>
+                          <input type="radio" id="p" name="drone" value="Preferencial"
+                                 onclick="myFunction()">
+                          <label for="p">Preferencial</label>
+                        </div>
+
+                        <div>
+                          <input type="radio" id="g" name="drone" value="General" onclick="myFunction()">
+                          <label for="g">General</label>
+                        </div>
+
+                        <div>
+                          <input type="radio" id="d" name="drone" value="Discapacitados" onclick="myFunction()">
+                          <label for="d">Discapacitado</label>
+                        </div>
+                        {% for i in itemlist %}
+                        
+                                <div class="flex-container">
+                                   {% for j in itemlist %}
+
+                                    <div >
+
+                                        <input type="checkbox" name="silla" value="{{ i|mul:30|add:j|add:1 }}">  
+                                    </div>
+
+                                    {% endfor %}
+
+                                </div>
+                                                        
+                        {% endfor %}                                   
+
+                    <button type="submit" class="btn btn-success">Registrar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title">Listado de salas</h3>
+            </div>
+            <div class="box-body">
+                <table id="tabla_salas" class="table table-striped table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Tipo sala</th>
+                        <th>Numero sala </th>
+                        <th>Sucursal</th>
+                        <th>Activa</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead> 
+                    <tbody>
+                    {% for sala in salas %}
+                        <tr>
+                            <td>{{ sala.tipo_sala}}</td>
+                            <td>{{ sala.num_sala}}</td>
+                            <td>{{ sala.sucursal }}</td>
+                            <td>
+                                {%  if sala.is_active %} <span class="badge bg-green">Activo</span>
+                                {% else %} <span class="badge bg-red">Inactivo</span>
+                                {% endif %}
+                            </td>
+                          <td> 
+                             <div class="btn-group">
+                                    <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                        <span class="caret"></span>
+                                        <div class="ripple-container"></div>Opciones</button>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="{% url 'salas:editar_sala' sala.id %}">Editar sala</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'salas:ver_sala' sala.id %}">Ver sala</a></li>
+                                   </ul>
+                                </div>
+
+                            </td>
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock contenido %}
+
+
+{% block js %}
+
+    <script src="{% static 'bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'bower_components/datatables.net-bs/responsive/dataTables.responsive.min.js' %}"></script>
+    {{ form.media.js }}
+    <script>
+
+
+        $(function () {
+            $('#tabla_salas').DataTable({
+                    responsive: true
+                }
+            )
+        })
+    </script>
+     <script>
+        function myFunction() {
+              var preferencial = document.getElementById("p");
+             var general = document.getElementById("g");
+              var Discapacitado = document.getElementById("d");
+
+              var text = document.getElementById("text");
+              if (preferencial.checked == true){
+             $("input[type='checkbox']:checked").css({"background":"rgb(9,0,64)"});
+
+              } else if(general.checked == true) {
+             $("input[type='checkbox']:checked").css({"background":"rgb(255,0,0)"});
+              } else {
+                    $("input[type='checkbox']:checked").css({"background":"rgb(9,0,245)"});
+
+              }
+}
+            </script>
+{% endblock js %}
