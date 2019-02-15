@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+
+{% load list_index %}
+{% load mathfilters %}
+
+{% block miga_pan %}
+
+    <li><a href="{% url 'accounts:home'%}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
+{% endblock miga_pan %}
+
+{% block titulo %}Ver Sala {{ sala.num_sala }}{% endblock titulo %}
+{% block css %}
+    {{ form.media.css }}
+    <style media="screen">
+        .select2-container {
+            width: 100% !important;
+        }
+.rectangulo {
+  background-color: black;
+  width: 250px;
+  margin: 10px;
+  margin-left: auto;
+  margin-right: auto;
+
+}
+
+.flex-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.flex-container > div {
+  background-color: white;
+  color: white;
+  width: 15px;
+  margin: 0px;
+  text-align: center;
+  line-height: 15px;
+}
+
+input[type='checkbox'] {
+content: '';
+display: inline-block;
+-webkit-appearance: none;
+-moz-appearance: none;
+margin:0;
+background: rgb(223, 214, 223);
+width: 13px;
+height: 13px;
+
+}
+input[type='checkbox']:checked {
+text-align: center;
+background: rgb(159,218,64);
+}
+input[type=checkbox]:hover {
+  filter: brightness(10%);
+
+}
+
+    </style>
+{% endblock css %}
+
+{% block contenido %}
+
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-body">
+                <div class="row">
+
+
+                    <div class="col-md-12">
+                            <p><b>Tipo de sala: </b>{{ sala.tipo_sala }}</p>
+                            <p><b>Numero de sala: </b>{{ sala.num_sala }}</p>
+                            <p><b>Sucursal: </b>{{ sala.sucursal}}</p>
+                        </div>
+                </div>
+
+                    <div class="rectangulo">
+                       <center>
+                            <font color="white" size="5">Pantalla</font>
+                        </center> 
+                    </div>
+                      {% for i in itemlist %}
+                        
+                                <div class="flex-container">
+
+                                   {% for j in itemlist %}
+                                    <div >
+                                    {% with i|mul:30|add:j|add:1 as pos %}   
+                                        {% if lista_sillas|list_index:pos %}
+                                            <input type="checkbox" name="silla" checked value="{{ i|mul:30|add:j|add:1 }}">  
+                                        {% else %}
+                                            <input type="checkbox" name="silla" value="{{ i|mul:30|add:j|add:1 }}">  
+                                        {% endif %}
+                                    {% endwith %}
+
+                                    </div>
+
+                                    {% endfor %}
+
+                                </div>
+                                                        
+                        {% endfor %}
+
+
+                  
+
+                </div>
+            </div>
+        </div>
+
+{% endblock contenido %}
