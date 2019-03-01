@@ -40,7 +40,7 @@ def listar_cartelera():
 def listar_peliculas_proximo_estreno():
     return Pelicula.get_pelicula_estreno(False) & Pelicula.get_peliculas_activas()
 
-
+@check_recaptcha
 def editar_pelicula(request, id_pelicula):
     usuario = request.user
     pelicula = Pelicula.objects.get(id=id_pelicula)
@@ -48,7 +48,7 @@ def editar_pelicula(request, id_pelicula):
     if True:
         if request.method == 'POST':
             form = CrearPeliculaForm(request.POST, request.FILES, instance=pelicula)
-            if form.is_valid():
+            if form.is_valid() and request.recaptcha_is_valid:
                 form.save()
                 messages.success(request, 'Película modificada exitosamente!')
                 return redirect('peliculas:crear')

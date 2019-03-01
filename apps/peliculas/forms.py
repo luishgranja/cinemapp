@@ -31,19 +31,19 @@ class CrearPeliculaForm(forms.ModelForm):
         reparto = self.cleaned_data['reparto']
         genero = self.cleaned_data['genero']
 
-        regex_nombre = re.compile('^[a-zA-ZÀ ,.]{3,30}$', re.IGNORECASE)
-        regex_sinopsis_reparto = re.compile('^[a-zA-ZÀ ,.]{3,500}$', re.IGNORECASE)
+        regex_director = re.compile('^[a-zA-ZÀ, ]{3,30}$', re.IGNORECASE)
+        regex_reparto = re.compile('^[a-zA-ZÀ, ]{3,300}$', re.IGNORECASE)
 
-        if not regex_nombre.match(nombre):
+        if not len(nombre):
             self.add_error('nombre','Nombre debe ser mayor a 3 caracteres y a-z')
 
-        if not regex_nombre.match(director):
+        if not regex_director.match(director):
             self.add_error('nombre_director','Aqui error debe ser mayor a 3 caracteres y a-z')
 
-        if not regex_sinopsis_reparto.match(sinopsis):
+        if not len(sinopsis):
             self.add_error('sinopsis','Sinopsis debe ser mayor a 3 caracteres y a-z')
 
-        if not regex_sinopsis_reparto.match(reparto):
+        if not regex_reparto.match(reparto):
             self.add_error('reparto','Reparto debe ser mayor a 3 caracteres y a-z')
 
         try:

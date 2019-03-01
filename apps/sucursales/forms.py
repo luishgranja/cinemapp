@@ -19,8 +19,8 @@ class CreateSurcursalForm(forms.ModelForm):
         direccion = self.cleaned_data['direccion']
         telefono = self.cleaned_data['telefono']
 
-        regex_nombre = re.compile('^[a-zA-ZÀ ,.]{3,20}$', re.IGNORECASE)
-        regex_direccion = re.compile('^[%&+ \w]{6,50}$', re.IGNORECASE)
+        regex_nombre = re.compile('^[a-zA-ZÀ,.\s]{3,20}$', re.IGNORECASE)
+        regex_direccion = re.compile('^[-%&+# \w]{6,50}$', re.IGNORECASE)
         regex_telefono = re.compile('^[0-9]{7,11}$')
 
         if not regex_nombre.match(nombre):

@@ -32,7 +32,7 @@ class User(AbstractUser):
 
 class Cliente(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, related_name='cliente')
-    saldo = models.IntegerField(default=0)
+    saldo = models.IntegerField(default=0, max_length=8)
     tarjeta = models.CharField(max_length=16)
 
     def __str__(self):

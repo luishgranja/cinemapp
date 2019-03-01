@@ -26,7 +26,7 @@ class SignUpForm(UserCreationForm):
         correo = self.cleaned_data['email']
         telefono = self.cleaned_data['telefono']
 
-        regex_nombre = re.compile('^[a-z]{3,20}$', re.IGNORECASE)
+        regex_nombre = re.compile('^[a-zA-ZÀ,\s]{3,20}$', re.IGNORECASE)
         regex_cedula = re.compile('^[0-9]{8,11}$')
         regex_email = re.compile('^(([^<>()\[\],;:\s@"]+(\.[^<>()\[\],;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
         regex_telefono = re.compile('^[0-9]{7,11}$')

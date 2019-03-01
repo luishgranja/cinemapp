@@ -4,8 +4,8 @@ let campo_telefono = $('#id_telefono');
 
 let contador_error = 0;
 
-var regex = /^([a-zA-ZÀ ,.]){3,20}$/i;
-var regex_direccion = /^([%&+ \w]){5,50}$/i;
+var regex = /^([-a-zA-ZÀ., ]){3,20}$/i;
+var regex_direccion = /^([-%&+# \w]){5,50}$/i;
 var regex_telefono = /^([0-9]){7,11}$/;
 
 function validarSucursales(){

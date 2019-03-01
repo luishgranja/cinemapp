@@ -305,9 +305,9 @@ def consultar_cliente(request):
             cliente = User.objects.get(cedula=cedula)
             nombre = cliente.get_full_name()
             saldo = cliente.cliente.saldo
-            return JsonResponse({'saldo': saldo, 'nombre': nombre})
+            return JsonResponse({'saldo_cliente': saldo, 'nombre': nombre})
         except (User.cliente.RelatedObjectDoesNotExist, User.DoesNotExist):
-            return JsonResponse({'saldo': '--------', 'nombre': 'No existe un cliente con la cédula ingresada'})
+            return JsonResponse({'saldo_cliente': '--------', 'nombre': 'No existe un cliente con la cédula ingresada'})
 
 
 def cargar_saldo(request):
@@ -320,7 +320,7 @@ def cargar_saldo(request):
 
             cliente.cliente.saldo = int(saldo) + saldo_actual
             cliente.cliente.save()
-            return JsonResponse({'saldo': 0})
+            return JsonResponse({'saldo': cliente.cliente.saldo})
 
         except (User.cliente.RelatedObjectDoesNotExist, User.DoesNotExist):
             return JsonResponse({'saldo': 0})
