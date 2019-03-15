@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+
+{% block miga_pan %}
+    <li><a href="{% url 'accounts:home' %}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
+    <li class="active">COMPRAR BOLETA</li>
+{% endblock miga_pan %}
+
+
+{% block titulo %}Comprar Boleta{% endblock titulo %}
+{% block titulo_panel %}Comprar Boleta{% endblock titulo_panel %}
+
+{% block contenido_panel %}
+
+
+    <div class="row">
+
+    <div class="col-md-4">
+    <table class="table table-bordered">
+        <tbody>
+        <tr>
+            <th style="width: 10px">#</th>
+            <th>Pelicula</th>
+        </tr>
+
+        {% for pelicula in peliculas %}
+            <tr>
+               <td>{{ forloop.counter }}</td>
+                <td><a href="#" data-pelicula="{{ pelicula.id }}" class="pelicula-id" >{{ pelicula.nombre }}</a></td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+    </div>
+
+    <div class="col-md-4">
+    <table class="table table-bordered">
+        <tbody>
+        <tr>
+            <th style="width: 10px">#</th>
+            <th>Pelicula</th>
+        </tr>
+
+        {% for pelicula in peliculas %}
+            <tr>
+               <td>{{ forloop.counter }}</td>
+                <td>{{ pelicula.nombre }}
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+    </div>
+
+    <div class="col-md-4">
+    <table class="table table-bordered">
+        <tbody>
+        <tr>
+            <th style="width: 10px">#</th>
+            <th>Pelicula</th>
+        </tr>
+
+        {% for pelicula in peliculas %}
+            <tr>
+               <td>{{ forloop.counter }}</td>
+                <td>{{ pelicula.nombre }}</td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+    </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+        <form method="POST"> {% csrf_token %}
+            {% bootstrap_form form %}
+        </form>
+            <button class="btn btn-success btn-raised">Comprar boleta</button>
+        </div>
+    </div>
+
+{% endblock contenido_panel %}
+
+{% block js %}
+    <script type="application/javascript">
+
+     $(".pelicula-id").on("click", function(){
+
+         var pelicula_id = $(this).data('pelicula');
+         console.log(pelicula_id);
+
+         $.get('{% url 'boletas:consultar_pelicula' %}', {"csrfmiddlewaretoken":'{{ csrf_token }}','pelicula_id': pelicula_id}, function(data){
+
+            console.log(data.sinopsis);
+
+         });
+
+
+     });
+
+    </script>
+{% endblock js %}
+

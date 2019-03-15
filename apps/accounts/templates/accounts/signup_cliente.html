@@ -71,12 +71,9 @@
       {% endif %}
 
       <form method="post" id="formulario" onsubmit="return validacion()"> {% csrf_token %}
-        {% bootstrap_form form layout='inline'%}
-        {% bootstrap_form user_form layout='inline'%}
-
-
-        <div class="g-recaptcha" data-sitekey="6LetuIkUAAAAAImaRg4v8bqLpKw-o1cCdLVNZoYs"></div>
-        <button type="submit" class="btn btn-primary btn-raised btn-block btn-flat">Registrarse</button>
+        {% bootstrap_form form %}
+          <div class="g-recaptcha" data-sitekey="6LetuIkUAAAAAImaRg4v8bqLpKw-o1cCdLVNZoYs"></div>
+        <button type="submit" class="btn btn-success btn-raised btn-block btn-flat">Registrarse</button>
       </form>
     </div>
   </div>

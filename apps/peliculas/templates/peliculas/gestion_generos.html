@@ -27,7 +27,7 @@
                 <form method="POST" id="formulario" onsubmit="return validacion_genero()"> {% csrf_token %}
                     {%   bootstrap_form form %}
                     <div class="g-recaptcha" data-sitekey="6LetuIkUAAAAAImaRg4v8bqLpKw-o1cCdLVNZoYs"></div>
-                    <button type="submit" class="btn btn-success">Registrar</button>
+                    <button type="submit" class="btn btn-success btn-raised">Registrar</button>
                 </form>
             </div>
         </div>
@@ -40,7 +40,7 @@
                 <h3 class="box-title">Listado de géneros</h3>
             </div>
             <div class="box-body">
-                <table id="tabla_generos" class="table table-striped table-bordered">
+                <table id="tabla_generos" class="table table-striped table-bordered table-responsive">
                     <thead>
                     <tr>
                         <th>Nombre</th>
@@ -71,10 +71,7 @@
 <script src="{% static 'bower_components/datatables.net-bs/responsive/dataTables.responsive.min.js' %}"></script>
 <script>
     $(function () {
-        $('#tabla_generos').DataTable({
-                responsive: true
-            }
-        )
+        $('#tabla_generos').DataTable()
     })
 </script>
 

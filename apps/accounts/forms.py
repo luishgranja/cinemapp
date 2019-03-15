@@ -15,8 +15,10 @@ class SignUpForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super(SignUpForm, self).__init__(*args, **kwargs)
 
-        for fieldname in ['username', 'password1', 'password2']:
+        for fieldname in ['first_name', 'last_name', 'cedula', 'username', 'email', 'password1', 'password2',
+                  'telefono']:
             self.fields[fieldname].help_text = None
+            self.fields[fieldname].widget.attrs['placeholder'] = ''
 
     def clean(self):
         nombre = self.cleaned_data['first_name']
@@ -57,17 +59,7 @@ class SignUpForm(UserCreationForm):
 class FormCliente(forms.ModelForm):
     class Meta:
         model = Cliente
-        fields = ('tarjeta',)
-
-    def clean(self):
-        tarjeta = self.cleaned_data['tarjeta']
-
-        regex = re.compile('^[0-9]{16}$')
-
-        if not regex.match(tarjeta):
-            self.add_error('tarjeta', 'Número de Tarjeta inválido')
-
-        return self.cleaned_data
+        exclude = ('user', 'saldo')
 
 
 class FormEmpleado(forms.ModelForm):

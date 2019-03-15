@@ -16,13 +16,12 @@ class CrearPeliculaForm(forms.ModelForm):
             'is_active': 'Activo',
             'is_estreno': '¿La película esta en estreno?'
         }
-        # help_texts = {
-         #   'reparto': 'Por favor escribir los nombres de los actores separados por una coma (,) \n Ej: Emilia Clarke, '
-          #             'Peter Dinklage, Sophie Turner, ...',
-           # 'imagen': 'Por favor seleccione una imagen.',
-            #'sinopsis': 'Escriba un resumen muy breve y general de la pelicula.',
-            #'is_estreno': 'Seleccione la opción si la pelicula se encuentra en estreno.'
-        #}
+
+    def __init__(self, *args, **kwargs):
+        super(CrearPeliculaForm, self).__init__(*args, **kwargs)
+
+        for fieldname in ['nombre', 'nombre_director', 'sinopsis', 'reparto']:
+            self.fields[fieldname].widget.attrs['placeholder'] = ''
 
     def clean(self):
         nombre = self.cleaned_data['nombre']
@@ -52,7 +51,6 @@ class CrearPeliculaForm(forms.ModelForm):
             self.add_error('genero', 'Género no registrado')
 
         return self.cleaned_data
-
 
 
 class CrearGeneroForm(forms.ModelForm):

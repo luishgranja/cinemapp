@@ -14,6 +14,13 @@ class CreateSurcursalForm(forms.ModelForm):
 
         }
 
+    def __init__(self, *args, **kwargs):
+        super(CreateSurcursalForm, self).__init__(*args, **kwargs)
+
+        for fieldname in ['nombre', 'telefono', 'direccion', 'is_active']:
+            self.fields[fieldname].help_text = None
+            self.fields[fieldname].widget.attrs['placeholder'] = ''
+
     def clean(self):
         nombre = self.cleaned_data['nombre']
         direccion = self.cleaned_data['direccion']
