@@ -4,13 +4,14 @@ from apps.peliculas.models import *
 from django.http.response import JsonResponse
 
 
-def comprar_boleta(request):
+def vender_boleta(request):
     usuario = request.user
     peliculas = Pelicula.get_pelicula_estreno(True)
 
     if request.method == 'GET':
         form = CrearBoletaForm()
-        return render(request, 'boletas/comprar_boleta.html', {'form': form, 'peliculas': peliculas})
+        return render(request, 'boletas/vender_boleta.html', {'form': form, 'peliculas': peliculas,
+                                                              'form_saldo': SaldoForm()})
 
 
 def consultar_pelicula(request):

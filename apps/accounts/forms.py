@@ -165,4 +165,4 @@ class CargarSaldoForm(forms.Form):
     cliente = forms.CharField(label='Cedula del cliente')
     saldo_actual = forms.CharField(label='Saldo actual', widget=forms.TextInput(attrs={'disabled': True}))
     nombre_cliente = forms.CharField(label='Nombre del cliente', widget=forms.TextInput(attrs={'disabled': True}))
-    saldo = forms.IntegerField(label='Saldo a cargar',widget=forms.NumberInput(attrs={'step': 1000}))
+    saldo = forms.IntegerField(label='Saldo a cargar', widget=forms.NumberInput(attrs={'step': 1000}))

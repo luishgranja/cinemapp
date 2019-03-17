@@ -307,7 +307,7 @@ def consultar_cliente(request):
             saldo = cliente.cliente.saldo
             return JsonResponse({'saldo_cliente': saldo, 'nombre': nombre})
         except (User.cliente.RelatedObjectDoesNotExist, User.DoesNotExist):
-            return JsonResponse({'saldo_cliente': '--------', 'nombre': 'No existe un cliente con la cédula ingresada'})
+            return JsonResponse({'saldo_cliente': '--------', 'nombre': ''})
 
 
 def cargar_saldo(request):
