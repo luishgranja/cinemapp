@@ -22,13 +22,22 @@ class Sala(models.Model):
 	def get_sala(id):
 		return Sala.objects.get(id=id)
 
-
 class Silla(models.Model):
+	PREFERENCIAL ="PREFERENCIAL"
+	GENERAL ="GENERAL"
+	DISCAPACITADO ="DISCAPACITADO"
+	SIN_MARCAR="SIN_MARCAR"
+	TIPOS =(
+		(PREFERENCIAL,"Preferencial"),
+		(GENERAL, "General"),
+		(DISCAPACITADO,"Discapacitado"),
+		(SIN_MARCAR,"Sin marcar"),
+	)
 	nombre = models.CharField(max_length=255)
+	tipo= models.CharField(max_length=200,choices=TIPOS,default=SIN_MARCAR)
 	sala = models.ForeignKey('salas.Sala',on_delete=models.CASCADE,related_name='sillas')
 	ubicacion_x= models.IntegerField()
 	ubicacion_y= models.IntegerField()
-
 	@staticmethod
 	def get_sillas():
 		try:

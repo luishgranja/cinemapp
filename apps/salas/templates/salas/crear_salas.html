@@ -20,7 +20,6 @@
             height: : 100% !important;
         }
 
-
 .rectangulo {
 background-color: black;
   width: 250px;
@@ -50,19 +49,34 @@ display: inline-block;
 -webkit-appearance: none;
 -moz-appearance: none;
 margin:0;
-background: rgb(223, 214, 223);
 width: 13px;
 height: 13px;
 
 }
 input[type='checkbox']:checked {
 text-align: center;
-background: rgb(159,218,64);
 }
 input[type=checkbox]:hover {
   filter: brightness(10%);
 
 }
+
+.SIN_MARCAR{
+  background: rgb(223, 214, 223);
+}
+
+.PREFERENCIAL {
+  background: rgb(159,218,64);
+}
+
+.GENERAL {
+  background: rgb(255,0,0);
+}
+
+.DISCAPACITADO {
+  background: rgb(9,0,245);
+}
+
 
     </style>
 {% endblock css %}
@@ -103,18 +117,17 @@ input[type=checkbox]:hover {
                    
 
                         <div>
-                          <input type="radio" id="p" name="drone" value="Preferencial"
-                                 onclick="myFunction()">
+                          <input type="radio" id="p" name="drone" value="Preferencial">
                           <label for="p">Preferencial</label>
                         </div>
 
                         <div>
-                          <input type="radio" id="g" name="drone" value="General" onclick="myFunction()">
+                          <input type="radio" id="g" name="drone" value="General">
                           <label for="g">General</label>
                         </div>
 
                         <div>
-                          <input type="radio" id="d" name="drone" value="Discapacitados" onclick="myFunction()">
+                          <input type="radio" id="d" name="drone" value="Discapacitados" >
                           <label for="d">Discapacitado</label>
                         </div>
                         {% for i in itemlist %}
@@ -124,7 +137,7 @@ input[type=checkbox]:hover {
 
                                     <div >
 
-                                        <input type="checkbox" name="silla" value="{{ i|mul:30|add:j|add:1 }}">  
+                                        <input class="SIN_MARCAR" onclick="myFunction(this)" type="checkbox" name="silla" value='{"i":{{i}},"j":{{j}},"color": "SIN_MARCAR"}'>  
                                     </div>
 
                                     {% endfor %}
@@ -210,22 +223,31 @@ input[type=checkbox]:hover {
             )
         })
     </script>
-     <script>
-        function myFunction() {
-              var preferencial = document.getElementById("p");
-             var general = document.getElementById("g");
-              var Discapacitado = document.getElementById("d");
+    <script>
+        function myFunction(elemento_clickeado) {
+            var preferencial = document.getElementById("p");
+            var general = document.getElementById("g");
+            var Discapacitado = document.getElementById("d");
+            obj = JSON.parse(elemento_clickeado.value);
 
-              var text = document.getElementById("text");
-              if (preferencial.checked == true){
-             $("input[type='checkbox']:checked").css({"background":"rgb(9,0,64)"});
+            if (preferencial.checked == true){
+              elemento_clickeado.className = "PREFERENCIAL";
+              obj["color"]="PREFERENCIAL";
+              elemento_clickeado.value=JSON.stringify(obj);
 
-              } else if(general.checked == true) {
-             $("input[type='checkbox']:checked").css({"background":"rgb(255,0,0)"});
-              } else {
-                    $("input[type='checkbox']:checked").css({"background":"rgb(9,0,245)"});
+            } else if(general.checked == true) {
+              elemento_clickeado.className = "GENERAL";
+              obj["color"]="GENERAL";
+              elemento_clickeado.value=JSON.stringify(obj);
 
-              }
-}
-            </script>
+
+            } else {
+              elemento_clickeado.className = "DISCAPACITADO";
+              obj["color"]="DISCAPACITADO";
+              elemento_clickeado.value=JSON.stringify(obj);
+
+
+            }
+        }
+    </script>
 {% endblock js %}
