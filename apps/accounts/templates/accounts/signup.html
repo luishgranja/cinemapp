@@ -76,7 +76,7 @@
                 </div>
 
                 <div class="g-recaptcha" data-sitekey="6LetuIkUAAAAAImaRg4v8bqLpKw-o1cCdLVNZoYs"></div>
-                <button type="submit" class="btn btn-success" id="registrar">Registrar</button>
+                <button type="submit" class="btn btn-success btn-raised" id="registrar">Registrar</button>
             </form>
         </div>
     </div>
@@ -151,7 +151,11 @@
 {{ form_empleado.media.js }}
 <script>
     $(function () {
-        $('#tabla_empleados').DataTable()
+        $('#tabla_empleados').DataTable({
+            "language": {
+                        "url": "{% static 'bower_components/datatables.net/spanish.json' %}"
+                    }
+        })
     })
 </script>
 

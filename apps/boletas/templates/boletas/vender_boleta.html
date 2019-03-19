@@ -3,150 +3,198 @@
 {% load bootstrap3 %}
 
 {% block miga_pan %}
-<li><a href="{% url 'accounts:home' %}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
-<li class="active">VENDER BOLETA</li>
+    <li><a href="{% url 'accounts:home' %}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
+    <li class="active">VENDER BOLETA</li>
 {% endblock miga_pan %}
 
 
 {% block titulo %}Vender Boleta{% endblock titulo %}
 
+{% block css %}
+    <link rel="stylesheet" href="{% static 'bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
+    <link href="{% static 'bower_components/datatables.net-bs/responsive/responsive.dataTables.min.css' %}"
+          rel="stylesheet">
+{% endblock css %}
+
 {% block contenido %}
-<div class="box">
-    <div class="box-header with-border">
-        <h3 class="box-title">Datos de la Función</h3>
+    <div class="box">
+        <div class="box-header with-border">
+            <h3 class="box-title">Datos de la Función</h3>
+        </div>
+        <div style="height: 300px;" class="box-body">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4">
+                        <table class="table table-bordered table-responsive" id="tabla_peliculas">
+
+                            <thead>
+                            <tr>
+                                <th>Seleccione Pelicula:</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for pelicula in peliculas %}
+                                <tr>
+                                    <td><a href="#" data-pelicula="{{ pelicula.id }}"
+                                           class="pelicula-id">{{ pelicula.nombre }}</a></td>
+                                </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="col-md-4">
+                        <table class="table table-bordered table-responsive" id="tabla_funciones">
+
+                            <thead>
+                            <tr>
+                                <th>Seleccione Función:</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            {% for pelicula in peliculas %}
+                                <tr>
+                                    <td>{{ pelicula.nombre }}
+                                </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="col-md-4">
+                        <table class="table table-bordered">
+                            <tbody>
+                            <tr>
+
+                                <th>Seleccione Sillas:</th>
+                            </tr>
+
+                            {% for pelicula in peliculas %}
+                                <tr>
+                                    <td>{{ pelicula.nombre }}</td>
+                                </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <h3 align="right"><b>Total: $26000 </b></h3>
+        </div>
+
     </div>
-    <div style="height: 300px;" class="box-body">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <table class="table table-bordered">
-                        <tbody>
-                        <tr>
-                            <th>Seleccione Pelicula:</th>
-                        </tr>
-
-                        {% for pelicula in peliculas %}
-                        <tr>
-                            <td><a href="#" data-pelicula="{{ pelicula.id }}" class="pelicula-id" >{{ pelicula.nombre }}</a></td>
-                        </tr>
-                        {% endfor %}
-
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="col-md-4">
-                    <table class="table table-bordered">
-                        <tbody>
-                        <tr>
-                            <th>Seleccione Función:</th>
-                        </tr>
-
-                        {% for pelicula in peliculas %}
-                        <tr>
-                            <td>{{ pelicula.nombre }}
-                        </tr>
-                        {% endfor %}
-
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="col-md-4">
-                    <table class="table table-bordered">
-                        <tbody>
-                        <tr>
-
-                            <th>Seleccione Sillas:</th>
-                        </tr>
-
-                        {% for pelicula in peliculas %}
-                        <tr>
-                            <td>{{ pelicula.nombre }}</td>
-                        </tr>
-                        {% endfor %}
-
-                        </tbody>
-                    </table>
+    <div class="box">
+        <div class="box-header with-border">
+            <h3 class="box-title">Datos del Comprador</h3>
+        </div>
+        <div style="height: 200px;" class="box-body">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <form method="POST"> {% csrf_token %}
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    {% bootstrap_field form.cedula %}
+                                </div>
+                                <div class="col-sm-3">
+                                    {% bootstrap_field form.nombre_cliente %}
+                                </div>
+                                <div class="col-sm-2 col-sm-offset-1">
+                                    {% bootstrap_field form.medio_pago %}
+                                </div>
+                                <div class="col-sm-2">
+                                    {% bootstrap_field form_saldo.saldo_actual %}
+                                </div>
+                            </div>
+                        </form>
+                        <button style="margin-left:39%" class="btn btn-success btn-raised">Vender boleta</button>
+                    </div>
                 </div>
             </div>
         </div>
-        <h3 align="right"><b>Total: $26000 </b></h3>
     </div>
 
-</div>
-<div class="box">
-    <div class="box-header with-border">
-        <h3 class="box-title">Datos del Comprador</h3>
-    </div>
-    <div style="height: 200px;" class="box-body">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <form method="POST"> {% csrf_token %}
-                        <div class="row">
-                            <div class="col-sm-2">
-                                {% bootstrap_field form.cedula%}
-                            </div>
-                            <div class="col-sm-3">
-                                {% bootstrap_field form.nombre_cliente%}
-                            </div>
-                            <div class="col-sm-2 col-sm-offset-1">
-                                {% bootstrap_field form.medio_pago%}
-                            </div>
-                            <div class="col-sm-2">
-                                {% bootstrap_field form_saldo.saldo_actual%}
-                            </div>
-                        </div>
-                    </form>
-                    <button style="margin-left:39%" class="btn btn-success btn-raised">Vender boleta</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-{% endblock contenido%}
+{% endblock contenido %}
 
 {% block js %}
+<script src="{% static 'bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+<script src="{% static 'bower_components/datatables.net-bs/responsive/dataTables.responsive.min.js' %}"></script>
+<script>
+        $(function () {
+            $('#tabla_peliculas').DataTable({
+                "pageLength": 5,
+                "lengthChange": false,
+                "searching": false,
+                "info": false,
+                "pagingType": "simple",
+                "language": {
+                        "url": "{% static 'bower_components/datatables.net/spanish.json' %}"
+                    }
+            })
+        })
+
+        $(function () {
+            $('#tabla_funciones').DataTable({
+                "pageLength": 5,
+                "lengthChange": false,
+                "searching": false,
+                "info": false,
+                "pagingType": "simple",
+                "language": {
+                        "url": "{% static 'bower_components/datatables.net/spanish.json' %}"
+                    }
+            })
+        })
+</script>
 <script type="application/javascript">
 
-    $(".pelicula-id").on("click", function(){
+        $(".pelicula-id").on("click", function () {
 
-        var pelicula_id = $(this).data('pelicula');
-        console.log(pelicula_id);
+            var pelicula_id = $(this).data('pelicula');
+            console.log(pelicula_id);
 
-        $.get('{% url 'boletas:consultar_pelicula' %}', {"csrfmiddlewaretoken":'{{ csrf_token }}','pelicula_id': pelicula_id}, function(data){
+            $.get('{% url 'boletas:consultar_pelicula' %}', {
+                "csrfmiddlewaretoken": '{{ csrf_token }}',
+                'pelicula_id': pelicula_id
+            }, function (data) {
 
-            console.log(data.sinopsis);
+                console.log(data.sinopsis);
+
+            });
+
 
         });
 
+        $('#id_medio_pago').change(function () {
 
-    });
+            var selector = document.getElementById('id_medio_pago');
+            var medio_pago = selector[selector.selectedIndex].value;
 
-    $('#id_medio_pago').change(function(){
+            var cedula = document.getElementById('id_cedula').value;
+            var saldo_actual = document.getElementById('id_saldo_actual');
+            var nombre_cliente = document.getElementById('id_nombre_cliente');
+            console.log(medio_pago)
+            if (medio_pago == 'saldo') {
+                $.get('{% url 'accounts:consultar_cliente' %}', {
+                    "csrfmiddlewaretoken": '{{ csrf_token }}',
+                    'cedula': cedula
+                }, function (data) {
 
-        var selector = document.getElementById('id_medio_pago');
-        var medio_pago = selector[selector.selectedIndex].value;
+                    nombre_cliente.value = data.nombre;
+                    saldo_actual.value = data.saldo_cliente;
 
-        var cedula = document.getElementById('id_cedula').value;
-        var saldo_actual = document.getElementById('id_saldo_actual');
-        var nombre_cliente = document.getElementById('id_nombre_cliente');
-        console.log(medio_pago)
-        if(medio_pago == 'saldo'){
-            $.get('{% url 'accounts:consultar_cliente' %}', {"csrfmiddlewaretoken":'{{ csrf_token }}','cedula': cedula}, function(data){
+                });
+            }
+            else if (medio_pago == 'efectivo') {
+                saldo_actual.value = 'No disponible';
+            }
 
-                nombre_cliente.value = data.nombre;
-                saldo_actual.value = data.saldo_cliente;
-
-            });
-        }
-        else if (medio_pago == 'efectivo'){
-            saldo_actual.value = 'No disponible';
-        }
-
-    });
+        });
 
 </script>
 {% endblock js %}
