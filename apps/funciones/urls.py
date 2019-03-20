@@ -7,5 +7,6 @@ app_name = 'funciones'
 urlpatterns = [
 
     path('gestion-funciones', crear_funcion, name='crear'),
+    path('editar/<int:id_funcion>', editar_funcion, name='editar_funcion'),
     
 ]

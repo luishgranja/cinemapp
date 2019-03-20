@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+
+{% block miga_pan %}
+    <li><a href="{% url 'accounts:home'%}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
+    <li><a href="{% url 'sucursales:crear'%}"><i class="fa fa-building-o"></i> GESTIONAR SUCURSALES</a></li>
+    <li class="active">EDITAR SUCURSAL</li>
+{% endblock miga_pan %}
+
+{% block titulo %}Editar sucursal{% endblock titulo %}
+
+{% block css %}
+    {{ form.media.css }}
+    <style media="screen">
+        .select2-container {
+            width: 100% !important;
+        }
+    </style>
+{% endblock css %}
+
+
+{% block contenido %}
+
+    <div class="col-md-6 col-md-offset-3">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title">Editar sucursal</h3>
+            </div>
+            <div class="box-body">
+                <form method="POST"> {% csrf_token %}
+                    {% bootstrap_form form %}
+                    <div class="g-recaptcha" data-sitekey="6LetuIkUAAAAAImaRg4v8bqLpKw-o1cCdLVNZoYs"></div>
+                    <button type="submit" class="btn btn-success btn-raised">Modificar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock contenido %}
+
+{% block js %}
+
+<script src="{% static 'plugins/toastr/toastr.min.js' %}"></script>
+    {{ form.media.js }}
+
+        <script src="{% static 'dist/js/validacion_pelicula.js' %}"></script>
+    <script src="{% static 'bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'bower_components/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>
+    <script src="{% static 'bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'bower_components/datatables.net-bs/responsive/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'plugins/timepicker/bootstrap-timepicker.min.js' %}"></script>
+    <script src="{% static 'bower_components/bootstrap-datepicker/dist/locales/bootstrap-datepicker.es.min.js' %}"></script>
+   <link rel="stylesheet" href="{% static 'bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/timepicker/bootstrap-timepicker.min.css' %}">
+    {{ form.media.js }}
+    <script type="application/javascript">
+        $(function () {
+            $('#tabla_peliculas').DataTable({
+                    responsive: true
+                }
+            )
+        });
+
+
+        $(function () {
+            $('#id_fecha_funcion').datepicker({
+                autoclose: true,
+                format: 'dd/mm/yyyy',
+                language: 'es',
+                orientation: 'bottom',
+                startDate: '+0d'
+            });
+        });
+
+
+    </script>
+{% endblock js %}
