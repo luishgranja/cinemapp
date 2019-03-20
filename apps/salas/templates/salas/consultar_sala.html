@@ -6,8 +6,9 @@
 {% load mathfilters %}
 
 {% block miga_pan %}
-
-    <li><a href="{% url 'accounts:home'%}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
+    <li><a href="{% url 'accounts:home' %}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
+    <li><a href="{% url 'salas:crear' %}"><i class="fa fa-building"></i> SALAS</a></li>
+    <li class="active">CONSULTAR SALA</li>
 {% endblock miga_pan %}
 
 {% block titulo %}Ver Sala {{ sala.num_sala }}{% endblock titulo %}
@@ -83,6 +84,23 @@ input[type=radio]:hover {
 
 }
 
+input[type='radio'] {
+            content: '';
+            display: inline-block;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            margin-left: 5px;
+            width: 16px;
+            height: 16px;
+        }
+        input[type='radio']:checked {
+            text-align: center;
+        }
+        input[type=radio]:hover {
+            filter: brightness(10%);
+
+        }
+
 .SIN_MARCAR{
   background: rgb(223, 214, 223);
 }
@@ -106,22 +124,27 @@ input[type=radio]:hover {
 {% block contenido %}
 
     <div class="col-md-12">
-        <div class="box box-primary">
+        <div class="box">
+                <div class="box-header with-border">
+            <h3 class="box-title"><b>{{ sala.tipo_sala }}</b> | No. <b>{{ sala.num_sala }}</b></h3>
+        </div>
             <div class="box-body">
-                <div class="row">
-
-
-                    <div class="col-md-12">
-                            <p><b>Tipo de sala: </b>{{ sala.tipo_sala }}</p>
-                            <p><b>Numero de sala: </b>{{ sala.num_sala }}</p>
-                            <p><b>Sucursal: </b>{{ sala.sucursal}}</p>
-                        </div>
-                </div>
-
                     <div class="rectangulo">
                        <center>
                             <font color="white" size="5">Pantalla</font>
                         </center> 
+                    </div>
+            <div style='text-align:center'>
+                        <input type="radio" class="PREFERENCIAL" id="p" name="drone" value="Preferencial">
+                        <label for="p">Preferencial</label>
+
+                        <input type="radio"  class="GENERAL" id="g" name="drone" value="General">
+                        <label for="g">General </label>
+
+                        <input type="radio"  class="DISCAPACITADO" id="d" name="drone" value="Discapacitados" >
+                        <label for="d">Discapacitado </label>
+                        <input type="radio"  class="SIN_MARCAR" id="s" name="drone" value="Sin_marcar" >
+                        <label for="s">Sin marcar</label>
                     </div>
                       {% for i in itemlist %}
                         

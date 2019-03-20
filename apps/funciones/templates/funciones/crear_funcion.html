@@ -77,7 +77,7 @@
                 {% for funcion in funciones %}
                 <tr>
                     <td>{{ funcion.pelicula }}</td>
-                    <td>{{ funcion.fecha_funcion }}</td>
+                    <td>{{ funcion.fecha_funcion|date:"l d M Y" }}</td>
                     <td>{{ funcion.hora_funcion}}</td>
                     <td>{{ funcion.sala }}</td>
                     <td><a href="{% url 'funciones:editar_funcion' funcion.id %}">Editar Función</a></td>

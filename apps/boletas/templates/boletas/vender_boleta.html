@@ -14,6 +14,86 @@
     <link rel="stylesheet" href="{% static 'bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
     <link href="{% static 'bower_components/datatables.net-bs/responsive/responsive.dataTables.min.css' %}"
           rel="stylesheet">
+
+        <style media="screen">
+        .select2-container {
+            width: 100% !important;
+            height: : 100% !important;
+        }
+
+        .rectangulo {
+            background-color: black;
+            width: 250px;
+            margin: 10px;
+            margin-left: auto;
+            margin-right: auto;
+
+        }
+
+        .flex-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .flex-container > div {
+            background-color: white;
+            color: white;
+            width: 18px;
+            margin: 0px;
+            text-align: center;
+            line-height: 13px;
+        }
+
+        input[type='checkbox'] {
+            content: '';
+            display: inline-block;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            margin:0;
+            width: 16px;
+            height: 16px;
+
+        }
+        input[type='checkbox']:checked {
+            text-align: center;
+        }
+        input[type=checkbox]:hover {
+            filter: brightness(10%);
+
+        }
+        input[type='radio'] {
+            content: '';
+            display: inline-block;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            margin-left: 5px;
+            width: 16px;
+            height: 16px;
+        }
+        input[type='radio']:checked {
+            text-align: center;
+        }
+        input[type=radio]:hover {
+            filter: brightness(10%);
+
+        }
+
+        .SIN_MARCAR{
+            background: rgb(223, 214, 223);
+        }
+
+        .PREFERENCIAL {
+            background: rgb(255, 91, 185 );
+        }
+
+        .GENERAL {
+            background: rgb(24, 215, 79);
+        }
+
+        .DISCAPACITADO {
+            background: rgb(0, 185, 240);
+        }
+        </style>
 {% endblock css %}
 
 {% block contenido %}
@@ -21,7 +101,7 @@
         <div class="box-header with-border">
             <h3 class="box-title">Datos de la Función</h3>
         </div>
-        <div style="height: 300px;" class="box-body">
+        <div style="height: 50%;" class="box-body">
             <div class="container">
                 <div class="row">
                     <div class="col-md-4">
@@ -65,21 +145,50 @@
                     </div>
 
                     <div class="col-md-4">
-                        <table class="table table-bordered">
-                            <tbody>
-                            <tr>
+                       <div class="rectangulo">
+                       <center>
+                            <font color="white" size="5">Pantalla</font>
+                        </center>
+                    </div>
+            <div style='text-align:center'>
+                        <input type="radio" class="PREFERENCIAL" id="p" name="drone" value="Preferencial">
+                        <label for="p">Preferencial</label>
 
-                                <th>Seleccione Sillas:</th>
-                            </tr>
+                        <input type="radio"  class="GENERAL" id="g" name="drone" value="General">
+                        <label for="g">General </label>
 
-                            {% for pelicula in peliculas %}
-                                <tr>
-                                    <td>{{ pelicula.nombre }}</td>
-                                </tr>
-                            {% endfor %}
+                        <input type="radio"  class="DISCAPACITADO" id="d" name="drone" value="Discapacitados" >
+                        <label for="d">Discapacitado </label>
+                        <input type="radio"  class="SIN_MARCAR" id="s" name="drone" value="Sin_marcar" >
+                        <label for="s">Sin marcar</label>
+                    </div>
+                      {% for i in itemlist %}
 
-                            </tbody>
-                        </table>
+                                <div class="flex-container">
+                                  {% for j in itemlist %}
+                                    <div>
+                                    {% with i|mul:26|add:j|add:1 as pos %}
+                                      {% with lista_sillas|list_index:pos as silla %}
+                                          {% if silla %}
+                                            <input id="{i}}-{{j}}"  class="{{silla.tipo}}" onclick="myFunction(this)" type="checkbox" hola="{{silla.nombre}}" name="silla" checked value='{"i":{{i}},"j":{{j}},"color": "{{silla.tipo}}"}' disabled="">
+                                          {% else %}
+                                            <input id="{{i}}-{{j}}" class="SIN_MARCAR" onclick="myFunction(this)" type="checkbox"  name="silla"  value='{"i":{{i}},"j":{{j}},"color": "SIN_MARCAR"}' disabled="">
+
+                                          {% endif %}
+                                      {% endwith %}
+                                    {% endwith %}
+
+                                    </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                        {% endfor %}
+
+                        </div>
+
+                    {% endfor %}
                     </div>
                 </div>
             </div>
@@ -127,7 +236,7 @@
 <script>
         $(function () {
             $('#tabla_peliculas').DataTable({
-                "pageLength": 5,
+                "pageLength": 10,
                 "lengthChange": false,
                 "searching": false,
                 "info": false,
@@ -140,7 +249,7 @@
 
         $(function () {
             $('#tabla_funciones').DataTable({
-                "pageLength": 5,
+                "pageLength": 10,
                 "lengthChange": false,
                 "searching": false,
                 "info": false,

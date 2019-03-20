@@ -11,3 +11,8 @@ class CrearSalaForm(forms.ModelForm):
             'is_active': 'Activo',
         }
 
+    def __init__(self, *args, **kwargs):
+        super(CrearSalaForm, self).__init__(*args, **kwargs)
+
+        for fieldname in ['num_sala', 'tipo_sala']:
+            self.fields[fieldname].widget.attrs['placeholder'] = ''

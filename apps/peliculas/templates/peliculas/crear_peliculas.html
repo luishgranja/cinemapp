@@ -140,7 +140,15 @@
 {{ form.media.js }}
 <script>
     $(function () {
-        $('#tabla_peliculas').DataTable()
+        $('#tabla_peliculas').DataTable({
+            "pageLength": 5,
+                "lengthChange": false,
+                "searching": false,
+                "info": false,
+                "pagingType": "simple",
+                "language": {
+                        "url": "{% static 'bower_components/datatables.net/spanish.json' %}"
+                    }})
     })
 </script>
 
