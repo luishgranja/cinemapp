@@ -252,15 +252,19 @@ input[type=radio]:hover {
             }
             if(click==true){
 
-              if(i_termina<i_empieza){
-                aux_i=i_empieza;
-                aux_j=j_empieza;
-                i_empieza=i_termina;
-                i_termina=aux_i;
-                j_empieza=j_termina;
-                j_termina=aux_j;
+              var aux_ie= Math.min(i_empieza,i_termina);
+              var aux_it= Math.max(i_empieza,i_termina);
+              var aux_je= Math.min(j_empieza,j_termina);
+              var aux_jt= Math.max(j_empieza,j_termina);
 
-              }
+              va_q=i_termina;
+              va_s=j_termina;
+
+              i_empieza=aux_ie;
+              j_empieza= aux_je;
+              i_termina=aux_it;
+              j_termina=aux_jt;
+           
 
               for(var i=i_empieza;i<=i_termina;i++){
                 for(var j=j_empieza;j<=j_termina;j++){
