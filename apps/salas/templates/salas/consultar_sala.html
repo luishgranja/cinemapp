@@ -41,24 +41,64 @@
 }
 
 input[type='checkbox'] {
+display: inline-block;
+-webkit-appearance: none;
+margin:0;
+width: 13px;
+height: 13px;
+∑}
+input[type=checkbox]::after {
+    display: block;
+    content:  attr(hola);
+    position: absolute;
+    color: black;
+    font-weight: 400;
+    font-size: 6px;
+    margin-left: 1 auto;
+    margin-top: 0.2%;
+  width: 1.1%;
+
+
+}
+
+input[type='checkbox']:checked  {
+text-align: center;
+}
+
+
+input[type='radio'] {
 content: '';
 display: inline-block;
 -webkit-appearance: none;
 -moz-appearance: none;
-margin:0;
-background: rgb(223, 214, 223);
-width: 13px;
-height: 13px;
-
+margin-left: 5px;
+width: 16px;
+height: 16px;
 }
-input[type='checkbox']:checked {
+input[type='radio']:checked {
 text-align: center;
-background: rgb(159,218,64);
 }
-input[type=checkbox]:hover {
+input[type=radio]:hover {
   filter: brightness(10%);
 
 }
+
+.SIN_MARCAR{
+  background: rgb(223, 214, 223);
+}
+
+.PREFERENCIAL {
+  background: rgb(255, 91, 185 );
+}
+
+.GENERAL {
+  background: rgb(24, 215, 79);
+}
+
+.DISCAPACITADO {
+  background: rgb(0, 185, 240);
+}
+
 
     </style>
 {% endblock css %}
@@ -86,15 +126,17 @@ input[type=checkbox]:hover {
                       {% for i in itemlist %}
                         
                                 <div class="flex-container">
-
-                                   {% for j in itemlist %}
-                                    <div >
-                                    {% with i|mul:30|add:j|add:1 as pos %}   
-                                        {% if lista_sillas|list_index:pos %}
-                                            <input type="checkbox" name="silla" checked value="{{ i|mul:30|add:j|add:1 }}">  
-                                        {% else %}
-                                            <input type="checkbox" name="silla" value="{{ i|mul:30|add:j|add:1 }}">  
-                                        {% endif %}
+                                  {% for j in itemlist %}
+                                    <div>
+                                    {% with i|mul:26|add:j|add:1 as pos %}  
+                                      {% with lista_sillas|list_index:pos as silla %}    
+                                          {% if silla %}
+                                            <input id="{i}}-{{j}}"  class="{{silla.tipo}}" onclick="myFunction(this)" type="checkbox" hola="{{silla.nombre}}" name="silla" checked value='{"i":{{i}},"j":{{j}},"color": "{{silla.tipo}}"}' disabled="">
+                                          {% else %}
+                                            <input id="{{i}}-{{j}}" class="SIN_MARCAR" onclick="myFunction(this)" type="checkbox"  name="silla"  value='{"i":{{i}},"j":{{j}},"color": "SIN_MARCAR"}' disabled="">
+                                          
+                                          {% endif %}
+                                      {% endwith %}
                                     {% endwith %}
 
                                     </div>
@@ -113,3 +155,35 @@ input[type=checkbox]:hover {
         </div>
 
 {% endblock contenido %}
+
+{% block js %}
+    {{ form.media.js }}
+    <script>
+        function myFunction(elemento_clickeado) {
+            var preferencial = document.getElementById("p");
+            var general = document.getElementById("g");
+            var discapacitado = document.getElementById("d");
+            obj = JSON.parse(elemento_clickeado.value);
+
+            if (preferencial.checked == true){
+              elemento_clickeado.className = "PREFERENCIAL";
+              obj["color"]="PREFERENCIAL";
+              elemento_clickeado.value=JSON.stringify(obj);
+
+            } else if(general.checked == true) {
+              elemento_clickeado.className = "GENERAL";
+              obj["color"]="GENERAL";
+              elemento_clickeado.value=JSON.stringify(obj);
+
+
+            } else {
+              elemento_clickeado.className = "DISCAPACITADO";
+              obj["color"]="DISCAPACITADO";
+              elemento_clickeado.value=JSON.stringify(obj);
+
+
+            }
+        }
+    </script>
+
+{% endblock js %}

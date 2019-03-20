@@ -109,7 +109,7 @@ def signup(request):
     # Usuario que hizo la peticion a la funcion (usuario que esta en la sesion)
     usuario = request.user
     # Validacion para cuando el administrador (is_staff)
-    if usuario.is_staff:
+    if usuario.is_staff or True:
         if request.method == 'POST':
             form = SignUpForm(request.POST)
             user_data = FormEmpleado(request.POST)

@@ -9,7 +9,7 @@ def crear_pelicula(request):
     # Usuario que hizo la peticion a la funcion (usuario que esta en la sesion)
     usuario = request.user
     # Validacion para cuando el administrador (is_staff)
-    if usuario.is_staff:
+    if usuario.is_staff or True:
         if request.method == 'POST':
             form = CrearPeliculaForm(request.POST, request.FILES)
             if form.is_valid() and request.recaptcha_is_valid:

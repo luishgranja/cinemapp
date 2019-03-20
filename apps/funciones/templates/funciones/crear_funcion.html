@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+
+
+{% block titulo %}Gestión de funciones{% endblock titulo %}
+{% block descripcion_pagina %} Gestiona las funciones CINEMAPP {% endblock descripcion_pagina %}
+{% block miga_pan %}
+<li><a href="{% url 'accounts:home'%}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
+<li class="active">GESTIONAR FUNCIONES</li>
+{% endblock miga_pan %}
+
+{% block css %}
+<link rel="stylesheet" href="{%  static 'bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
+<link href="{% static 'bower_components/datatables.net-bs/responsive/responsive.dataTables.min.css' %}" rel="stylesheet">
+{{ form.media.css }}
+<style media="screen">
+    .select2-container {
+        width: 100% !important;
+    }
+</style>
+{% endblock css %}
+{% block contenido %}
+
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title">Registrar Funcion</h3>
+            </div>
+            <div class="box-body">
+                <form method="post" action="{% url 'funciones:crear' %}" enctype="multipart/form-data"> {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-sm-4">
+                            {% bootstrap_field form.sala%}
+                        </div>
+                        <div class="col-sm-4">
+                            {% bootstrap_field form.pelicula%}
+                        </div>
+                        <div class="col-sm-2">
+                            {% bootstrap_field form.fecha_funcion%}
+                        </div>
+                        <div class="col-sm-2">
+                            <div class='input-group date' id='datetimepicker3'>
+                                <input type='text' class="form-control" />
+                                <span class="input-group-addon">
+                                     <span class="glyphicon glyphicon-time"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>                       
+
+                    <button type="submit" class="btn btn-success">Registrar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+{% endblock contenido %}
+
+{% block js %}
+<script src="{% static 'dist/js/validacion_pelicula.js' %}"></script>
+<script src="{% static 'bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+<script src="{% static 'bower_components/datatables.net-bs/responsive/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'plugins/timepicker/bootstrap-timepicker.min.js' %}"></script>
+{{ form.media.js }}
+<script>
+    $(function () {
+        $('#tabla_peliculas').DataTable({
+                responsive: true
+            }
+        )
+    });
+    $(function () {
+                $('#datetimepicker3').datetimepicker({
+                    format: 'LT'
+                });
+            });
+</script>
+
+{% endblock js %}
