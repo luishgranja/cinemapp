@@ -32,6 +32,9 @@ class Pelicula(models.Model):
     slug = models.SlugField(unique=True, default='')
     is_estreno = models.BooleanField(default=True)
 
+    def __str__(self):
+        return self.nombre
+
     def save(self, *args):
         self.slug = slugify(self.nombre)
         super(Pelicula, self).save(*args)

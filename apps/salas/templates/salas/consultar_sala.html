@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+
+{% load list_index %}
+{% load mathfilters %}
+
+{% block miga_pan %}
+
+    <li><a href="{% url 'accounts:home'%}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
+{% endblock miga_pan %}
+
+{% block titulo %}Ver Sala {{ sala.num_sala }}{% endblock titulo %}
+{% block css %}
+    {{ form.media.css }}
+    <style media="screen">
+        .select2-container {
+            width: 100% !important;
+        }
+.rectangulo {
+  background-color: black;
+  width: 250px;
+  margin: 10px;
+  margin-left: auto;
+  margin-right: auto;
+
+}
+
+.flex-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.flex-container > div {
+  background-color: white;
+  color: white;
+  width: 15px;
+  margin: 0px;
+  text-align: center;
+  line-height: 15px;
+}
+
+input[type='checkbox'] {
+display: inline-block;
+-webkit-appearance: none;
+margin:0;
+width: 13px;
+height: 13px;
+∑}
+input[type=checkbox]::after {
+    display: block;
+    content:  attr(hola);
+    position: absolute;
+    color: black;
+    font-weight: 400;
+    font-size: 6px;
+    margin-left: 1 auto;
+    margin-top: 0.2%;
+  width: 1.1%;
+
+
+}
+
+input[type='checkbox']:checked  {
+text-align: center;
+}
+
+
+input[type='radio'] {
+content: '';
+display: inline-block;
+-webkit-appearance: none;
+-moz-appearance: none;
+margin-left: 5px;
+width: 16px;
+height: 16px;
+}
+input[type='radio']:checked {
+text-align: center;
+}
+input[type=radio]:hover {
+  filter: brightness(10%);
+
+}
+
+.SIN_MARCAR{
+  background: rgb(223, 214, 223);
+}
+
+.PREFERENCIAL {
+  background: rgb(255, 91, 185 );
+}
+
+.GENERAL {
+  background: rgb(24, 215, 79);
+}
+
+.DISCAPACITADO {
+  background: rgb(0, 185, 240);
+}
+
+
+    </style>
+{% endblock css %}
+
+{% block contenido %}
+
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-body">
+                <div class="row">
+
+
+                    <div class="col-md-12">
+                            <p><b>Tipo de sala: </b>{{ sala.tipo_sala }}</p>
+                            <p><b>Numero de sala: </b>{{ sala.num_sala }}</p>
+                            <p><b>Sucursal: </b>{{ sala.sucursal}}</p>
+                        </div>
+                </div>
+
+                    <div class="rectangulo">
+                       <center>
+                            <font color="white" size="5">Pantalla</font>
+                        </center> 
+                    </div>
+                      {% for i in itemlist %}
+                        
+                                <div class="flex-container">
+                                  {% for j in itemlist %}
+                                    <div>
+                                    {% with i|mul:26|add:j|add:1 as pos %}  
+                                      {% with lista_sillas|list_index:pos as silla %}    
+                                          {% if silla %}
+                                            <input id="{i}}-{{j}}"  class="{{silla.tipo}}" onclick="myFunction(this)" type="checkbox" hola="{{silla.nombre}}" name="silla" checked value='{"i":{{i}},"j":{{j}},"color": "{{silla.tipo}}"}' disabled="">
+                                          {% else %}
+                                            <input id="{{i}}-{{j}}" class="SIN_MARCAR" onclick="myFunction(this)" type="checkbox"  name="silla"  value='{"i":{{i}},"j":{{j}},"color": "SIN_MARCAR"}' disabled="">
+                                          
+                                          {% endif %}
+                                      {% endwith %}
+                                    {% endwith %}
+
+                                    </div>
+
+                                    {% endfor %}
+
+                                </div>
+                                                        
+                        {% endfor %}
+
+
+                  
+
+                </div>
+            </div>
+        </div>
+
+{% endblock contenido %}
+
+{% block js %}
+    {{ form.media.js }}
+    <script>
+        function myFunction(elemento_clickeado) {
+            var preferencial = document.getElementById("p");
+            var general = document.getElementById("g");
+            var discapacitado = document.getElementById("d");
+            obj = JSON.parse(elemento_clickeado.value);
+
+            if (preferencial.checked == true){
+              elemento_clickeado.className = "PREFERENCIAL";
+              obj["color"]="PREFERENCIAL";
+              elemento_clickeado.value=JSON.stringify(obj);
+
+            } else if(general.checked == true) {
+              elemento_clickeado.className = "GENERAL";
+              obj["color"]="GENERAL";
+              elemento_clickeado.value=JSON.stringify(obj);
+
+
+            } else {
+              elemento_clickeado.className = "DISCAPACITADO";
+              obj["color"]="DISCAPACITADO";
+              elemento_clickeado.value=JSON.stringify(obj);
+
+
+            }
+        }
+    </script>
+
+{% endblock js %}

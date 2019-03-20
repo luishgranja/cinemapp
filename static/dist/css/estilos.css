@@ -12,3 +12,8 @@
   width: 20% !important;
   margin: 10px;
 }
+
+.no-gutter > [class*='col-'] {
+    padding-right:0;
+    padding-left:0;
+}
