@@ -13,22 +13,43 @@ def vender_boleta(request):
 
     if request.method == 'POST':
         lista_sillas = request.POST.get('boletas', None)
-        id_funcion = request.POST.get('funcion_id', None)
+        id_funcion = request.POST.get('funcion', None)
         funcion = Funcion.objects.get(id=id_funcion)
         sillas = eval(lista_sillas)
-        i = sillas[0]['i']
-        j = sillas[0]['j']
+        flag_error = False;
+        for silla in sillas:
+            i = silla['i']
+            j = silla['j']
+            tipo = silla['color']
+            silla_aux = Silla.objects.get(ubicacion_x=i, ubicacion_y=j, sala=funcion.sala)
+            boleta_funcion = Boleta.objects.filter(funcion=funcion, silla=silla_aux)
+            if(boleta_funcion.count() != 0):
+                flag_error = true
 
-        silla = Silla.objects.get(ubicacion_x=i)
-
-        print(silla.id)
+        if flag_error:
+            messages.error(request, 'Hay algunas sillas que no estan disponibles')
 
         form = CrearBoletaForm(request.POST)
-        if form.is_valid():
+        if form.is_valid() and not(flag_error):
+            for silla in sillas:
+                i = silla['i']
+                j = silla['j']
+                tipo = silla['color']
+                silla_aux = Silla.objects.get(ubicacion_x=i, ubicacion_y=j, sala=funcion.sala)
+                boleta_aux = Boleta()
+                boleta_aux.total = 3800 #CORREGIR PRECIO BOLETA ESTOY AQUI NO ME IGNOREN
+                boleta_aux.funcion = funcion
+                boleta_aux.silla = silla_aux
+                boleta_aux.cedula = form.data["cedula"]
+                boleta_aux.cedula_empleado = usuario.cedula
+                boleta_aux.nombre_cliente = form.data["nombre_cliente"]
+                boleta_aux.save()
+
             messages.success(request, 'Boleta registrada exitosamente!')
             return render(request, 'boletas/vender_boleta.html', {'form': form, 'itemlist': list(range(0,26)), 'lista_sillas': 'lista_sillas', 'peliculas': peliculas,
                                                               'form_saldo': SaldoForm()})
         else:
+            boletas_compradas = Boleta.objects.filter(funcion=funcion)
             messages.error(request, 'Por favor corrige los errores')
             return render(request, 'boletas/vender_boleta.html',
                           {'form': form, 'itemlist': list(range(0, 26)), 'lista_sillas': 'lista_sillas',
@@ -104,6 +125,23 @@ def consultar_sala(request):
 
                 html += '</div>'
             return JsonResponse({'html': html})
+
+        except Funcion.DoesNotExist:
+            return JsonResponse({'response': 0})
+
+
+def consultar_boletas_funcion(request):
+    if request.is_ajax():
+        funcion_id = request.GET.get('funcion_id', None)
+        try:
+            funcion = Funcion.objects.get(id=int(funcion_id))
+            boletas_fumcion = Boleta.objects.filter(funcion=funcion)
+            print(boletas_fumcion)
+            boletas_json = []
+            for boleta in boletas_fumcion:
+                boleta_json = {"i": boleta.silla.ubicacion_x, "j": boleta.silla.ubicacion_y}
+                boletas_json.append(boleta_json)
+            return JsonResponse({'boletas_funcion': boletas_json})
 
         except Funcion.DoesNotExist:
             return JsonResponse({'response': 0})

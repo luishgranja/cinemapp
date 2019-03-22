@@ -122,7 +122,9 @@
 		.MARCADO {
 			background: rgb(0, 0, 0);
 		}
-
+		.OCUPADO {
+			background: rgb(255, 0, 0);
+		}
 	</style>
 {% endblock css %}
 
@@ -173,12 +175,6 @@
 							<center>
 								<font color="white" size="5">Pantalla</font>
 							</center>
-						</div>
-						<div style='text-align:center'>
-							<input type="radio" class="" id="m" name="drone" value="">
-							<label style="font-size: 13px" for="m">Marcar</label>
-							<input type="radio" class="" id="d" name="drone" value="">
-							<label style="font-size: 13px" for="d">Desmarcar</label>
 						</div>
 						<div class="sillas"></div>
 
@@ -287,7 +283,6 @@
         });
 
         $(document).on("click", ".mi_funcion", function () {
-
             var funcion_id = $(this).data('id');
 
 
@@ -296,8 +291,31 @@
                 'funcion_id': funcion_id
             }, function (data) {
                 $('.sillas').html(data.html);
+                console.log(funcion_id);
                 $('#funcion_seleccionada').val(funcion_id);
-            });
+
+
+	            $.get('{% url 'boletas:consultar_boletas_funcion' %}', {
+	                "csrfmiddlewaretoken": '{{ csrf_token }}',
+	                'funcion_id': funcion_id
+	            }, function (data) {
+	            	index = 0; 
+	            	array = data.boletas_funcion
+					while (index < array.length) { 
+						silla_id = array[index]["i"] + "-" + array[index]["j"]
+						console.log(silla_id)
+						document.getElementById(silla_id).className = "OCUPADO"
+					    index++; 
+					}
+
+	            });
+
+
+           	});
+
+
+
+
         });
 
         $('#id_medio_pago').change(function () {
@@ -338,6 +356,8 @@
             console.log(otro);
             obj = JSON.parse(otro);
 
+
+            if (elemento_clickeado.className != "OCUPADO")
             if (elemento_clickeado.className == "MARCADO") {
                 elemento_clickeado.className = obj["color"];
                 elemento_clickeado.checked = false;

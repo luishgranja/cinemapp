@@ -8,4 +8,6 @@ urlpatterns = [
     path('api/consultar-pelicula', consultar_pelicula, name='consultar_pelicula'),
     path('api/consultar-funciones', consultar_funciones, name='consultar_funciones'),
     path('api/consultar-sala', consultar_sala, name='consultar_sala'),
+    path('api/consultar-boletas-funcion', consultar_boletas_funcion, name='consultar_boletas_funcion'),
+
 ]
