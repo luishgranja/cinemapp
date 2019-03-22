@@ -213,6 +213,7 @@
 									{% bootstrap_field form_saldo.saldo_actual %}
 								</div>
 								<input type="hidden" id="boletas_seleccionadas" name="boletas" value="">
+								<input type="hidden" id="funcion_seleccionada" name="funcion" value="">
 							</div>
 							<button style="margin-left:39%" class="btn btn-success btn-raised" id="vender_boleta"
 							        type="submit">Vender boleta
@@ -280,6 +281,7 @@
                     tabla_funciones.row.add([
                         '<a href="#" class="mi_funcion" data-id="' + data.lista_funciones[i].id + '">' + data.lista_funciones[i].fecha + ' - ' + data.lista_funciones[i].hora + '</a>'
                     ]).draw();
+
                 }
             });
         });
@@ -294,6 +296,7 @@
                 'funcion_id': funcion_id
             }, function (data) {
                 $('.sillas').html(data.html);
+                $('#funcion_seleccionada').val(funcion_id);
             });
         });
 
@@ -351,9 +354,7 @@
 
 
         $('#id_cedula').on('click', function () {
-
             $('#boletas_seleccionadas').val(JSON.stringify(sillas));
-            console.log($('#boletas_seleccionadas').val());
         });
 
 

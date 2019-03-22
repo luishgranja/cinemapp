@@ -53,7 +53,7 @@ class Silla(models.Model):
 		(DISCAPACITADO,"Discapacitado"),
 	)
 	nombre = models.CharField(max_length=255)
-	tipo= models.CharField(max_length=200,choices=TIPOS)
+	tipo = models.CharField(max_length=200,choices=TIPOS)
 	sala = models.ForeignKey('salas.Sala',on_delete=models.CASCADE,related_name='sillas')
 	ubicacion_x = models.IntegerField()
 	ubicacion_y = models.IntegerField()

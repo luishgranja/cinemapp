@@ -13,7 +13,16 @@ def vender_boleta(request):
 
     if request.method == 'POST':
         lista_sillas = request.POST.get('boletas', None)
-        print(lista_sillas)
+        id_funcion = request.POST.get('funcion_id', None)
+        funcion = Funcion.objects.get(id=id_funcion)
+        sillas = eval(lista_sillas)
+        i = sillas[0]['i']
+        j = sillas[0]['j']
+
+        silla = Silla.objects.get(ubicacion_x=i)
+
+        print(silla.id)
+
         form = CrearBoletaForm(request.POST)
         if form.is_valid():
             messages.success(request, 'Boleta registrada exitosamente!')

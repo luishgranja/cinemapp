@@ -30,6 +30,7 @@ def crear_funcion(request):
         messages.error(request, 'No estas autorizado para realizar esta acción')
         return redirect('accounts:home')
 
+
 def editar_funcion(request, id_funcion):
     usuario = request.user
     funcion = Funcion.objects.get(id=id_funcion)
@@ -54,6 +55,7 @@ def editar_funcion(request, id_funcion):
     else:
         messages.error(request, 'No estas autorizado para realizar esta acción')
         return redirect('accounts:home')
+
 
 def listar_funciones():
     return Funcion.get_funciones()
