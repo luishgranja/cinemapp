@@ -4,16 +4,30 @@ from apps.peliculas.models import *
 from apps.funciones.models import *
 from apps.salas.models import *
 from django.http.response import JsonResponse
+from django.contrib import messages
 
 
 def vender_boleta(request):
     usuario = request.user
     peliculas = Pelicula.get_pelicula_estreno(True)
-    lista_sillas=request.POST.getlist('silla')
 
-    if request.method == 'GET':
+    if request.method == 'POST':
+        lista_sillas = request.POST.get('boletas_seleccionadas', None)
+        print(lista_sillas)
+        form = CrearBoletaForm(request.POST)
+        if form.is_valid():
+            messages.success(request, 'Boleta registrada exitosamente!')
+            return render(request, 'boletas/vender_boleta.html', {'form': form, 'itemlist': list(range(0,26)), 'lista_sillas': 'lista_sillas', 'peliculas': peliculas,
+                                                              'form_saldo': SaldoForm()})
+        else:
+            messages.error(request, 'Por favor corrige los errores')
+            return render(request, 'boletas/vender_boleta.html',
+                          {'form': form, 'itemlist': list(range(0, 26)), 'lista_sillas': 'lista_sillas',
+                           'peliculas': peliculas,
+                           'form_saldo': SaldoForm()})
+    else:
         form = CrearBoletaForm()
-        return render(request, 'boletas/vender_boleta.html', {'form': form, 'itemlist': list(range(0,26)), 'lista_sillas': lista_sillas, 'peliculas': peliculas,
+        return render(request, 'boletas/vender_boleta.html', {'form': form, 'itemlist': list(range(0,26)), 'lista_sillas': 'lista_sillas', 'peliculas': peliculas,
                                                               'form_saldo': SaldoForm()})
 
 
