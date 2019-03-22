@@ -154,7 +154,7 @@ input[type='radio'] {
                                     {% with i|mul:26|add:j|add:1 as pos %}  
                                       {% with lista_sillas|list_index:pos as silla %}    
                                           {% if silla %}
-                                            <input id="{i}}-{{j}}"  class="{{silla.tipo}}" onclick="myFunction(this)" type="checkbox" hola="{{silla.nombre}}" name="silla" checked value='{"i":{{i}},"j":{{j}},"color": "{{silla.tipo}}"}' disabled="">
+                                            <input id="{{i}}-{{j}}"  class="{{silla.tipo}}" onclick="myFunction(this)" type="checkbox" hola="{{silla.nombre}}" name="silla" checked value='{"i":{{i}},"j":{{j}},"color": "{{silla.tipo}}"}' disabled="">
                                           {% else %}
                                             <input id="{{i}}-{{j}}" class="SIN_MARCAR" onclick="myFunction(this)" type="checkbox"  name="silla"  value='{"i":{{i}},"j":{{j}},"color": "SIN_MARCAR"}' disabled="">
                                           

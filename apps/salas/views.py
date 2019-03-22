@@ -17,8 +17,7 @@ def crear_sala(request):
             lista_sillas=request.POST.getlist('silla')
             if form.is_valid():
                 inst = form.save()
-                proceso_sillas(lista_sillas,inst)
-
+                proceso_sillas(lista_sillas, inst)
                 messages.success(request, 'Sala registrada exitosamente')
                 return render(request, 'salas/crear_salas.html', {'form': CrearSalaForm(),'salas': listar_salas(),'itemlist': list(range(0,26))})
             else:
@@ -26,6 +25,7 @@ def crear_sala(request):
                 return render(request, 'salas/crear_salas.html', {'form': form, 'salas': listar_salas(),'itemlist': list(range(0,26))})
         else:
             form = CrearSalaForm()
+
             return render(request, 'salas/crear_salas.html', {'form': form,'salas': listar_salas(),'itemlist': list(range(0,26))})
 
     # En caso de que el usuario no sea gerente se redirije al home y se muestra mensaje de error
@@ -54,7 +54,6 @@ def editar_sala(request, id_sala):
                 for silla in sillas:
                     silla.delete()
             lista_sillas=request.POST.getlist('silla')
-            print(lista_sillas)
             if form.is_valid():
                 inst = form.save()
                 proceso_sillas(lista_sillas,inst)

@@ -23,7 +23,7 @@ class Sala(models.Model):
 
 	def __str__(self):
 		aux=str(self.num_sala)+" - "+self.get_tipo_sala_display()
-		return aux		
+		return aux
 
 	@staticmethod
 	def get_salas():

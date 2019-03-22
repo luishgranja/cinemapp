@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% load bootstrap3 %}
+{% load mathfilters %}
+{% load list_index %}
 
 {% block miga_pan %}
     <li><a href="{% url 'accounts:home' %}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
@@ -15,10 +17,10 @@
     <link href="{% static 'bower_components/datatables.net-bs/responsive/responsive.dataTables.min.css' %}"
           rel="stylesheet">
 
-        <style media="screen">
+    <style media="screen">
         .select2-container {
             width: 100% !important;
-            height: : 100% !important;
+            height: 100% !important;
         }
 
         .rectangulo {
@@ -34,14 +36,31 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            border: 1px;
         }
+
         .flex-container > div {
+            border: 1px;
             background-color: white;
             color: white;
             width: 18px;
             margin: 0px;
+            padding: 0px;
             text-align: center;
             line-height: 13px;
+        }
+
+        input[type=checkbox]::after {
+            display: block;
+            content: attr(hola);
+            position: absolute;
+            color: black;
+            font-weight: 500;
+            font-size: 8px;
+            margin-left: 10% auto;
+            margin-top: 0.3%;
+            width: 2.5%;
+
         }
 
         input[type='checkbox'] {
@@ -49,41 +68,47 @@
             display: inline-block;
             -webkit-appearance: none;
             -moz-appearance: none;
-            margin:0;
+            margin: 0;
             width: 16px;
             height: 16px;
 
         }
+
         input[type='checkbox']:checked {
             text-align: center;
         }
+
         input[type=checkbox]:hover {
             filter: brightness(10%);
 
         }
+
         input[type='radio'] {
             content: '';
             display: inline-block;
             -webkit-appearance: none;
             -moz-appearance: none;
             margin-left: 5px;
-            width: 16px;
-            height: 16px;
+            width: 13px;
+            height: 13px;
         }
+
         input[type='radio']:checked {
             text-align: center;
+            font-size: 10px;
         }
+
         input[type=radio]:hover {
             filter: brightness(10%);
 
         }
 
-        .SIN_MARCAR{
-            background: rgb(223, 214, 223);
+        .SIN_MARCAR {
+            background: rgb(255, 255, 255);
         }
 
         .PREFERENCIAL {
-            background: rgb(255, 91, 185 );
+            background: rgb(255, 91, 185);
         }
 
         .GENERAL {
@@ -93,7 +118,12 @@
         .DISCAPACITADO {
             background: rgb(0, 185, 240);
         }
-        </style>
+
+        .MARCADO {
+            background: rgb(0, 0, 0);
+        }
+
+    </style>
 {% endblock css %}
 
 {% block contenido %}
@@ -124,7 +154,7 @@
                         </table>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-2">
                         <table class="table table-bordered table-responsive" id="tabla_funciones">
 
                             <thead>
@@ -134,68 +164,32 @@
                             </thead>
 
                             <tbody>
-                            {% for pelicula in peliculas %}
-                                <tr>
-                                    <td>{{ pelicula.nombre }}
-                                </tr>
-                            {% endfor %}
-
                             </tbody>
                         </table>
                     </div>
 
-                    <div class="col-md-4">
-                       <div class="rectangulo">
-                       <center>
-                            <font color="white" size="5">Pantalla</font>
-                        </center>
-                    </div>
-            <div style='text-align:center'>
-                        <input type="radio" class="PREFERENCIAL" id="p" name="drone" value="Preferencial">
-                        <label for="p">Preferencial</label>
-
-                        <input type="radio"  class="GENERAL" id="g" name="drone" value="General">
-                        <label for="g">General </label>
-
-                        <input type="radio"  class="DISCAPACITADO" id="d" name="drone" value="Discapacitados" >
-                        <label for="d">Discapacitado </label>
-                        <input type="radio"  class="SIN_MARCAR" id="s" name="drone" value="Sin_marcar" >
-                        <label for="s">Sin marcar</label>
-                    </div>
-                      {% for i in itemlist %}
-
-                                <div class="flex-container">
-                                  {% for j in itemlist %}
-                                    <div>
-                                    {% with i|mul:26|add:j|add:1 as pos %}
-                                      {% with lista_sillas|list_index:pos as silla %}
-                                          {% if silla %}
-                                            <input id="{i}}-{{j}}"  class="{{silla.tipo}}" onclick="myFunction(this)" type="checkbox" hola="{{silla.nombre}}" name="silla" checked value='{"i":{{i}},"j":{{j}},"color": "{{silla.tipo}}"}' disabled="">
-                                          {% else %}
-                                            <input id="{{i}}-{{j}}" class="SIN_MARCAR" onclick="myFunction(this)" type="checkbox"  name="silla"  value='{"i":{{i}},"j":{{j}},"color": "SIN_MARCAR"}' disabled="">
-
-                                          {% endif %}
-                                      {% endwith %}
-                                    {% endwith %}
-
-                                    </div>
-
-                                    {% endfor %}
-
-                                </div>
-
-                        {% endfor %}
-
+                    <div style="padding-left: 0px; margin-left: 0px" class="col-md-6">
+                        <div class="rectangulo">
+                            <center>
+                                <font color="white" size="5">Pantalla</font>
+                            </center>
                         </div>
+                        <div style='text-align:center'>
+                            <input type="radio" class="" id="m" name="drone" value="">
+                            <label style="font-size: 13px" for="m">Marcar</label>
+                            <input type="radio" class="" id="d" name="drone" value="">
+                            <label style="font-size: 13px" for="d">Desmarcar</label>
+                        </div>
+                        <div class="sillas"></div>
 
-                    {% endfor %}
                     </div>
                 </div>
             </div>
-            <h3 align="right"><b>Total: $26000 </b></h3>
         </div>
-
+        <h3 align="right"><b>Total: $26000 </b></h3>
     </div>
+
+
     <div class="box">
         <div class="box-header with-border">
             <h3 class="box-title">Datos del Comprador</h3>
@@ -204,7 +198,8 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
-                        <form method="POST"> {% csrf_token %}
+
+
                             <div class="row">
                                 <div class="col-sm-2">
                                     {% bootstrap_field form.cedula %}
@@ -230,53 +225,74 @@
 {% endblock contenido %}
 
 {% block js %}
-<script src="{% static 'bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
-<script src="{% static 'bower_components/datatables.net-bs/responsive/dataTables.responsive.min.js' %}"></script>
-<script>
+    <script src="{% static 'bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'bower_components/datatables.net-bs/responsive/dataTables.responsive.min.js' %}"></script>
+    <script>
+        var tabla_funciones;
         $(function () {
             $('#tabla_peliculas').DataTable({
-                "pageLength": 10,
+                "pageLength": 13,
                 "lengthChange": false,
                 "searching": false,
                 "info": false,
                 "pagingType": "simple",
                 "language": {
-                        "url": "{% static 'bower_components/datatables.net/spanish.json' %}"
-                    }
+                    "url": "{% static 'bower_components/datatables.net/spanish.json' %}"
+                }
             })
         })
 
-        $(function () {
-            $('#tabla_funciones').DataTable({
-                "pageLength": 10,
+        function iniciar_tabla_funciones(datos) {
+            tabla_funciones = $('#tabla_funciones').DataTable({
+                "pageLength": 13,
                 "lengthChange": false,
                 "searching": false,
                 "info": false,
-                "pagingType": "simple",
+                "pagingType": "numbers",
                 "language": {
-                        "url": "{% static 'bower_components/datatables.net/spanish.json' %}"
-                    }
+                    "url": "{% static 'bower_components/datatables.net/spanish.json' %}"
+                },
             })
-        })
-</script>
-<script type="application/javascript">
+        }
+
+        iniciar_tabla_funciones();
+    </script>
+    <script type="application/javascript">
 
         $(".pelicula-id").on("click", function () {
 
             var pelicula_id = $(this).data('pelicula');
-            console.log(pelicula_id);
 
-            $.get('{% url 'boletas:consultar_pelicula' %}', {
+            $.get('{% url 'boletas:consultar_funciones' %}', {
                 "csrfmiddlewaretoken": '{{ csrf_token }}',
                 'pelicula_id': pelicula_id
             }, function (data) {
 
-                console.log(data.sinopsis);
+                tabla_funciones.clear();
+                tabla_funciones.destroy();
+                iniciar_tabla_funciones();
 
+                for (var i = 0; i < data.lista_funciones.length; i++) {
+
+                    tabla_funciones.row.add([
+                        '<a href="#" class="mi_funcion" data-id="' + data.lista_funciones[i].id + '">' + data.lista_funciones[i].fecha + ' - ' + data.lista_funciones[i].hora + '</a>'
+                    ]).draw();
+                }
             });
+        });
+
+        $(document).on("click", ".mi_funcion", function () {
+
+            var funcion_id = $(this).data('id');
 
 
+            $.get('{% url 'boletas:consultar_sala' %}', {
+                "csrfmiddlewaretoken": '{{ csrf_token }}',
+                'funcion_id': funcion_id
+            }, function (data) {
+                $('.sillas').html(data.html);
+            });
         });
 
         $('#id_medio_pago').change(function () {
@@ -305,6 +321,30 @@
 
         });
 
-</script>
+    </script>
+
+    <script>
+
+        var sillas = []
+
+        function myFunction(elemento_clickeado) {
+
+            var str_aux = elemento_clickeado.value;
+            var otro = str_aux.split("'").join('"')
+            console.log(otro)
+            obj = JSON.parse(otro);
+
+            if (elemento_clickeado.className == "MARCADO") {
+                elemento_clickeado.className = obj["color"];
+                elemento_clickeado.checked = false;
+            } else {
+                elemento_clickeado.className = "MARCADO";
+                elemento_clickeado.checked = true;
+                sillas.push(obj)
+            }
+        }
+
+
+    </script>
 {% endblock js %}
 

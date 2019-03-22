@@ -29,6 +29,7 @@ class CrearBoletaForm(forms.ModelForm):
 
         return self.cleaned_data
 
+
 class SaldoForm(forms.Form):
     saldo_actual = forms.CharField(label='Saldo actual', widget=forms.TextInput(attrs={'disabled': True}))
     total_boleta = forms.CharField(label='Total a Pagar')

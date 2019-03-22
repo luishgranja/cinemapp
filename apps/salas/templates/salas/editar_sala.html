@@ -3,7 +3,7 @@
 {% load bootstrap3 %}
 {% load list_index %}
 {% block miga_pan %}
-{% load mathfilters %}
+    {% load mathfilters %}
 
 
     <li><a href="{% url 'accounts:home'%}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
@@ -19,79 +19,79 @@
         .select2-container {
             width: 100% !important;
         }
-.rectangulo {
-  background-color: black;
-  width: 250px;
-  margin: 10px;
-  margin-left: auto;
-  margin-right: auto;
+        .rectangulo {
+            background-color: black;
+            width: 250px;
+            margin: 10px;
+            margin-left: auto;
+            margin-right: auto;
 
-}
+        }
 
-.flex-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.flex-container > div {
-  background-color: white;
-  color: white;
-  width: 15px;
-  margin: 0px;
-  text-align: center;
-  line-height: 15px;
-}
+        .flex-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .flex-container > div {
+            background-color: white;
+            color: white;
+            width: 15px;
+            margin: 0px;
+            text-align: center;
+            line-height: 15px;
+        }
 
 
-input[type='checkbox'] {
-content: '';
-display: inline-block;
--webkit-appearance: none;
--moz-appearance: none;
-margin:0;
-width: 13px;
-height: 13px;
+        input[type='checkbox'] {
+            content: '';
+            display: inline-block;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            margin:0;
+            width: 13px;
+            height: 13px;
 
-}
-input[type='checkbox']:checked {
-text-align: center;
-}
-input[type=checkbox]:hover {
-  filter: brightness(10%);
+        }
+        input[type='checkbox']:checked {
+            text-align: center;
+        }
+        input[type=checkbox]:hover {
+            filter: brightness(10%);
 
-}
-input[type='radio'] {
-content: '';
-display: inline-block;
--webkit-appearance: none;
--moz-appearance: none;
-margin-left: 5px;
-width: 16px;
-height: 16px;
-}
-input[type='radio']:checked {
-text-align: center;
-}
-input[type=radio]:hover {
-  filter: brightness(10%);
+        }
+        input[type='radio'] {
+            content: '';
+            display: inline-block;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            margin-left: 5px;
+            width: 16px;
+            height: 16px;
+        }
+        input[type='radio']:checked {
+            text-align: center;
+        }
+        input[type=radio]:hover {
+            filter: brightness(10%);
 
-}
+        }
 
-.SIN_MARCAR{
-  background: rgb(223, 214, 223);
-}
+        .SIN_MARCAR{
+            background: rgb(223, 214, 223);
+        }
 
-.PREFERENCIAL {
-  background: rgb(255, 91, 185 );
-}
+        .PREFERENCIAL {
+            background: rgb(255, 91, 185 );
+        }
 
-.GENERAL {
-  background: rgb(24, 215, 79);
-}
+        .GENERAL {
+            background: rgb(24, 215, 79);
+        }
 
-.DISCAPACITADO {
-  background: rgb(0, 185, 240);
-}
+        .DISCAPACITADO {
+            background: rgb(0, 185, 240);
+        }
 
 
     </style>
@@ -110,11 +110,11 @@ input[type=radio]:hover {
                     {% bootstrap_form form %}
 
                     <div class="rectangulo">
-                       <center>
-                        <font color="white" size="5">Pantalla</font></center> 
+                        <center>
+                            <font color="white" size="5">Pantalla</font></center>
                     </div>
 
-                      <div style='text-align:center'>
+                    <div style='text-align:center'>
                         <input type="radio" class="PREFERENCIAL" id="p" name="drone" value="Preferencial">
                         <label for="p">Preferencial</label>
                         <input type="radio"  class="GENERAL" id="g" name="drone" value="General">
@@ -123,30 +123,30 @@ input[type=radio]:hover {
                         <label for="d">Discapacitado </label>
                         <input type="radio"  class="SIN_MARCAR" id="s" name="drone" value="Sin_marcar" >
                         <label for="s">Sin marcar</label>
-                      </div>
-                     {% for i in itemlist %}
-                        
-                                <div class="flex-container">
+                    </div>
+                    {% for i in itemlist %}
 
-                                   {% for j in itemlist %}
-                                    <div >
-                                    {% with i|mul:26|add:j|add:1 as pos %}  
-                                      {% with lista_sillas|list_index:pos as silla %}    
-                                          {% if silla %}
-                                            <input id="{{i}}-{{j}}" class="{{silla.tipo}}" onclick="myFunction(this)" type="checkbox" name="silla" checked value='{"i":{{i}},"j":{{j}},"color": "{{silla.tipo}}"}'>
-                                          {% else %}
-                                            <input id="{{i}}-{{j}}" class="SIN_MARCAR" onclick="myFunction(this)" type="checkbox" name="silla"  value='{"i":{{i}},"j":{{j}},"color": "SIN_MARCAR"}'>
-                                          {% endif %}
-                                      {% endwith %}
+                        <div class="flex-container">
+
+                            {% for j in itemlist %}
+                                <div >
+                                    {% with i|mul:26|add:j|add:1 as pos %}
+                                        {% with lista_sillas|list_index:pos as silla %}
+                                            {% if silla %}
+                                                <input id="{{i}}-{{j}}" class="{{silla.tipo}}" onclick="myFunction(this)" type="checkbox" name="silla" checked value='{"i":{{i}},"j":{{j}},"color": "{{silla.tipo}}"}'>
+                                            {% else %}
+                                                <input id="{{i}}-{{j}}" class="SIN_MARCAR" onclick="myFunction(this)" type="checkbox" name="silla"  value='{"i":{{i}},"j":{{j}},"color": "SIN_MARCAR"}'>
+                                            {% endif %}
+                                        {% endwith %}
                                     {% endwith %}
 
-                                    </div>
-
-                                    {% endfor %}
-
                                 </div>
-                                                        
-                        {% endfor %}
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% endfor %}
                     <button type="submit" class="btn btn-success btn-raised">Modificar</button>
                 </form>
             </div>
@@ -157,13 +157,13 @@ input[type=radio]:hover {
 
 {% block js %}
     {{ form.media.js }}
-     <script>
-       var arr = Array.from(Array(26), () => new Array(26));
-      for(var i=0;i<26;i++){
-        for(var j=0;j<26;j++){
-          arr[i][j]=document.getElementById(i+ "-"+ j);
+    <script>
+        var arr = Array.from(Array(26), () => new Array(26));
+        for(var i=0;i<26;i++){
+            for(var j=0;j<26;j++){
+                arr[i][j]=document.getElementById(i+ "-"+ j);
+            }
         }
-      }
         console.info(arr)
         var value=0;
         var click=false;
@@ -180,107 +180,107 @@ input[type=radio]:hover {
             var sin_marcar = document.getElementById("s");
             obj = JSON.parse(elemento_clickeado.value);
             console.log(elemento_clickeado.id)
-                 
+
             if (preferencial.checked == true){
-              elemento_clickeado.className = "PREFERENCIAL";
-              obj["color"]="PREFERENCIAL";
-              elemento_clickeado.value=JSON.stringify(obj);
-              elemento_clickeado.checked=true;
-              var str = elemento_clickeado.id;
-              var array = str.split("-",2); 
-             if(value==1){
-                i_termina=parseInt(array[0]);
-                j_termina=parseInt(array[1]);
-                value=0;
-                click=true;
-              }else if(value==0){
+                elemento_clickeado.className = "PREFERENCIAL";
+                obj["color"]="PREFERENCIAL";
+                elemento_clickeado.value=JSON.stringify(obj);
+                elemento_clickeado.checked=true;
+                var str = elemento_clickeado.id;
+                var array = str.split("-",2);
+                if(value==1){
+                    i_termina=parseInt(array[0]);
+                    j_termina=parseInt(array[1]);
+                    value=0;
+                    click=true;
+                }else if(value==0){
 
-                i_empieza=parseInt(array[0]);
-                j_empieza=parseInt(array[1])
-                value=value+1;
-              }
+                    i_empieza=parseInt(array[0]);
+                    j_empieza=parseInt(array[1])
+                    value=value+1;
+                }
 
-             
+
             } else if(general.checked == true) {
-              elemento_clickeado.className = "GENERAL";
-              obj["color"]="GENERAL";
-              elemento_clickeado.value=JSON.stringify(obj);
-              elemento_clickeado.checked=true;
-              var str = elemento_clickeado.id;
-              var array = str.split("-",2); 
-              if(value==1){
-                i_termina=parseInt(array[0]);
-                j_termina=parseInt(array[1]);
-                value=0;
-                click=true;
-              }else if(value==0){
+                elemento_clickeado.className = "GENERAL";
+                obj["color"]="GENERAL";
+                elemento_clickeado.value=JSON.stringify(obj);
+                elemento_clickeado.checked=true;
+                var str = elemento_clickeado.id;
+                var array = str.split("-",2);
+                if(value==1){
+                    i_termina=parseInt(array[0]);
+                    j_termina=parseInt(array[1]);
+                    value=0;
+                    click=true;
+                }else if(value==0){
 
-                i_empieza=parseInt(array[0]);
-                j_empieza=parseInt(array[1])
-                value=value+1;
-              }
+                    i_empieza=parseInt(array[0]);
+                    j_empieza=parseInt(array[1])
+                    value=value+1;
+                }
 
             } else if (discapacitado.checked == true){
-              elemento_clickeado.className = "DISCAPACITADO";
-              obj["color"]="DISCAPACITADO";
-              elemento_clickeado.value=JSON.stringify(obj);
-              elemento_clickeado.checked=true;
-              var str = elemento_clickeado.id;
-              var array = str.split("-",2); 
-              if(value==1){
-                i_termina=parseInt(array[0]);
-                j_termina=parseInt(array[1]);
-                value=0;
-                click=true;
-              }else if(value==0){
-               i_empieza=parseInt(array[0]);
-                j_empieza=parseInt(array[1])
-                value=value+1;
-              }
+                elemento_clickeado.className = "DISCAPACITADO";
+                obj["color"]="DISCAPACITADO";
+                elemento_clickeado.value=JSON.stringify(obj);
+                elemento_clickeado.checked=true;
+                var str = elemento_clickeado.id;
+                var array = str.split("-",2);
+                if(value==1){
+                    i_termina=parseInt(array[0]);
+                    j_termina=parseInt(array[1]);
+                    value=0;
+                    click=true;
+                }else if(value==0){
+                    i_empieza=parseInt(array[0]);
+                    j_empieza=parseInt(array[1])
+                    value=value+1;
+                }
 
             }else if(sin_marcar.checked == true) {
-              elemento_clickeado.className = "SIN_MARCAR";
-              obj["color"]="SIN_MARCAR";
-              elemento_clickeado.value=JSON.stringify(obj);
-              elemento_clickeado.checked=false;
-              var str = elemento_clickeado.id;
-              var array = str.split("-",2);
-              array= parseInt(array);
-              value=0;
+                elemento_clickeado.className = "SIN_MARCAR";
+                obj["color"]="SIN_MARCAR";
+                elemento_clickeado.value=JSON.stringify(obj);
+                elemento_clickeado.checked=false;
+                var str = elemento_clickeado.id;
+                var array = str.split("-",2);
+                array= parseInt(array);
+                value=0;
             }else{
-              elemento_clickeado.checked=false;
+                elemento_clickeado.checked=false;
             }
             if(click==true){
 
-              var aux_ie= Math.min(i_empieza,i_termina);
-              var aux_it= Math.max(i_empieza,i_termina);
-              var aux_je= Math.min(j_empieza,j_termina);
-              var aux_jt= Math.max(j_empieza,j_termina);
+                var aux_ie= Math.min(i_empieza,i_termina);
+                var aux_it= Math.max(i_empieza,i_termina);
+                var aux_je= Math.min(j_empieza,j_termina);
+                var aux_jt= Math.max(j_empieza,j_termina);
 
-              va_q=i_termina;
-              va_s=j_termina;
+                va_q=i_termina;
+                va_s=j_termina;
 
-              i_empieza=aux_ie;
-              j_empieza= aux_je;
-              i_termina=aux_it;
-              j_termina=aux_jt;
-           
-
-              for(var i=i_empieza;i<=i_termina;i++){
-                for(var j=j_empieza;j<=j_termina;j++){
-
-                  arr[i][j].checked=true;
-
-                  var final= document.getElementById(i_termina+ "-"+ j_termina);
-                  arr[i][j].className = final.className;
-                  objeto = JSON.parse(arr[i][j].value);
-                  arr[i][j].value=JSON.stringify(objeto);
-                  objeto["color"]=  final.className;
+                i_empieza=aux_ie;
+                j_empieza= aux_je;
+                i_termina=aux_it;
+                j_termina=aux_jt;
 
 
+                for(var i=i_empieza;i<=i_termina;i++){
+                    for(var j=j_empieza;j<=j_termina;j++){
+
+                        arr[i][j].checked=true;
+                        var final= document.getElementById(va_q+ "-"+ va_s);
+                        arr[i][j].className = final.className;
+                        objeto = JSON.parse(arr[i][j].value);
+                        objeto["color"]=  String(final.className);
+                        arr[i][j].value=JSON.stringify(objeto);
+                        console.log(document.getElementById(i+"-"+j))
+
+
+                    }
                 }
-              }
-              click=false;
+                click=false;
             }
 
 
