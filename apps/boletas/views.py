@@ -12,7 +12,7 @@ def vender_boleta(request):
     peliculas = Pelicula.get_pelicula_estreno(True)
 
     if request.method == 'POST':
-        lista_sillas = request.POST.get('boletas_seleccionadas', None)
+        lista_sillas = request.POST.get('boletas', None)
         print(lista_sillas)
         form = CrearBoletaForm(request.POST)
         if form.is_valid():

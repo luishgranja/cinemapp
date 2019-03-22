@@ -212,7 +212,7 @@
 								<div class="col-sm-2">
 									{% bootstrap_field form_saldo.saldo_actual %}
 								</div>
-								<input type="hidden" name="boletas_seleccionadas" value="">
+								<input type="hidden" id="boletas_seleccionadas" name="boletas" value="">
 							</div>
 							<button style="margin-left:39%" class="btn btn-success btn-raised" id="vender_boleta"
 							        type="submit">Vender boleta
@@ -353,6 +353,7 @@
         $('#id_cedula').on('click', function () {
 
             $('#boletas_seleccionadas').val(JSON.stringify(sillas));
+            console.log($('#boletas_seleccionadas').val());
         });
 
 
