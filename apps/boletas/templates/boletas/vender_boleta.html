@@ -182,7 +182,7 @@
 				</div>
 			</div>
 		</div>
-		<h3 align="right"><b>Total: $26000 </b></h3>
+		<div class="total"></div>
 	</div>
 
 
@@ -210,6 +210,7 @@
 								</div>
 								<input type="hidden" id="boletas_seleccionadas" name="boletas" value="">
 								<input type="hidden" id="funcion_seleccionada" name="funcion" value="">
+                                <input type="hidden" id="precio_final" name="precio" value="">
 							</div>
 							<button style="margin-left:39%" class="btn btn-success btn-raised" id="vender_boleta"
 							        type="submit">Vender boleta
@@ -229,6 +230,7 @@
 	<script src="{% static 'bower_components/datatables.net-bs/responsive/dataTables.responsive.min.js' %}"></script>
 	<script>
         var tabla_funciones;
+        var tipo_sala;
         $(function () {
             $('#tabla_peliculas').DataTable({
                 "pageLength": 13,
@@ -290,8 +292,8 @@
                 "csrfmiddlewaretoken": '{{ csrf_token }}',
                 'funcion_id': funcion_id
             }, function (data) {
+                tipo_sala = data.tipo_sala;
                 $('.sillas').html(data.html);
-                console.log(funcion_id);
                 $('#funcion_seleccionada').val(funcion_id);
 
 
@@ -356,6 +358,15 @@
             console.log(otro);
             obj = JSON.parse(otro);
 
+            var precio_sala = 0;
+            var precio_total = 0;
+
+            switch (tipo_sala) {
+                    case "SALA_GENERAL": precio_sala = 4000;
+                    case "SALA_IMAX": precio_sala = 5000;
+                    case "SALA_3D": precio_sala = 4500;
+                    case "SALA_4DX": precio_sala = 6000;
+                }
 
             if (elemento_clickeado.className != "OCUPADO")
             if (elemento_clickeado.className == "MARCADO") {
@@ -364,11 +375,51 @@
 
                 sillas.splice(sillas.indexOf(obj), 1);
 
+                precio_total = sillas.length * precio_sala;
+
+                for (let i = 0; i<sillas.length; i++){
+
+                    var precio_silla = 0;
+
+                    switch (sillas[i]['color']) {
+                    case "GENERAL": precio_total += 2000;
+                    break;
+                    case "PREFERENCIAL": precio_total += 3000;
+                    break;
+                    case "DISCAPACITADO": precio_total += 1000;
+                    break;
+                }
+
+                }
+
+                $("#precio_final").val(precio_total);
+                $('.total').html('<h3>TOTAL = $' + precio_total + '</h3>');
 
             } else {
                 elemento_clickeado.className = "MARCADO";
                 elemento_clickeado.checked = true;
-                sillas.push(obj)
+                sillas.push(obj);
+
+                precio_total = sillas.length * precio_sala;
+
+
+                for (let i = 0; i<sillas.length; i++){
+
+                    var precio_silla = 0;
+
+                    switch (sillas[i]['color']) {
+                    case "GENERAL": precio_total += 2000;
+                    break;
+                    case "PREFERENCIAL": precio_total += 3000;
+                    break;
+                    case "DISCAPACITADO": precio_total += 1000;
+                    break;
+                }
+
+                }
+
+                $("#precio_final").val(precio_total);
+                $('.total').html('<h3>TOTAL = $' + precio_total + '</h3>');
             }
         };
 

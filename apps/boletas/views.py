@@ -14,6 +14,7 @@ def vender_boleta(request):
     if request.method == 'POST':
         lista_sillas = request.POST.get('boletas', None)
         id_funcion = request.POST.get('funcion', None)
+        precio_final = request.POST.get('precio_final', None)
         funcion = Funcion.objects.get(id=id_funcion)
         sillas = eval(lista_sillas)
         flag_error = False;
@@ -24,7 +25,7 @@ def vender_boleta(request):
             silla_aux = Silla.objects.get(ubicacion_x=i, ubicacion_y=j, sala=funcion.sala)
             boleta_funcion = Boleta.objects.filter(funcion=funcion, silla=silla_aux)
             if(boleta_funcion.count() != 0):
-                flag_error = true
+                flag_error = True
 
         if flag_error:
             messages.error(request, 'Hay algunas sillas que no estan disponibles')
@@ -37,13 +38,19 @@ def vender_boleta(request):
                 tipo = silla['color']
                 silla_aux = Silla.objects.get(ubicacion_x=i, ubicacion_y=j, sala=funcion.sala)
                 boleta_aux = Boleta()
-                boleta_aux.total = 3800 #CORREGIR PRECIO BOLETA ESTOY AQUI NO ME IGNOREN
+                boleta_aux.total = 3800
+                # CORREGIR PRECIO BOLETA ESTOY AQUI NO ME IGNOREN
                 boleta_aux.funcion = funcion
                 boleta_aux.silla = silla_aux
                 boleta_aux.cedula = form.data["cedula"]
                 boleta_aux.cedula_empleado = usuario.cedula
                 boleta_aux.nombre_cliente = form.data["nombre_cliente"]
                 boleta_aux.save()
+
+                # Guarda el saldo del cliente
+                #saldo_actual = usuario.cliente.saldo
+                #usuario.cliente.saldo = saldo_actual- int(precio_final)
+                #usuario.cliente.save()
 
             messages.success(request, 'Boleta registrada exitosamente!')
             return render(request, 'boletas/vender_boleta.html', {'form': form, 'itemlist': list(range(0,26)), 'lista_sillas': 'lista_sillas', 'peliculas': peliculas,
@@ -124,7 +131,7 @@ def consultar_sala(request):
                         html += '<div> <input id="'+str(i)+'-'+str(j)+'" class="SIN_MARCAR" onclick="myFunction(this)" type="checkbox" name="silla" value="{"i":"'+str(i)+',"j":'+str(j)+',"color": "SIN_MARCAR"}" disabled=""> </div>'
 
                 html += '</div>'
-            return JsonResponse({'html': html})
+            return JsonResponse({'html': html, 'tipo_sala': sala.tipo_sala})
 
         except Funcion.DoesNotExist:
             return JsonResponse({'response': 0})

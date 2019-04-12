@@ -179,7 +179,6 @@
             var discapacitado = document.getElementById("d");
             var sin_marcar = document.getElementById("s");
             obj = JSON.parse(elemento_clickeado.value);
-            console.log(elemento_clickeado.id)
 
             if (preferencial.checked == true){
                 elemento_clickeado.className = "PREFERENCIAL";
@@ -275,7 +274,6 @@
                         objeto = JSON.parse(arr[i][j].value);
                         objeto["color"]=  String(final.className);
                         arr[i][j].value=JSON.stringify(objeto);
-                        console.log(document.getElementById(i+"-"+j))
 
 
                     }

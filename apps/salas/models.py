@@ -5,13 +5,13 @@ from django.db import models
 class Sala(models.Model):
 	SALA_4DX ="SALA_4DX"
 	SALA_IMAX ="SALA_IMAX"
-	MEGA_SALA ="MEGA_SALA"
-	SALA_XD="SALA_XD"
+	SALA_GENERAL ="SALA_GENERAL"
+	SALA_3D="SALA_3D"
 	TIPOS =(
 		(SALA_4DX,"Sala 4D"),
 		(SALA_IMAX, "Sala IMAX"),
-		(MEGA_SALA,"Mega Sala"),
-		(SALA_XD,"Sala XD"),
+		(SALA_GENERAL,"Sala General"),
+		(SALA_3D,"Sala 3D"),
 	)
 
 	tipo_sala = models.CharField(max_length=200,choices=TIPOS)
