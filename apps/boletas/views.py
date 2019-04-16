@@ -1,8 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from apps.boletas.forms import *
 from apps.peliculas.models import *
 from apps.funciones.models import *
 from apps.salas.models import *
+from apps.accounts.models import *
 from django.http.response import JsonResponse
 from django.contrib import messages
 
@@ -15,9 +16,10 @@ def vender_boleta(request):
         lista_sillas = request.POST.get('boletas', None)
         id_funcion = request.POST.get('funcion', None)
         precio_final = request.POST.get('precio_final', None)
+        medio_pago = request.POST.get('pago_cliente', None)
         funcion = Funcion.objects.get(id=id_funcion)
         sillas = eval(lista_sillas)
-        flag_error = False;
+        flag_error = False
         for silla in sillas:
             i = silla['i']
             j = silla['j']
@@ -28,33 +30,65 @@ def vender_boleta(request):
                 flag_error = True
 
         if flag_error:
-            messages.error(request, 'Hay algunas sillas que no estan disponibles')
+            messages.error(request, 'Hay algunas sillas que no están disponibles')
 
         form = CrearBoletaForm(request.POST)
         if form.is_valid() and not(flag_error):
-            for silla in sillas:
-                i = silla['i']
-                j = silla['j']
-                tipo = silla['color']
-                silla_aux = Silla.objects.get(ubicacion_x=i, ubicacion_y=j, sala=funcion.sala)
-                boleta_aux = Boleta()
-                boleta_aux.total = 3800
-                # CORREGIR PRECIO BOLETA ESTOY AQUI NO ME IGNOREN
-                boleta_aux.funcion = funcion
-                boleta_aux.silla = silla_aux
-                boleta_aux.cedula = form.data["cedula"]
-                boleta_aux.cedula_empleado = usuario.cedula
-                boleta_aux.nombre_cliente = form.data["nombre_cliente"]
-                boleta_aux.save()
+            if medio_pago == 'saldo':
+                try:
+                    usuario = User.objects.get(cedula=form.data["cedula"])
+                    saldo_actual = usuario.cliente.saldo
+                    if saldo_actual >= int(precio_final):
+                        for silla in sillas:
+                            i = silla['i']
+                            j = silla['j']
+                            tipo = silla['color']
+                            silla_aux = Silla.objects.get(ubicacion_x=i, ubicacion_y=j, sala=funcion.sala)
+                            boleta_aux = Boleta()
+                            boleta_aux.total = 3800
+                            # CORREGIR PRECIO BOLETA ESTOY AQUI NO ME IGNOREN
+                            boleta_aux.funcion = funcion
+                            boleta_aux.silla = silla_aux
+                            boleta_aux.cedula = form.data["cedula"]
+                            boleta_aux.cedula_empleado = usuario.cedula
+                            boleta_aux.nombre_cliente = form.data["nombre_cliente"]
+                            boleta_aux.save()
+                        usuario.cliente.saldo = saldo_actual - int(precio_final)
+                        usuario.cliente.save()
+                        messages.success(request, 'Boletas vendidas exitosamente!')
+                        return redirect('boletas:vender_boleta')
+                    else:
+                        messages.error(request, 'El usuario no tiene saldo suficiente')
+                        return render(request, 'boletas/vender_boleta.html',
+                                      {'form': form, 'itemlist': list(range(0, 26)), 'lista_sillas': 'lista_sillas',
+                                       'peliculas': peliculas,
+                                       'form_saldo': SaldoForm()})
 
-                # Guarda el saldo del cliente
-                #saldo_actual = usuario.cliente.saldo
-                #usuario.cliente.saldo = saldo_actual- int(precio_final)
-                #usuario.cliente.save()
+                except(User.cliente.RelatedObjectDoesNotExist, User.DoesNotExist):
+                    messages.error(request, 'El usuario no puede pagar con saldo')
+                    return render(request, 'boletas/vender_boleta.html',
+                                  {'form': form, 'itemlist': list(range(0, 26)), 'lista_sillas': 'lista_sillas',
+                                   'peliculas': peliculas,
+                                   'form_saldo': SaldoForm()})
 
-            messages.success(request, 'Boleta registrada exitosamente!')
-            return render(request, 'boletas/vender_boleta.html', {'form': form, 'itemlist': list(range(0,26)), 'lista_sillas': 'lista_sillas', 'peliculas': peliculas,
-                                                              'form_saldo': SaldoForm()})
+            elif medio_pago == 'efectivo':
+                for silla in sillas:
+                    i = silla['i']
+                    j = silla['j']
+                    tipo = silla['color']
+                    silla_aux = Silla.objects.get(ubicacion_x=i, ubicacion_y=j, sala=funcion.sala)
+                    boleta_aux = Boleta()
+                    boleta_aux.total = 3800
+                    # CORREGIR PRECIO BOLETA ESTOY AQUI NO ME IGNOREN
+                    boleta_aux.funcion = funcion
+                    boleta_aux.silla = silla_aux
+                    boleta_aux.cedula = form.data["cedula"]
+                    boleta_aux.cedula_empleado = usuario.cedula
+                    boleta_aux.nombre_cliente = form.data["nombre_cliente"]
+                    boleta_aux.save()
+                messages.success(request, 'Boletas vendidas exitosamente!')
+                return redirect('boletas:vender_boleta')
+
         else:
             boletas_compradas = Boleta.objects.filter(funcion=funcion)
             messages.error(request, 'Por favor corrige los errores')

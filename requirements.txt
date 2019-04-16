@@ -11,3 +11,4 @@ pytz==2018.4
 six==1.11.0
 whitenoise==3.3.1
 numpy==1.16.2
+django-mathfilters==0.4.0

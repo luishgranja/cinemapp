@@ -5,430 +5,457 @@
 {% load list_index %}
 
 {% block miga_pan %}
-	<li><a href="{% url 'accounts:home' %}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
-	<li class="active">VENDER BOLETA</li>
+<li><a href="{% url 'accounts:home' %}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
+<li class="active">VENDER BOLETA</li>
 {% endblock miga_pan %}
 
 
 {% block titulo %}Vender Boleta{% endblock titulo %}
 
 {% block css %}
-	<link rel="stylesheet" href="{% static 'bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
-	<link href="{% static 'bower_components/datatables.net-bs/responsive/responsive.dataTables.min.css' %}"
-	      rel="stylesheet">
+<link rel="stylesheet" href="{% static 'bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
+<link href="{% static 'bower_components/datatables.net-bs/responsive/responsive.dataTables.min.css' %}"
+	  rel="stylesheet">
 
-	<style media="screen">
-		.select2-container {
-			width: 100% !important;
-			height: 100% !important;
-		}
+<style media="screen">
+	.select2-container {
+		width: 100% !important;
+		height: 100% !important;
+	}
 
-		.rectangulo {
-			background-color: black;
-			width: 250px;
-			margin: 10px;
-			margin-left: auto;
-			margin-right: auto;
+	.rectangulo {
+		background-color: black;
+		width: 250px;
+		margin: 10px;
+		margin-left: auto;
+		margin-right: auto;
 
-		}
+	}
 
-		.flex-container {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			border: 1px;
-		}
+	.flex-container {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border: 1px;
+	}
 
-		.flex-container > div {
-			border: 1px;
-			background-color: white;
-			color: white;
-			width: 18px;
-			margin: 0px;
-			padding: 0px;
-			text-align: center;
-			line-height: 13px;
-		}
+	.flex-container > div {
+		border: 1px;
+		background-color: white;
+		color: white;
+		width: 18px;
+		margin: 0px;
+		padding: 0px;
+		text-align: center;
+		line-height: 13px;
+	}
 
-		input[type=checkbox]::after {
-			display: block;
-			content: attr(hola);
-			position: absolute;
-			color: black;
-			font-weight: 500;
-			font-size: 8px;
-			margin-left: 10% auto;
-			margin-top: 0.3%;
-			width: 2.5%;
+	input[type=checkbox]::after {
+		display: block;
+		content: attr(hola);
+		position: absolute;
+		color: black;
+		font-weight: 500;
+		font-size: 8px;
+		margin-left: 10% auto;
+		margin-top: 0.3%;
+		width: 2.5%;
 
-		}
+	}
 
-		input[type='checkbox'] {
-			content: '';
-			display: inline-block;
-			-webkit-appearance: none;
-			-moz-appearance: none;
-			margin: 0;
-			width: 16px;
-			height: 16px;
+	input[type='checkbox'] {
+		content: '';
+		display: inline-block;
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		margin: 0;
+		width: 16px;
+		height: 16px;
 
-		}
+	}
 
-		input[type='checkbox']:checked {
-			text-align: center;
-		}
+	input[type='checkbox']:checked {
+		text-align: center;
+	}
 
-		input[type=checkbox]:hover {
-			filter: brightness(10%);
+	input[type=checkbox]:hover {
+		filter: brightness(10%);
 
-		}
+	}
 
-		input[type='radio'] {
-			content: '';
-			display: inline-block;
-			-webkit-appearance: none;
-			-moz-appearance: none;
-			margin-left: 5px;
-			width: 13px;
-			height: 13px;
-		}
+	input[type='radio'] {
+		content: '';
+		display: inline-block;
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		margin-left: 5px;
+		width: 13px;
+		height: 13px;
+	}
 
-		input[type='radio']:checked {
-			text-align: center;
-			font-size: 10px;
-		}
+	input[type='radio']:checked {
+		text-align: center;
+		font-size: 10px;
+	}
 
-		input[type=radio]:hover {
-			filter: brightness(10%);
+	input[type=radio]:hover {
+		filter: brightness(10%);
 
-		}
+	}
 
-		.SIN_MARCAR {
-			background: rgb(255, 255, 255);
-		}
+	.SIN_MARCAR {
+		background: rgb(255, 255, 255);
+	}
 
-		.PREFERENCIAL {
-			background: rgb(255, 91, 185);
-		}
+	.PREFERENCIAL {
+		background: rgb(255, 91, 185);
+	}
 
-		.GENERAL {
-			background: rgb(24, 215, 79);
-		}
+	.GENERAL {
+		background: rgb(24, 215, 79);
+	}
 
-		.DISCAPACITADO {
-			background: rgb(0, 185, 240);
-		}
+	.DISCAPACITADO {
+		background: rgb(0, 185, 240);
+	}
 
-		.MARCADO {
-			background: rgb(0, 0, 0);
-		}
-		.OCUPADO {
-			background: rgb(255, 0, 0);
-		}
-	</style>
+	.MARCADO {
+		background: rgb(0, 0, 0);
+	}
+	.OCUPADO {
+		background: rgb(255, 0, 0);
+	}
+</style>
 {% endblock css %}
 
 {% block contenido %}
-	<div class="box">
-		<div class="box-header with-border">
-			<h3 class="box-title">Datos de la Función</h3>
-		</div>
-		<div style="height: 50%;" class="box-body">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-4">
-						<table class="table table-bordered table-responsive" id="tabla_peliculas">
+<div class="box">
+	<div class="box-header with-border">
+		<h3 class="box-title">Datos de la Función</h3>
+	</div>
+	<div style="height: 50%;" class="box-body">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-4">
+					<table class="table table-bordered table-responsive" id="tabla_peliculas">
 
-							<thead>
-							<tr>
-								<th>Seleccione Pelicula:</th>
-							</tr>
-							</thead>
-							<tbody>
-							{% for pelicula in peliculas %}
-								<tr>
-									<td><a href="#" data-pelicula="{{ pelicula.id }}"
-									       class="pelicula-id">{{ pelicula.nombre }}</a></td>
-								</tr>
-							{% endfor %}
+						<thead>
+						<tr>
+							<th>Seleccione Pelicula:</th>
+						</tr>
+						</thead>
+						<tbody>
+						{% for pelicula in peliculas %}
+						<tr>
+							<td><a href="#" data-pelicula="{{ pelicula.id }}"
+								   class="pelicula-id">{{ pelicula.nombre }}</a></td>
+						</tr>
+						{% endfor %}
 
-							</tbody>
-						</table>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="col-md-2">
+					<table class="table table-bordered table-responsive" id="tabla_funciones">
+
+						<thead>
+						<tr>
+							<th>Seleccione Función:</th>
+						</tr>
+						</thead>
+
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+
+				<div style="padding-left: 0px; margin-left: 0px" class="col-md-6">
+					<div class="rectangulo">
+						<center>
+							<font color="white" size="5">Pantalla</font>
+						</center>
 					</div>
+					<div style='text-align:center'>
+						<input type="radio" class="PREFERENCIAL" id="p" name="drone" value="Preferencial">
+						<label for="p">Preferencial = $3000</label>
 
-					<div class="col-md-2">
-						<table class="table table-bordered table-responsive" id="tabla_funciones">
+						<input type="radio"  class="GENERAL" id="g" name="drone" value="General">
+						<label for="g">General = $2000</label>
 
-							<thead>
-							<tr>
-								<th>Seleccione Función:</th>
-							</tr>
-							</thead>
-
-							<tbody>
-							</tbody>
-						</table>
+						<input type="radio"  class="DISCAPACITADO" id="d" name="drone" value="Discapacitados" >
+						<label for="d">Discapacitado = $1000</label>
 					</div>
+					<div class="sillas"></div>
 
-					<div style="padding-left: 0px; margin-left: 0px" class="col-md-6">
-						<div class="rectangulo">
-							<center>
-								<font color="white" size="5">Pantalla</font>
-							</center>
-						</div>
-						<div class="sillas"></div>
-
-					</div>
 				</div>
 			</div>
 		</div>
-		<div class="total"></div>
 	</div>
+	<div class="total"></div>
+</div>
 
 
-	<div class="box">
-		<div class="box-header with-border">
-			<h3 class="box-title">Datos del Comprador</h3>
-		</div>
-		<div style="height: 200px;" class="box-body">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-12">
-						<form method="post" id="formulario">{% csrf_token %}
-							<div class="row">
-								<div class="col-sm-2">
-									{% bootstrap_field form.cedula %}
-								</div>
-								<div class="col-sm-3">
-									{% bootstrap_field form.nombre_cliente %}
-								</div>
-								<div class="col-sm-2 col-sm-offset-1">
-									{% bootstrap_field form.medio_pago %}
-								</div>
-								<div class="col-sm-2">
-									{% bootstrap_field form_saldo.saldo_actual %}
-								</div>
-								<input type="hidden" id="boletas_seleccionadas" name="boletas" value="">
-								<input type="hidden" id="funcion_seleccionada" name="funcion" value="">
-                                <input type="hidden" id="precio_final" name="precio" value="">
+<div style="display: none" id="datos_cliente" class="box">
+	<div class="box-header with-border">
+		<h3 class="box-title">Datos del Comprador</h3>
+	</div>
+	<div style="height: 200px;" class="box-body">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+					<form method="post" id="formulario">{% csrf_token %}
+						<div class="row">
+							<div class="col-sm-2">
+								{% bootstrap_field form.cedula %}
 							</div>
-							<button style="margin-left:39%" class="btn btn-success btn-raised" id="vender_boleta"
-							        type="submit">Vender boleta
-							</button>
-						</form>
-					</div>
+							<div class="col-sm-3">
+								{% bootstrap_field form.nombre_cliente %}
+							</div>
+							<div class="col-sm-2 col-sm-offset-1">
+								{% bootstrap_field form.medio_pago %}
+							</div>
+							<div class="col-sm-2">
+								{% bootstrap_field form_saldo.saldo_actual %}
+							</div>
+							<input type="hidden" id="boletas_seleccionadas" name="boletas" value="">
+							<input type="hidden" id="funcion_seleccionada" name="funcion" value="">
+							<input type="hidden" id="precio_final" name="precio_final" value="">
+							<input type="hidden" id="pago_cliente" name="pago_cliente" value="">
+
+						</div>
+						<button style="margin-left:39%" class="btn btn-success btn-raised" id="vender_boleta"
+								type="submit">Vender boleta
+						</button>
+					</form>
 				</div>
 			</div>
 		</div>
 	</div>
+</div>
 
 {% endblock contenido %}
 
 {% block js %}
-	<script src="{% static 'bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
-	<script src="{% static 'bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
-	<script src="{% static 'bower_components/datatables.net-bs/responsive/dataTables.responsive.min.js' %}"></script>
-	<script>
-        var tabla_funciones;
-        var tipo_sala;
-        $(function () {
-            $('#tabla_peliculas').DataTable({
-                "pageLength": 13,
-                "lengthChange": false,
-                "searching": false,
-                "info": false,
-                "pagingType": "simple",
-                "language": {
-                    "url": "{% static 'bower_components/datatables.net/spanish.json' %}"
-                }
-            })
+<script src="{% static 'bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+<script src="{% static 'bower_components/datatables.net-bs/responsive/dataTables.responsive.min.js' %}"></script>
+<script>
+    var tabla_funciones;
+    var tipo_sala;
+    var mi_medio_pago = document.getElementById('pago_cliente');
+    mi_medio_pago.value = 'efectivo';
+    console.log(mi_medio_pago.value);
+    $(function () {
+        $('#tabla_peliculas').DataTable({
+            "pageLength": 13,
+            "lengthChange": false,
+            "searching": false,
+            "info": false,
+            "pagingType": "simple",
+            "language": {
+                "url": "{% static 'bower_components/datatables.net/spanish.json' %}"
+            }
         })
+    })
 
-        function iniciar_tabla_funciones(datos) {
-            tabla_funciones = $('#tabla_funciones').DataTable({
-                "pageLength": 13,
-                "lengthChange": false,
-                "searching": false,
-                "info": false,
-                "pagingType": "numbers",
-                "language": {
-                    "url": "{% static 'bower_components/datatables.net/spanish.json' %}"
-                },
-            })
-        }
+    function iniciar_tabla_funciones(datos) {
+        tabla_funciones = $('#tabla_funciones').DataTable({
+            "pageLength": 13,
+            "lengthChange": false,
+            "searching": false,
+            "info": false,
+            "pagingType": "numbers",
+            "language": {
+                "url": "{% static 'bower_components/datatables.net/spanish.json' %}"
+            },
+        })
+    }
 
-        iniciar_tabla_funciones();
-	</script>
-	<script type="application/javascript">
+    iniciar_tabla_funciones();
+</script>
+<script type="application/javascript">
 
-        $(".pelicula-id").on("click", function () {
+    $(".pelicula-id").on("click", function () {
 
-            var pelicula_id = $(this).data('pelicula');
+        var pelicula_id = $(this).data('pelicula');
 
-            $.get('{% url 'boletas:consultar_funciones' %}', {
-                "csrfmiddlewaretoken": '{{ csrf_token }}',
-                'pelicula_id': pelicula_id
-            }, function (data) {
+        $.get('{% url 'boletas:consultar_funciones' %}', {
+            "csrfmiddlewaretoken": '{{ csrf_token }}',
+            'pelicula_id': pelicula_id
+        }, function (data) {
 
-                tabla_funciones.clear();
-                tabla_funciones.destroy();
-                iniciar_tabla_funciones();
+            tabla_funciones.clear();
+            tabla_funciones.destroy();
+            iniciar_tabla_funciones();
 
-                for (var i = 0; i < data.lista_funciones.length; i++) {
+            for (var i = 0; i < data.lista_funciones.length; i++) {
 
-                    tabla_funciones.row.add([
-                        '<a href="#" class="mi_funcion" data-id="' + data.lista_funciones[i].id + '">' + data.lista_funciones[i].fecha + ' - ' + data.lista_funciones[i].hora + '</a>'
-                    ]).draw();
+                tabla_funciones.row.add([
+                    '<a href="#" class="mi_funcion" data-id="' + data.lista_funciones[i].id + '">' + data.lista_funciones[i].fecha + ' - ' + data.lista_funciones[i].hora + '</a>'
+                ]).draw();
 
-                }
-            });
+            }
         });
+    });
 
-        $(document).on("click", ".mi_funcion", function () {
-            var funcion_id = $(this).data('id');
+    $(document).on("click", ".mi_funcion", function () {
+        var funcion_id = $(this).data('id');
 
 
-            $.get('{% url 'boletas:consultar_sala' %}', {
+        $.get('{% url 'boletas:consultar_sala' %}', {
+            "csrfmiddlewaretoken": '{{ csrf_token }}',
+            'funcion_id': funcion_id
+        }, function (data) {
+            tipo_sala = data.tipo_sala;
+            $('.sillas').html(data.html);
+            $('#funcion_seleccionada').val(funcion_id);
+
+
+            $.get('{% url 'boletas:consultar_boletas_funcion' %}', {
                 "csrfmiddlewaretoken": '{{ csrf_token }}',
                 'funcion_id': funcion_id
             }, function (data) {
-                tipo_sala = data.tipo_sala;
-                $('.sillas').html(data.html);
-                $('#funcion_seleccionada').val(funcion_id);
-
-
-	            $.get('{% url 'boletas:consultar_boletas_funcion' %}', {
-	                "csrfmiddlewaretoken": '{{ csrf_token }}',
-	                'funcion_id': funcion_id
-	            }, function (data) {
-	            	index = 0; 
-	            	array = data.boletas_funcion
-					while (index < array.length) { 
-						silla_id = array[index]["i"] + "-" + array[index]["j"]
-						console.log(silla_id)
-						document.getElementById(silla_id).className = "OCUPADO"
-					    index++; 
-					}
-
-	            });
-
-
-           	});
-
-
-
-
+                index = 0;
+                array = data.boletas_funcion
+                while (index < array.length) {
+                    silla_id = array[index]["i"] + "-" + array[index]["j"]
+                    console.log(silla_id)
+                    document.getElementById(silla_id).className = "OCUPADO"
+                    index++;
+                }
+            });
         });
+    });
 
-        $('#id_medio_pago').change(function () {
+    $('#id_nombre_cliente').click(function () {
+        var cedula = document.getElementById('id_cedula').value;
+        var nombre_cliente = document.getElementById('id_nombre_cliente');
+        $.get('{% url 'accounts:consultar_cliente' %}', {
+                "csrfmiddlewaretoken": '{{ csrf_token }}',
+                'cedula': cedula
+            }, function (data) {
+                nombre_cliente.value = data.nombre;
+            });
+	});
 
-            var selector = document.getElementById('id_medio_pago');
-            var medio_pago = selector[selector.selectedIndex].value;
 
-            var cedula = document.getElementById('id_cedula').value;
-            var saldo_actual = document.getElementById('id_saldo_actual');
-            var nombre_cliente = document.getElementById('id_nombre_cliente');
-            console.log(medio_pago)
-            if (medio_pago == 'saldo') {
-                $.get('{% url 'accounts:consultar_cliente' %}', {
-                    "csrfmiddlewaretoken": '{{ csrf_token }}',
-                    'cedula': cedula
-                }, function (data) {
+    $('#id_medio_pago').change(function () {
+        var selector = document.getElementById('id_medio_pago');
+        var medio_pago = selector[selector.selectedIndex].value;
+        mi_medio_pago.value = medio_pago;
+        var cedula = document.getElementById('id_cedula').value;
+        var saldo_actual = document.getElementById('id_saldo_actual');
+        var nombre_cliente = document.getElementById('id_nombre_cliente');
+        console.log(medio_pago)
+        if (medio_pago == 'saldo') {
+            $.get('{% url 'accounts:consultar_cliente' %}', {
+                "csrfmiddlewaretoken": '{{ csrf_token }}',
+                'cedula': cedula
+            }, function (data) {
 
-                    nombre_cliente.value = data.nombre;
-                    saldo_actual.value = data.saldo_cliente;
+                nombre_cliente.value = data.nombre;
+                saldo_actual.value = data.saldo_cliente;
 
-                });
-            } else if (medio_pago == 'efectivo') {
-                saldo_actual.value = 'No disponible';
+            });
+        } else if (medio_pago == 'efectivo') {
+            saldo_actual.value = 'No disponible';
+        }
+
+    });
+
+</script>
+
+<script>
+
+    var sillas = [];
+
+    function myFunction(elemento_clickeado) {
+
+        var str_aux = elemento_clickeado.value;
+        var otro = str_aux.split("'").join('"');
+        console.log(otro);
+        obj = JSON.parse(otro);
+
+        var precio_sala = 0;
+        var precio_total = 0;
+
+        switch (tipo_sala) {
+            case "SALA_GENERAL": precio_sala = 4000;
+            case "SALA_IMAX": precio_sala = 5000;
+            case "SALA_3D": precio_sala = 4500;
+            case "SALA_4DX": precio_sala = 6000;
+        }
+
+        if (elemento_clickeado.className != "OCUPADO")
+            var datos_cliente = document.getElementById('datos_cliente');
+        if (elemento_clickeado.className == "MARCADO") {
+            elemento_clickeado.className = obj["color"];
+            elemento_clickeado.checked = false;
+
+            sillas.splice(sillas.indexOf(obj), 1);
+
+            if(sillas.length == 0)
+                datos_cliente.style.display = 'none';
+
+            precio_total = sillas.length * precio_sala;
+
+            for (let i = 0; i<sillas.length; i++){
+
+                var precio_silla = 0;
+
+                switch (sillas[i]['color']) {
+                    case "GENERAL": precio_total += 2000;
+                        break;
+                    case "PREFERENCIAL": precio_total += 3000;
+                        break;
+                    case "DISCAPACITADO": precio_total += 1000;
+                        break;
+                }
+
+            }
+            var total_final = document.getElementById('precio_final');
+            total_final.value = precio_total;
+            $('.total').html('<h3>TOTAL = $' + precio_total + '</h3>');
+
+        } else {
+
+
+            datos_cliente.style.display = 'block';
+            elemento_clickeado.className = "MARCADO";
+            elemento_clickeado.checked = true;
+            sillas.push(obj);
+
+            precio_total = sillas.length * precio_sala;
+
+
+            for (let i = 0; i<sillas.length; i++){
+
+                var precio_silla = 0;
+
+                switch (sillas[i]['color']) {
+                    case "GENERAL": precio_total += 2000;
+                        break;
+                    case "PREFERENCIAL": precio_total += 3000;
+                        break;
+                    case "DISCAPACITADO": precio_total += 1000;
+                        break;
+                }
+
             }
 
-        });
-
-	</script>
-
-	<script>
-
-        var sillas = [];
-
-        function myFunction(elemento_clickeado) {
-
-            var str_aux = elemento_clickeado.value;
-            var otro = str_aux.split("'").join('"');
-            console.log(otro);
-            obj = JSON.parse(otro);
-
-            var precio_sala = 0;
-            var precio_total = 0;
-
-            switch (tipo_sala) {
-                    case "SALA_GENERAL": precio_sala = 4000;
-                    case "SALA_IMAX": precio_sala = 5000;
-                    case "SALA_3D": precio_sala = 4500;
-                    case "SALA_4DX": precio_sala = 6000;
-                }
-
-            if (elemento_clickeado.className != "OCUPADO")
-            if (elemento_clickeado.className == "MARCADO") {
-                elemento_clickeado.className = obj["color"];
-                elemento_clickeado.checked = false;
-
-                sillas.splice(sillas.indexOf(obj), 1);
-
-                precio_total = sillas.length * precio_sala;
-
-                for (let i = 0; i<sillas.length; i++){
-
-                    var precio_silla = 0;
-
-                    switch (sillas[i]['color']) {
-                    case "GENERAL": precio_total += 2000;
-                    break;
-                    case "PREFERENCIAL": precio_total += 3000;
-                    break;
-                    case "DISCAPACITADO": precio_total += 1000;
-                    break;
-                }
-
-                }
-
-                $("#precio_final").val(precio_total);
-                $('.total').html('<h3>TOTAL = $' + precio_total + '</h3>');
-
-            } else {
-                elemento_clickeado.className = "MARCADO";
-                elemento_clickeado.checked = true;
-                sillas.push(obj);
-
-                precio_total = sillas.length * precio_sala;
+            var total_final = document.getElementById('precio_final');
+            total_final.value = precio_total;
+            $('.total').html('<h3>TOTAL = $' + precio_total + '</h3>');
+        }
+    };
 
 
-                for (let i = 0; i<sillas.length; i++){
-
-                    var precio_silla = 0;
-
-                    switch (sillas[i]['color']) {
-                    case "GENERAL": precio_total += 2000;
-                    break;
-                    case "PREFERENCIAL": precio_total += 3000;
-                    break;
-                    case "DISCAPACITADO": precio_total += 1000;
-                    break;
-                }
-
-                }
-
-                $("#precio_final").val(precio_total);
-                $('.total').html('<h3>TOTAL = $' + precio_total + '</h3>');
-            }
-        };
+    $('#id_cedula').on('click', function () {
+        $('#boletas_seleccionadas').val(JSON.stringify(sillas));
+    });
 
 
-        $('#id_cedula').on('click', function () {
-            $('#boletas_seleccionadas').val(JSON.stringify(sillas));
-        });
-
-
-	</script>
+</script>
 {% endblock js %}
 
