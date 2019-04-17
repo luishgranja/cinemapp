@@ -8,7 +8,7 @@ from apps.sucursales.models import *
 
 class CrearFuncionForm(forms.ModelForm):
 
-    def listarSalas(self,id_sucursal):
+    def listarSalas(self, id_sucursal):
         sala = forms.CharField(widget=ModelSelect2Widget(
             model=Sala,
             search_fields=['user__first_name__icontains'],

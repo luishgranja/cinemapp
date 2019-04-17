@@ -6,6 +6,7 @@ from apps.salas.models import *
 from apps.accounts.models import *
 from django.http.response import JsonResponse
 from django.contrib import messages
+from apps.accounts.models import *
 
 
 def vender_boleta(request):
@@ -26,14 +27,14 @@ def vender_boleta(request):
             tipo = silla['color']
             silla_aux = Silla.objects.get(ubicacion_x=i, ubicacion_y=j, sala=funcion.sala)
             boleta_funcion = Boleta.objects.filter(funcion=funcion, silla=silla_aux)
-            if(boleta_funcion.count() != 0):
+            if boleta_funcion.count() != 0:
                 flag_error = True
 
         if flag_error:
             messages.error(request, 'Hay algunas sillas que no están disponibles')
 
         form = CrearBoletaForm(request.POST)
-        if form.is_valid() and not(flag_error):
+        if form.is_valid() and not flag_error:
             if medio_pago == 'saldo':
                 try:
                     usuario = User.objects.get(cedula=form.data["cedula"])
@@ -98,8 +99,153 @@ def vender_boleta(request):
                            'form_saldo': SaldoForm()})
     else:
         form = CrearBoletaForm()
-        return render(request, 'boletas/vender_boleta.html', {'form': form, 'itemlist': list(range(0,26)), 'lista_sillas': 'lista_sillas', 'peliculas': peliculas,
+        return render(request, 'boletas/vender_boleta.html', {'form': form, 'itemlist': list(range(0, 26)),
+                                                              'lista_sillas': 'lista_sillas', 'peliculas': peliculas,
                                                               'form_saldo': SaldoForm()})
+
+
+def comprar_boleta(request,slug, id_funcion):
+    usuario = request.user
+    funcion = Funcion.objects.get(id=id_funcion)
+    pelicula = Pelicula.objects.get(funcion=funcion)
+    tipo_sala = funcion.sala.tipo_sala
+
+    if request.method == 'POST':
+        lista_sillas = request.POST.get('boletas', None)
+        precio_final = request.POST.get('precio_final', None)
+        funcion = Funcion.objects.get(id=id_funcion)
+        sillas = eval(lista_sillas)
+        flag_error = False
+        for silla in sillas:
+            i = silla['i']
+            j = silla['j']
+            tipo = silla['color']
+            silla_aux = Silla.objects.get(ubicacion_x=i, ubicacion_y=j, sala=funcion.sala)
+            boleta_funcion = Boleta.objects.filter(funcion=funcion, silla=silla_aux)
+            if boleta_funcion.count() != 0:
+                flag_error = True
+
+        if flag_error:
+            messages.error(request, 'Hay algunas sillas que no están disponibles')
+
+        form = CrearBoletaForm(request.POST)
+        if form.is_valid() and not flag_error:
+            if form.cleaned_data['medio_pago'] == 'saldo':
+                try:
+                    usuario = User.objects.get(cedula=form.data["cedula"])
+                    saldo_actual = usuario.cliente.saldo
+                    if saldo_actual >= int(precio_final):
+                        for silla in sillas:
+                            i = silla['i']
+                            j = silla['j']
+                            tipo = silla['color']
+                            silla_aux = Silla.objects.get(ubicacion_x=i, ubicacion_y=j, sala=funcion.sala)
+                            boleta_aux = Boleta()
+                            boleta_aux.total = 3800
+                            # CORREGIR PRECIO BOLETA ESTOY AQUI NO ME IGNOREN
+                            boleta_aux.funcion = funcion
+                            boleta_aux.silla = silla_aux
+                            boleta_aux.cedula = form.data["cedula"]
+                            boleta_aux.cedula_empleado = usuario.cedula
+                            boleta_aux.nombre_cliente = form.data["nombre_cliente"]
+                            boleta_aux.save()
+                        usuario.cliente.saldo = saldo_actual - int(precio_final)
+                        usuario.cliente.save()
+                        messages.success(request, 'Boletas compradas exitosamente!')
+                        Notificacion.objects.create(usuario=usuario, titulo='Compra de Boletas para '+str(pelicula.nombre),
+                                                    mensaje='Se ha confirmado la compra de boletas por un valor de $'+str(precio_final),
+                                                    tipo=3)
+                        return redirect('accounts:home')
+                    else:
+                        messages.error(request, 'No tienes saldo suficiente')
+                        return render(request, 'boletas/comprar_boleta.html',
+                                      {'form': form, 'itemlist': list(range(0, 26)),
+                                       'sillas': consultar_sala_comprar(id_funcion),
+                                       'pelicula': pelicula, 'funcion': funcion, 'tipo_sala': tipo_sala})
+
+                except(User.cliente.RelatedObjectDoesNotExist, User.DoesNotExist):
+                    messages.error(request, 'El usuario no puede pagar con saldo')
+                    return render(request, 'boletas/comprar_boleta.html',
+                                  {'form': form, 'itemlist': list(range(0, 26)),
+                                   'sillas': consultar_sala_comprar(id_funcion),
+                                   'pelicula': pelicula, 'funcion': funcion, 'tipo_sala': tipo_sala})
+
+            elif form.cleaned_data['medio_pago'] == 'efectivo':
+                for silla in sillas:
+                    i = silla['i']
+                    j = silla['j']
+                    tipo = silla['color']
+                    silla_aux = Silla.objects.get(ubicacion_x=i, ubicacion_y=j, sala=funcion.sala)
+                    boleta_aux = Boleta()
+                    boleta_aux.total = 3800
+                    # CORREGIR PRECIO BOLETA ESTOY AQUI NO ME IGNOREN
+                    boleta_aux.funcion = funcion
+                    boleta_aux.silla = silla_aux
+                    boleta_aux.cedula = form.data["cedula"]
+                    boleta_aux.cedula_empleado = usuario.cedula
+                    boleta_aux.nombre_cliente = form.data["nombre_cliente"]
+                    boleta_aux.save()
+                messages.success(request, 'Boletas compradas exitosamente!')
+                return redirect('accounts:home')
+        else:
+            boletas_compradas = Boleta.objects.filter(funcion=funcion)
+            messages.error(request, 'Por favor corrige los errores')
+            return render(request, 'boletas/comprar_boleta.html',
+                          {'form': form, 'itemlist': list(range(0, 26)),
+                           'sillas': consultar_sala_comprar(id_funcion),
+                           'pelicula': pelicula, 'funcion': funcion, 'tipo_sala': tipo_sala})
+    else:
+        form = CrearBoletaForm()
+        form.fields['funcion'].initial = funcion
+        if not usuario.is_anonymous:
+            form.fields['cedula'].initial = usuario.cedula
+            form.fields['nombre_cliente'].initial = usuario.get_full_name()
+
+        return render(request, 'boletas/comprar_boleta.html', {'form': form, 'itemlist': list(range(0, 26)),
+                                                               'sillas': consultar_sala_comprar(id_funcion),
+                                                               'pelicula': pelicula, 'funcion': funcion,
+                                                               'tipo_sala': tipo_sala})
+
+
+def consultar_sala_comprar(funcion_id):
+    try:
+        funcion = Funcion.objects.get(id=funcion_id)
+        sala = Sala.objects.get(funcion=funcion)
+        sillas = sala.sillas.all()
+        lista_sillas = []
+        for i in range(0, 677):
+            lista_sillas.append(False)
+
+        for silla in sillas:
+            silla_numero = (26 * (silla.ubicacion_x + 1 - 1)) + silla.ubicacion_y + 1
+            lista_sillas[silla_numero] = silla
+
+        html = ""
+
+        for i in range(0, 26):
+            html += '<div class="flex-container">'
+            for j in range(0, 26):
+                pos = (i * 26) + j + 1
+                silla = lista_sillas[pos]
+                if silla:
+                    if Boleta.objects.filter(funcion=funcion, silla=silla).exists():
+                                html += '<div> <input id="' + str(i) + '-' + str(
+                                j) + '" class="OCUPADO" onclick="myFunction(this)" type="checkbox" name="silla" value="{"i":"' + str(
+                                i) + ',"j":' + str(j) + ',"color": "SIN_MARCAR"}" disabled=""> </div>'
+                    else:
+                        html += "<div> <input id='" + str(i) + "-" + str(
+                        j) + "' class='" + silla.tipo + "' onclick='myFunction(this)' type='checkbox'  name='silla' hola='" + silla.nombre + "' checked value=" + "{'i':" + str(
+                        i) + ",'j':" + str(j) + ",'color':'" + silla.tipo + "'}> </div>"
+
+                else:
+                    html += '<div> <input id="' + str(i) + '-' + str(
+                        j) + '" class="SIN_MARCAR" onclick="myFunction(this)" type="checkbox" name="silla" value="{"i":"' + str(
+                        i) + ',"j":' + str(j) + ',"color": "SIN_MARCAR"}" disabled=""> </div>'
+            html += '</div>'
+        return html
+
+    except Funcion.DoesNotExist:
+        return 0
 
 
 def consultar_pelicula(request):
@@ -157,12 +303,16 @@ def consultar_sala(request):
             for i in range(0, 26):
                 html += '<div class="flex-container">'
                 for j in range(0, 26):
-                    pos = (i*26)+j+1
+                    pos = (i * 26) + j + 1
                     silla = lista_sillas[pos]
                     if silla:
-                        html += "<div> <input id='"+str(i)+"-"+str(j)+"' class='"+silla.tipo+"' onclick='myFunction(this)' type='checkbox'  name='silla' hola='"+silla.nombre+"' checked value=" + "{'i':" +str(i)+",'j':" +str(j)+",'color':'" + silla.tipo+"'}> </div>"
+                        html += "<div> <input id='" + str(i) + "-" + str(
+                            j) + "' class='" + silla.tipo + "' onclick='myFunction(this)' type='checkbox'  name='silla' hola='" + silla.nombre + "' checked value=" + "{'i':" + str(
+                            i) + ",'j':" + str(j) + ",'color':'" + silla.tipo + "'}> </div>"
                     else:
-                        html += '<div> <input id="'+str(i)+'-'+str(j)+'" class="SIN_MARCAR" onclick="myFunction(this)" type="checkbox" name="silla" value="{"i":"'+str(i)+',"j":'+str(j)+',"color": "SIN_MARCAR"}" disabled=""> </div>'
+                        html += '<div> <input id="' + str(i) + '-' + str(
+                            j) + '" class="SIN_MARCAR" onclick="myFunction(this)" type="checkbox" name="silla" value="{"i":"' + str(
+                            i) + ',"j":' + str(j) + ',"color": "SIN_MARCAR"}" disabled=""> </div>'
 
                 html += '</div>'
             return JsonResponse({'html': html, 'tipo_sala': sala.tipo_sala})
@@ -171,13 +321,26 @@ def consultar_sala(request):
             return JsonResponse({'response': 0})
 
 
+def consultar_boletas_ocupadas(id_funcion):
+    try:
+        funcion = Funcion.objects.get(id=id_funcion)
+        boletas_fumcion = Boleta.objects.filter(funcion=funcion)
+        boletas_json = []
+        for boleta in boletas_fumcion:
+            boleta_json = {"i": boleta.silla.ubicacion_x, "j": boleta.silla.ubicacion_y}
+            boletas_json.append(boleta_json)
+        return JsonResponse({'boletas_funcion': boletas_json})
+
+    except Funcion.DoesNotExist:
+        return JsonResponse({'response': 0})
+
+
 def consultar_boletas_funcion(request):
     if request.is_ajax():
         funcion_id = request.GET.get('funcion_id', None)
         try:
             funcion = Funcion.objects.get(id=int(funcion_id))
             boletas_fumcion = Boleta.objects.filter(funcion=funcion)
-            print(boletas_fumcion)
             boletas_json = []
             for boleta in boletas_fumcion:
                 boleta_json = {"i": boleta.silla.ubicacion_x, "j": boleta.silla.ubicacion_y}

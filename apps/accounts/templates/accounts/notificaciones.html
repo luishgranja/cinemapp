@@ -2,7 +2,10 @@
 {% load staticfiles %}
 {% load bootstrap3 %}
 
-{% block miga_pan %}{% endblock miga_pan %}
+{% block miga_pan %}
+	<li><a href="{% url 'accounts:home'%}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
+	<li class="active">NOTIFICACIONES</li>
+{% endblock miga_pan %}
 {% block titulo %}Notificaciones{% endblock titulo %}
 
 {% block contenido %}

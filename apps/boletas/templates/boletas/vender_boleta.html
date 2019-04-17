@@ -245,7 +245,6 @@
     var tipo_sala;
     var mi_medio_pago = document.getElementById('pago_cliente');
     mi_medio_pago.value = 'efectivo';
-    console.log(mi_medio_pago.value);
     $(function () {
         $('#tabla_peliculas').DataTable({
             "pageLength": 13,
@@ -257,7 +256,7 @@
                 "url": "{% static 'bower_components/datatables.net/spanish.json' %}"
             }
         })
-    })
+    });
 
     function iniciar_tabla_funciones(datos) {
         tabla_funciones = $('#tabla_funciones').DataTable({
@@ -317,11 +316,10 @@
                 'funcion_id': funcion_id
             }, function (data) {
                 index = 0;
-                array = data.boletas_funcion
+                array = data.boletas_funcion;
                 while (index < array.length) {
-                    silla_id = array[index]["i"] + "-" + array[index]["j"]
-                    console.log(silla_id)
-                    document.getElementById(silla_id).className = "OCUPADO"
+                    silla_id = array[index]["i"] + "-" + array[index]["j"];
+                    document.getElementById(silla_id).className = "OCUPADO";
                     index++;
                 }
             });

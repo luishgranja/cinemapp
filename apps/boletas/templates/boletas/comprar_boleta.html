@@ -1,0 +1,349 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% load list_index %}
+{% load mathfilters %}
+
+{% block titulo %}Comprar Boletas - {{ pelicula.nombre }}{% endblock titulo %}
+{% block descripcion_pagina %}{{ funcion.fecha_funcion | date:"l j F" }} {{ funcion.hora_funcion }} |
+	{{ funcion.sala }} {% endblock descripcion_pagina %}
+{% block miga_pan %}
+	<li><a href="{% url 'accounts:home' %}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
+{% endblock miga_pan %}
+
+{% block css %}
+	<link rel="stylesheet" href="{% static 'bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
+	<link href="{% static 'bower_components/datatables.net-bs/responsive/responsive.dataTables.min.css' %}"
+	      rel="stylesheet">
+	{{ form.media.css }}
+	<style media="screen">
+		.select2-container {
+			width: 100% !important;
+			height: 100% !important;
+		}
+
+		.rectangulo {
+			background-color: black;
+			width: 250px;
+			margin: 10px;
+			margin-left: auto;
+			margin-right: auto;
+
+		}
+
+		.flex-container {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border: 1px;
+		}
+
+		.flex-container > div {
+			border: 1px;
+			background-color: white;
+			color: white;
+			width: 18px;
+			margin: 0px;
+			padding: 0px;
+			text-align: center;
+			line-height: 13px;
+		}
+
+		input[type=checkbox]::after {
+			display: block;
+			content: attr(hola);
+			position: absolute;
+			color: black;
+			font-weight: 500;
+			font-size: 8px;
+			margin-left: 10% auto;
+			margin-top: 0.3%;
+			width: 2.5%;
+
+		}
+
+		input[type='checkbox'] {
+			content: '';
+			display: inline-block;
+			-webkit-appearance: none;
+			-moz-appearance: none;
+			margin: 0;
+			width: 16px;
+			height: 16px;
+
+		}
+
+		input[type='checkbox']:checked {
+			text-align: center;
+		}
+
+		input[type=checkbox]:hover {
+			filter: brightness(10%);
+
+		}
+
+		input[type='radio'] {
+			content: '';
+			display: inline-block;
+			-webkit-appearance: none;
+			-moz-appearance: none;
+			margin-left: 5px;
+			width: 13px;
+			height: 13px;
+		}
+
+		input[type='radio']:checked {
+			text-align: center;
+			font-size: 10px;
+		}
+
+		input[type=radio]:hover {
+			filter: brightness(10%);
+
+		}
+
+		.SIN_MARCAR {
+			background: rgb(238, 238, 235);
+		}
+
+		.PREFERENCIAL {
+			background: rgb(255, 91, 185);
+		}
+
+		.GENERAL {
+			background: rgb(24, 215, 79);
+		}
+
+		.DISCAPACITADO {
+			background: rgb(0, 185, 240);
+		}
+
+		.MARCADO {
+			background: rgb(0, 0, 0);
+		}
+
+		.OCUPADO {
+			background: rgb(255, 0, 0);
+		}
+	</style>
+
+{% endblock css %}
+
+{% block contenido %}
+
+	<div class="col-md-6">
+		<div class="box">
+			<div class="box-header with-border">
+				<h3 class="box-title">Sillas Disponibles</h3>
+			</div>
+			<div class="box-body">
+
+				<form method="post" enctype="multipart/form-data"> {% csrf_token %}
+					<div class="row">
+						<div class="col-sm-4 col-md-offset-3">
+							{% bootstrap_field form.medio_pago %}
+						</div>
+						<div class="col-sm-2 hidden">
+							{% bootstrap_field form.cedula %}
+						</div>
+						<div class="col-sm-2 hidden">
+							{% bootstrap_field form.nombre_cliente %}
+						</div>
+						<div class="col-sm-2 hidden">
+							{% bootstrap_field form.funcion %}
+						</div>
+						<input type="hidden" id="boletas_seleccionadas" name="boletas" value="">
+						<input type="hidden" id="precio_final" name="precio_final" value="">
+					</div>
+
+					<div class="rectangulo">
+						<center>
+							<font color="white" size="5">Pantalla</font>
+						</center>
+					</div>
+
+					<div style='text-align:center'>
+						<input type="radio" class="PREFERENCIAL" id="p" name="drone" value="Preferencial">
+						<label for="p">Preferencial = $3000</label>
+
+						<input type="radio" class="GENERAL" id="g" name="drone" value="General">
+						<label for="g">General = $2000</label>
+
+						<input type="radio" class="DISCAPACITADO" id="d" name="drone" value="Discapacitados">
+						<label for="d">Discapacitado = $1000</label>
+					</div>
+					<div>{{ sillas|safe }}</div>
+					<button type="submit" class="btn btn-success btn-raised pull-right">Comprar boletas</button>
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="col-md-6">
+		<div class="box">
+			<div class="box-header with-border">
+				<h3 class="box-title total"></h3>
+			</div>
+			<div class="box-body">
+				<table class="table table-bordered table-responsive" id="tabla_boletas">
+					<thead>
+					<th>Silla</th>
+					<th>Precio</th>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+{% endblock contenido %}
+
+
+{% block js %}
+
+	<script src="{% static 'bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+	<script src="{% static 'bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+	<script src="{% static 'bower_components/datatables.net-bs/responsive/dataTables.responsive.min.js' %}"></script>
+
+	{{ form.media.js }}
+	<script type="text/javascript">
+
+
+        var tabla_funciones;
+        var tipo_sala;
+
+        function iniciar_tabla_boletas() {
+            tabla_boletas = $('#tabla_boletas').DataTable({
+                "pageLength": 13,
+                "lengthChange": false,
+                "searching": false,
+                "info": false,
+                "pagingType": "numbers",
+                "language": {
+                    "url": "{% static 'bower_components/datatables.net/spanish.json' %}"
+                }
+            })
+        }
+
+        iniciar_tabla_boletas();
+	</script>
+
+	<script type="text/javascript">
+
+        var sillas = [];
+        var nombre_sillas = [];
+
+        function myFunction(elemento_clickeado) {
+
+            var str_aux = elemento_clickeado.value;
+            var otro = str_aux.split("'").join('"');
+            obj = JSON.parse(otro);
+
+            let precio_sala = 0;
+            var precio_total = 0;
+            tipo_sala = "{{ tipo_sala|safe }}"
+
+            switch (tipo_sala) {
+                case "SALA_GENERAL":
+                    precio_sala = 4000;
+                    break;
+                case "SALA_IMAX":
+                    precio_sala = 5000;
+                    break;
+                case "SALA_3D":
+                    precio_sala = 4500;
+                    break;
+                case "SALA_4DX":
+                    precio_sala = 6000;
+                    break;
+            }
+
+            if (elemento_clickeado.className == "MARCADO") {
+
+                elemento_clickeado.className = obj["color"];
+                elemento_clickeado.checked = false;
+
+                sillas.splice(sillas.indexOf(obj), 1);
+                nombre_sillas.splice(nombre_sillas.indexOf(elemento_clickeado.getAttribute("hola")), 1);
+
+                precio_total = sillas.length * precio_sala;
+
+                //Tabla de sillas seleccionadas
+                tabla_boletas.clear();
+                tabla_boletas.destroy();
+                iniciar_tabla_boletas();
+
+                for (let i = 0; i < sillas.length; i++) {
+
+                    var precio_silla = 0;
+
+                    switch (sillas[i]['color']) {
+                        case "GENERAL":
+                            precio_total += 2000;
+                            precio_silla = 2000;
+                            break;
+                        case "PREFERENCIAL":
+                            precio_total += 3000;
+                            precio_silla = 3000;
+                            break;
+                        case "DISCAPACITADO":
+                            precio_total += 1000;
+                            precio_silla = 1000;
+                            break;
+                    }
+
+                    tabla_boletas.row.add([nombre_sillas[i], precio_silla]);
+
+                }
+                var total_final = document.getElementById('precio_final');
+                total_final.value = precio_total;
+                $('#boletas_seleccionadas').val(JSON.stringify(sillas));
+                $('.total').html('<h3>TOTAL = $' + precio_total + '</h3>');
+
+            } else {
+
+                elemento_clickeado.className = "MARCADO";
+                elemento_clickeado.checked = true;
+                sillas.push(obj);
+                nombre_sillas.push(elemento_clickeado.getAttribute("hola"));
+
+                precio_total = sillas.length * precio_sala;
+
+                //Tabla de sillas seleccionadas
+                tabla_boletas.clear();
+                tabla_boletas.destroy();
+                iniciar_tabla_boletas();
+
+
+                for (let i = 0; i < sillas.length; i++) {
+
+                    var precio_silla = 0;
+
+                    switch (sillas[i]['color']) {
+                        case "GENERAL":
+                            precio_total += 2000;
+                            precio_silla = 2000;
+                            break;
+                        case "PREFERENCIAL":
+                            precio_total += 3000;
+                            precio_silla = 3000;
+                            break;
+                        case "DISCAPACITADO":
+                            precio_total += 1000;
+                            precio_silla = 1000;
+                            break;
+                    }
+                    tabla_boletas.row.add([nombre_sillas[i], precio_silla]);
+                }
+
+                var total_final = document.getElementById('precio_final');
+                total_final.value = precio_total;
+                $('#boletas_seleccionadas').val(JSON.stringify(sillas));
+                $('.total').html('<h3>TOTAL = $' + precio_total + '</h3>');
+            }
+        }
+
+	</script>
+{% endblock js %}

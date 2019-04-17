@@ -3,6 +3,7 @@ from .forms import *
 from django.contrib import messages
 from django.http import HttpResponse
 from apps.accounts.decorators import check_recaptcha
+from apps.funciones.models import *
 
 @check_recaptcha
 def crear_pelicula(request):
@@ -68,8 +69,10 @@ def editar_pelicula(request, id_pelicula):
 def consultar_cartelera(request):
     return render(request,'peliculas/consultar_peliculas.html', {'peliculas': listar_cartelera()})
 
+
 def consultar_proximos_estrenos(request):
     return render(request,'peliculas/consultar_peliculas.html', {'peliculas': listar_peliculas_proximo_estreno()})
+
 
 def listar_pelicula(slug):
     return Pelicula.get_pelicula(slug)
@@ -83,8 +86,11 @@ def ver_pelicula(request, slug):
     elif usuario.is_anonymous or usuario.is_cliente:
         base_template_name = 'base_cliente.html'
 
-    return render(request, 'peliculas/consultar_pelicula.html',{'peli': listar_pelicula(slug),
-                                                                'base_template_name': base_template_name})
+    pelicula = listar_pelicula(slug)
+    funciones = Funcion.objects.filter(pelicula=pelicula)
+
+    return render(request, 'peliculas/consultar_pelicula.html', {'peli': pelicula, 'funciones': funciones,
+                                                                 'base_template_name': base_template_name})
 
 
 def listar_generos():

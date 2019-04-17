@@ -1,0 +1,76 @@
+{% extends 'base_cliente.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+
+{% block miga_pan %}
+	<li><a href="{% url 'accounts:home'%}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
+	<li class="active">CONSULTAR SALDO</li>
+{% endblock miga_pan %}
+{% block titulo %}Consultar Saldo{% endblock titulo %}
+
+{% block contenido %}
+
+	<section class="invoice">
+		<!-- title row -->
+		<div class="row">
+			<div class="col-xs-12">
+				<h2 class="page-header">
+					<i class="fa fa-money"></i>{{ user.get_full_name }}
+					<small class="pull-right">Fecha: {% now "j F Y" %}</small>
+				</h2>
+				<h4>Boletas Compradas</h4>
+			</div>
+			<!-- /.col -->
+		</div>
+
+		<!-- Table row -->
+		<div class="row">
+			<div class="col-xs-12 table-responsive">
+				<table class="table table-striped">
+					<thead>
+					<tr>
+						<th>Pelicula</th>
+						<th>Fecha</th>
+						<th>Medio Pago</th>
+						<th>Total</th>
+					</tr>
+					</thead>
+					<tbody>
+					{% for boleta in boletas %}
+						<tr>
+							<td>{{ boleta.funcion.pelicula.nombre }}</td>
+							<td>{{ boleta.fecha_compra }}</td>
+							<td>{{ boleta.medio_pago }}</td>
+						<td><span class="badge bg-red">${{ boleta.total }}</span></td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+			<!-- /.col -->
+		</div>
+		<!-- /.row -->
+
+		<div class="row">
+			<!-- accepted payments column -->
+			<div class="col-xs-6">
+				<p class="lead">Saldo Actual:</p>
+			</div>
+			<!-- /.col -->
+			<div class="col-xs-6">
+				<p class="lead"><b>${{ saldo }}</b></p>
+
+
+				</div>
+			</div>
+
+		<!-- this row will not appear when printing -->
+		<div class="row no-print">
+			<div class="col-xs-12">
+				<a href="{% url 'accounts:guardar_saldo' %}" target="_blank" class="btn btn-default"><i class="fa fa-print"></i>
+					Guardar PDF</a>
+			</div>
+		</div>
+	</section>
+
+{% endblock contenido %}

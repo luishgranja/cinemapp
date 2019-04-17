@@ -9,6 +9,7 @@ from apps.peliculas.models import *
 from apps.sucursales.models import *
 from apps.peliculas.views import *
 from apps.accounts.decorators import check_recaptcha
+from apps.boletas.models import *
 
 
 # Funcion para cambiar el estado de una notificacion a leida
@@ -87,7 +88,7 @@ def consultar_notificaciones(request):
     usuario = request.user
     if request.method == 'GET':
         return render(request, 'accounts/notificaciones.html',
-        {'notis_all':notis_all(usuario), 'notis':notificaciones(usuario), 'sucursales': Sucursal.get_info()})
+        {'notis_all':notis_all(usuario), 'notis': notificaciones(usuario), 'sucursales': Sucursal.get_info()})
 
 @login_required
 def home(request):
@@ -103,6 +104,8 @@ def home(request):
         return render(request, 'accounts/home_operador.html', {'user': usuario, 'datos':
             datos_dashboard_operador(), 'peliculas': listar_cartelera(), 'form_saldo': CargarSaldoForm()})
 
+
+@check_recaptcha
 def signup(request):
     # Usuario que hizo la peticion a la funcion (usuario que esta en la sesion)
     usuario = request.user
@@ -326,3 +329,21 @@ def cargar_saldo(request):
             return JsonResponse({'saldo': 0})
 
     return JsonResponse({'error':'error'})
+
+
+def consultar_saldo(request):
+    usuario = request.user
+    cliente = User.objects.get(cedula=usuario.cedula)
+    saldo = cliente.cliente.saldo
+    boletas = Boleta.objects.filter(cedula=usuario.cedula)
+    if request.method == 'GET':
+        return render(request, 'accounts/consultar_saldo.html',{'saldo': saldo, 'boletas': boletas})
+
+def guardar_saldo(request):
+    usuario = request.user
+    cliente = User.objects.get(cedula=usuario.cedula)
+    saldo = cliente.cliente.saldo
+    boletas = Boleta.objects.filter(cedula=usuario.cedula)
+    if request.method == 'GET':
+        return render(request, 'accounts/guardar_consulta_saldo.html', {'saldo': saldo, 'boletas': boletas})
+
