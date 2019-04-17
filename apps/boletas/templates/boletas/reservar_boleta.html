@@ -4,7 +4,7 @@
 {% load list_index %}
 {% load mathfilters %}
 
-{% block titulo %}Comprar Boletas - {{ pelicula.nombre }}{% endblock titulo %}
+{% block titulo %}Reservar Boletas - {{ pelicula.nombre }}{% endblock titulo %}
 {% block descripcion_pagina %}{{ funcion.fecha_funcion | date:"l j F" }} {{ funcion.hora_funcion }} |
 	{{ funcion.sala }} {% endblock descripcion_pagina %}
 {% block miga_pan %}
@@ -173,7 +173,7 @@
 						<label for="d">Discapacitado = $1000</label>
 					</div>
 					<div>{{ sillas|safe }}</div>
-					<button type="submit" class="btn btn-success btn-raised pull-right">Comprar boletas</button>
+					<button type="submit" class="btn btn-success btn-raised pull-right">Reservar boletas</button>
 				</form>
 			</div>
 		</div>
@@ -210,7 +210,7 @@
 	{{ form.media.js }}
 	<script type="text/javascript">
 
-		var tipo_sala;
+        var tipo_sala;
 
         function iniciar_tabla_boletas() {
             tabla_boletas = $('#tabla_boletas').DataTable({
@@ -292,7 +292,7 @@
                             break;
                     }
 
-                    tabla_boletas.row.add([nombre_sillas[i], precio_silla+precio_sala]);
+                    tabla_boletas.row.add([nombre_sillas[i], precio_silla]);
 
                 }
                 var total_final = document.getElementById('precio_final');
@@ -333,7 +333,7 @@
                             precio_silla = 1000;
                             break;
                     }
-                    tabla_boletas.row.add([nombre_sillas[i], precio_silla+precio_sala]);
+                    tabla_boletas.row.add([nombre_sillas[i], precio_silla]);
                 }
 
                 var total_final = document.getElementById('precio_final');

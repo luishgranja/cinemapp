@@ -47,7 +47,11 @@
 				{% for sucursal in sucursales %}
 					<h4><b>{{sucursal.grouper}}</b></h4>
 					{% for funcion in sucursal.list %}
+						{% if funcion.pelicula.is_estreno %}
 						<a href="{% url 'boletas:comprar_boleta' funcion.pelicula.slug funcion.id %}"><p>{{ funcion.fecha_funcion | date:"l j F" }} {{ funcion.hora_funcion }} | {{ funcion.sala }}</p></a>
+						{% else %}
+						<a href="{% url 'boletas:crear_reserva' funcion.pelicula.slug funcion.id %}"><p>{{ funcion.fecha_funcion | date:"l j F" }} {{ funcion.hora_funcion }} | {{ funcion.sala }}</p></a>
+						{% endif %}
 				{% endfor %}
 			{% endfor %}
 			</div>

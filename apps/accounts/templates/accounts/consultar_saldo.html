@@ -3,7 +3,7 @@
 {% load bootstrap3 %}
 
 {% block miga_pan %}
-	<li><a href="{% url 'accounts:home'%}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
+	<li><a href="{% url 'accounts:home' %}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
 	<li class="active">CONSULTAR SALDO</li>
 {% endblock miga_pan %}
 {% block titulo %}Consultar Saldo{% endblock titulo %}
@@ -18,56 +18,57 @@
 					<i class="fa fa-money"></i>{{ user.get_full_name }}
 					<small class="pull-right">Fecha: {% now "j F Y" %}</small>
 				</h2>
-				<h4>Boletas Compradas</h4>
+				<h4>Boletas | <span class="badge bg-yellow">Reservadas</span> <span class="badge bg-red">Compradas</span></h4>
 			</div>
-			<!-- /.col -->
 		</div>
 
-		<!-- Table row -->
+		<!-- Tablita por cada fecha que haya comprado o reservado boleta -->
 		<div class="row">
 			<div class="col-xs-12 table-responsive">
-				<table class="table table-striped">
+				{% regroup boletas by fecha_compra|date:"l j F | f A" as fechas %}
+				{% for fecha in fechas %}
+					<p class="lead">{{ fecha.grouper }}</p>
+					<table class="table table-striped table-bordered table-condensed">
 					<thead>
 					<tr>
 						<th>Pelicula</th>
-						<th>Fecha</th>
+						<th>Silla</th>
 						<th>Medio Pago</th>
 						<th>Total</th>
 					</tr>
 					</thead>
 					<tbody>
-					{% for boleta in boletas %}
+					{% for boleta in fecha.list %}
 						<tr>
 							<td>{{ boleta.funcion.pelicula.nombre }}</td>
-							<td>{{ boleta.fecha_compra }}</td>
+							<td>{{ boleta.silla.nombre }}</td>
 							<td>{{ boleta.medio_pago }}</td>
-						<td><span class="badge bg-red">${{ boleta.total }}</span></td>
+							{% if boleta.reserva %}
+								<td><span class="badge bg-yellow">${{ boleta.total }}</span></td>
+							{% else %}
+								<td><span class="badge bg-red">${{ boleta.total }}</span></td>
+							{% endif %}
 						</tr>
 					{% endfor %}
-					</tbody>
+				</tbody>
 				</table>
+			{% endfor %}
 			</div>
-			<!-- /.col -->
 		</div>
-		<!-- /.row -->
 
 		<div class="row">
-			<!-- accepted payments column -->
 			<div class="col-xs-6">
 				<p class="lead">Saldo Actual:</p>
 			</div>
-			<!-- /.col -->
 			<div class="col-xs-6">
 				<p class="lead"><b>${{ saldo }}</b></p>
-
-
-				</div>
 			</div>
+		</div>
 
-		<!-- this row will not appear when printing -->
 		<div class="row no-print">
 			<div class="col-xs-12">
-				<a href="{% url 'accounts:guardar_saldo' %}" target="_blank" class="btn btn-default"><i class="fa fa-print"></i>
+				<a href="{% url 'accounts:guardar_saldo' %}" target="_blank" class="btn btn-default"><i
+						class="fa fa-print"></i>
 					Guardar PDF</a>
 			</div>
 		</div>

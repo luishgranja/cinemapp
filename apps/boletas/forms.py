@@ -1,5 +1,6 @@
 from django import forms
 from apps.boletas.models import *
+from django_select2.forms import ModelSelect2Widget, Select2MultipleWidget
 import re
 
 
@@ -39,3 +40,13 @@ class SaldoForm(forms.Form):
 
         for fieldname in ['saldo_actual', 'total_boleta']:
             self.fields[fieldname].widget.attrs['placeholder'] = ''
+
+
+class PagarReservaForm(forms.Form):
+    cliente = forms.CharField(widget=ModelSelect2Widget(
+        model=User,
+        search_fields=['user__cedula__icontains'],
+        queryset=User.objects.filter(cedula__in=Boleta.objects.filter(reserva=True).distinct().values('cedula'))
+    ), required=False)
+
+    boletas_reservadas = forms.CharField(widget=Select2MultipleWidget())

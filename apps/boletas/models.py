@@ -11,6 +11,7 @@ class Boleta(models.Model):
     nombre_cliente = models.CharField(max_length=30, blank=False)
     fecha_compra = models.DateTimeField(auto_now=True)
     total = models.IntegerField(default=0, blank=False)
+    reserva = models.BooleanField(default=False)
 
     MEDIOS_PAGO = (
         ('efectivo', 'Efectivo'),
@@ -18,6 +19,9 @@ class Boleta(models.Model):
     )
 
     medio_pago = models.CharField(choices=MEDIOS_PAGO, default='efectivo', max_length=10)
+
+    class Meta:
+        ordering = ['-fecha_compra']
 
 
 

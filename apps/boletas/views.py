@@ -9,6 +9,115 @@ from django.contrib import messages
 from apps.accounts.models import *
 
 
+# Crear reserva para el Cliente
+def crear_reserva(request, slug, id_funcion):
+    usuario = request.user
+    funcion = Funcion.objects.get(id=id_funcion)
+    pelicula = Pelicula.objects.get(funcion=funcion)
+    tipo_sala = funcion.sala.tipo_sala
+
+    if request.method == 'POST':
+        lista_sillas = request.POST.get('boletas', None)
+        funcion = Funcion.objects.get(id=id_funcion)
+        sillas = eval(lista_sillas)
+        flag_error = False
+        for silla in sillas:
+            i = silla['i']
+            j = silla['j']
+            tipo = silla['color']
+            silla_aux = Silla.objects.get(ubicacion_x=i, ubicacion_y=j, sala=funcion.sala)
+            boleta_funcion = Boleta.objects.filter(funcion=funcion, silla=silla_aux)
+            if boleta_funcion.count() != 0:
+                flag_error = True
+
+        if flag_error:
+            messages.error(request, 'Hay algunas sillas que no están disponibles')
+
+        form = CrearBoletaForm(request.POST)
+        if form.is_valid() and not flag_error:
+            if form.cleaned_data['medio_pago'] == 'efectivo':
+                for silla in sillas:
+                    i = silla['i']
+                    j = silla['j']
+                    silla_aux = Silla.objects.get(ubicacion_x=i, ubicacion_y=j, sala=funcion.sala)
+                    boleta_aux = Boleta()
+
+                    # Calculo del precio boleta
+                    tipo_silla = silla_aux.tipo
+
+                    precio_silla = {
+                        'GENERAL': 2000,
+                        'PREFERENCIAL': 3000,
+                        'DISCAPACITADO': 1000
+                    }
+
+                    precio_sala = {
+                        "SALA_GENERAL": 4000,
+                        "SALA_IMAX": 5000,
+                        "SALA_3D": 4500,
+                        "SALA_4DX": 6000
+                    }
+
+                    boleta_aux.total = precio_silla[tipo_silla] + precio_sala[funcion.sala.tipo_sala]
+                    boleta_aux.funcion = funcion
+                    boleta_aux.reserva = True
+                    boleta_aux.silla = silla_aux
+                    boleta_aux.cedula = form.data["cedula"]
+                    boleta_aux.cedula_empleado = usuario.cedula
+                    boleta_aux.nombre_cliente = form.data["nombre_cliente"]
+                    boleta_aux.save()
+                messages.success(request, 'Boletas Reservadas exitosamente!')
+                return redirect('accounts:home')
+        else:
+            messages.error(request, 'Por favor corrige los errores')
+            return render(request, 'boletas/reservar_boleta.html',
+                          {'form': form, 'itemlist': list(range(0, 26)),
+                           'sillas': consultar_sala_comprar(id_funcion),
+                           'pelicula': pelicula, 'funcion': funcion, 'tipo_sala': tipo_sala})
+    else:
+        form = CrearBoletaForm()
+        form.fields['funcion'].initial = funcion
+        form.fields['medio_pago'].initial = 'efectivo'
+        if not usuario.is_anonymous:
+            form.fields['cedula'].initial = usuario.cedula
+            form.fields['nombre_cliente'].initial = usuario.get_full_name()
+
+        return render(request, 'boletas/reservar_boleta.html', {'form': form, 'itemlist': list(range(0, 26)),
+                                                               'sillas': consultar_sala_comprar(id_funcion),
+                                                               'pelicula': pelicula, 'funcion': funcion,
+                                                               'tipo_sala': tipo_sala})
+
+
+def pagar_reserva(request):
+    usuario = request.user
+    if request.method == 'POST':
+        boletas_pagadas = request.POST.getlist('boletas_reservadas')
+        boletas = Boleta.objects.filter(id__in=boletas_pagadas)
+        boletas.update(reserva=False)
+        messages.success(request, 'Reservas Pagadas exitosamente!')
+        return redirect('accounts:home')
+
+    if request.method == 'GET':
+        form = PagarReservaForm()
+        return render(request, 'boletas/pagar_reserva.html', {'form': form})
+
+
+def get_boletas_reservadas(request):
+    if request.is_ajax():
+        id_cliente = request.GET.get('id_cliente', None)
+        try:
+            cliente = User.objects.get(cedula=str(id_cliente))
+            boletas_reservadas = Boleta.objects.filter(cedula=cliente.cedula, reserva=True)
+            boletas_json = []
+            for boleta in boletas_reservadas:
+                boleta_json = {'id': boleta.id, 'text': boleta.funcion.pelicula.nombre + " | " + boleta.silla.nombre}
+                boletas_json.append(boleta_json)
+            return JsonResponse({'boletas_reservadas': boletas_json})
+
+        except Funcion.DoesNotExist:
+            return JsonResponse({'response': 0})
+
+
 def vender_boleta(request):
     usuario = request.user
     peliculas = Pelicula.get_pelicula_estreno(True)
@@ -19,6 +128,8 @@ def vender_boleta(request):
         precio_final = request.POST.get('precio_final', None)
         medio_pago = request.POST.get('pago_cliente', None)
         funcion = Funcion.objects.get(id=id_funcion)
+        pelicula = Pelicula.objects.get(funcion=funcion)
+        tipo_sala = funcion.sala.tipo_sala
         sillas = eval(lista_sillas)
         flag_error = False
         for silla in sillas:
@@ -45,17 +156,37 @@ def vender_boleta(request):
                             j = silla['j']
                             tipo = silla['color']
                             silla_aux = Silla.objects.get(ubicacion_x=i, ubicacion_y=j, sala=funcion.sala)
+
+                            # Calculo del precio boleta
+                            tipo_silla = silla_aux.tipo
+
+                            precio_silla = {
+                                'GENERAL': 2000,
+                                'PREFERENCIAL': 3000,
+                                'DISCAPACITADO': 1000
+                            }
+
+                            precio_sala = {
+                                "SALA_GENERAL": 4000,
+                                "SALA_IMAX":  5000,
+                                "SALA_3D":  4500,
+                                "SALA_4DX": 6000
+                            }
                             boleta_aux = Boleta()
-                            boleta_aux.total = 3800
-                            # CORREGIR PRECIO BOLETA ESTOY AQUI NO ME IGNOREN
+                            boleta_aux.total = precio_silla[tipo_silla] + precio_sala[funcion.sala.tipo_sala]
                             boleta_aux.funcion = funcion
                             boleta_aux.silla = silla_aux
+                            boleta_aux.medio_pago = form.cleaned_data['medio_pago']
                             boleta_aux.cedula = form.data["cedula"]
                             boleta_aux.cedula_empleado = usuario.cedula
                             boleta_aux.nombre_cliente = form.data["nombre_cliente"]
                             boleta_aux.save()
                         usuario.cliente.saldo = saldo_actual - int(precio_final)
                         usuario.cliente.save()
+                        Notificacion.objects.create(usuario=usuario,
+                                                    titulo='Compra de Boletas para ' + str(pelicula.nombre),
+                                                    mensaje='Se ha confirmado la compra de boletas por un valor de $' + str(
+                                                        precio_final), tipo=3)
                         messages.success(request, 'Boletas vendidas exitosamente!')
                         return redirect('boletas:vender_boleta')
                     else:
@@ -79,10 +210,26 @@ def vender_boleta(request):
                     tipo = silla['color']
                     silla_aux = Silla.objects.get(ubicacion_x=i, ubicacion_y=j, sala=funcion.sala)
                     boleta_aux = Boleta()
-                    boleta_aux.total = 3800
-                    # CORREGIR PRECIO BOLETA ESTOY AQUI NO ME IGNOREN
+
+                    # Calculo del precio boleta
+                    tipo_silla = silla_aux.tipo
+
+                    precio_silla = {
+                        'GENERAL': 2000,
+                        'PREFERENCIAL': 3000,
+                        'DISCAPACITADO': 1000
+                    }
+
+                    precio_sala = {
+                        "SALA_GENERAL": 4000,
+                        "SALA_IMAX": 5000,
+                        "SALA_3D": 4500,
+                        "SALA_4DX": 6000
+                    }
+                    boleta_aux.total = precio_silla[tipo_silla] + precio_sala[funcion.sala.tipo_sala]
                     boleta_aux.funcion = funcion
                     boleta_aux.silla = silla_aux
+                    boleta_aux.medio_pago = form.cleaned_data['medio_pago']
                     boleta_aux.cedula = form.data["cedula"]
                     boleta_aux.cedula_empleado = usuario.cedula
                     boleta_aux.nombre_cliente = form.data["nombre_cliente"]
@@ -141,9 +288,24 @@ def comprar_boleta(request,slug, id_funcion):
                             tipo = silla['color']
                             silla_aux = Silla.objects.get(ubicacion_x=i, ubicacion_y=j, sala=funcion.sala)
                             boleta_aux = Boleta()
-                            boleta_aux.total = 3800
-                            # CORREGIR PRECIO BOLETA ESTOY AQUI NO ME IGNOREN
+                            # Calculo del precio boleta
+                            tipo_silla = silla_aux.tipo
+
+                            precio_silla = {
+                                'GENERAL': 2000,
+                                'PREFERENCIAL': 3000,
+                                'DISCAPACITADO': 1000
+                            }
+
+                            precio_sala = {
+                                "SALA_GENERAL": 4000,
+                                "SALA_IMAX": 5000,
+                                "SALA_3D": 4500,
+                                "SALA_4DX": 6000
+                            }
+                            boleta_aux.total = precio_silla[tipo_silla] + precio_sala[funcion.sala.tipo_sala]
                             boleta_aux.funcion = funcion
+                            boleta_aux.medio_pago = form.cleaned_data['medio_pago']
                             boleta_aux.silla = silla_aux
                             boleta_aux.cedula = form.data["cedula"]
                             boleta_aux.cedula_empleado = usuario.cedula
@@ -177,10 +339,25 @@ def comprar_boleta(request,slug, id_funcion):
                     tipo = silla['color']
                     silla_aux = Silla.objects.get(ubicacion_x=i, ubicacion_y=j, sala=funcion.sala)
                     boleta_aux = Boleta()
-                    boleta_aux.total = 3800
-                    # CORREGIR PRECIO BOLETA ESTOY AQUI NO ME IGNOREN
+                    # Calculo del precio boleta
+                    tipo_silla = silla_aux.tipo
+
+                    precio_silla = {
+                        'GENERAL': 2000,
+                        'PREFERENCIAL': 3000,
+                        'DISCAPACITADO': 1000
+                    }
+
+                    precio_sala = {
+                        "SALA_GENERAL": 4000,
+                        "SALA_IMAX": 5000,
+                        "SALA_3D": 4500,
+                        "SALA_4DX": 6000
+                    }
+                    boleta_aux.total = precio_silla[tipo_silla] + precio_sala[funcion.sala.tipo_sala]
                     boleta_aux.funcion = funcion
                     boleta_aux.silla = silla_aux
+                    boleta_aux.medio_pago = form.cleaned_data['medio_pago']
                     boleta_aux.cedula = form.data["cedula"]
                     boleta_aux.cedula_empleado = usuario.cedula
                     boleta_aux.nombre_cliente = form.data["nombre_cliente"]
@@ -200,6 +377,7 @@ def comprar_boleta(request,slug, id_funcion):
         if not usuario.is_anonymous:
             form.fields['cedula'].initial = usuario.cedula
             form.fields['nombre_cliente'].initial = usuario.get_full_name()
+            form.fields['medio_pago'].initial = 'saldo'
 
         return render(request, 'boletas/comprar_boleta.html', {'form': form, 'itemlist': list(range(0, 26)),
                                                                'sillas': consultar_sala_comprar(id_funcion),
