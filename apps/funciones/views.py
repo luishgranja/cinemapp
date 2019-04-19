@@ -4,6 +4,10 @@ from .models import *
 from django.contrib import messages
 
 
+def lista_funciones(request):
+    usuario = request.user
+
+
 def crear_funcion(request):
     # Usuario que hizo la peticion a la funcion (usuario que esta en la sesion)
     usuario = request.user
@@ -17,8 +21,10 @@ def crear_funcion(request):
 
     if usuario.is_staff:
         funciones = listar_funciones()
-    else:
+    elif cargo == 'Gerente':
         funciones = listar_funciones_sucursal(usuario)
+    elif cargo == 'Operador':
+        funciones = listar_funciones_activas_sucursal(usuario)
 
     # Validacion para cuando el administrador (is_staff)
     if usuario.is_staff or cargo == 'Gerente':
@@ -38,6 +44,9 @@ def crear_funcion(request):
             form = CrearFuncionForm()
             form.listarSalas(Empleado.objects.get(user=request.user).sucursal.id)
             return render(request, 'funciones/crear_funcion.html', {'form': form, 'funciones': funciones})
+
+    elif cargo == 'Operador':
+        return render(request, 'funciones/lista_funciones.html', {'funciones': funciones})
 
     # En caso de que el usuario no sea gerente se redirije al home y se muestra mensaje de error
     else:
@@ -77,3 +86,7 @@ def listar_funciones():
 
 def listar_funciones_sucursal(usuario):
     return Funcion.get_funciones_sucursales(usuario)
+
+
+def listar_funciones_activas_sucursal(usuario):
+    return Funcion.get_funciones_actuales(usuario)

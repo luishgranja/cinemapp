@@ -2,6 +2,7 @@ from django.db import models
 from django.template.defaultfilters import slugify
 from django.utils.safestring import mark_safe
 
+
 class Genero(models.Model):
     nombre = models.CharField(max_length=50, unique=True)
 

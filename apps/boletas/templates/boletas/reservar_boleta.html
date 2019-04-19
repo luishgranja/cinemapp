@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_cliente.html' %}
 {% load staticfiles %}
 {% load bootstrap3 %}
 {% load list_index %}
@@ -16,6 +16,7 @@
 	<link href="{% static 'bower_components/datatables.net-bs/responsive/responsive.dataTables.min.css' %}"
 	      rel="stylesheet">
 	{{ form.media.css }}
+
 	<style media="screen">
 		.select2-container {
 			width: 100% !important;
@@ -127,6 +128,7 @@
 		}
 	</style>
 
+
 {% endblock css %}
 
 {% block contenido %}
@@ -194,6 +196,7 @@
 					<tbody>
 					</tbody>
 				</table>
+				<small>El valor de la reserva es de $2800</small>
 			</div>
 		</div>
 	</div>
@@ -279,20 +282,20 @@
 
                     switch (sillas[i]['color']) {
                         case "GENERAL":
-                            precio_total += 2000;
+                            precio_total += 4800;
                             precio_silla = 2000;
                             break;
                         case "PREFERENCIAL":
-                            precio_total += 3000;
+                            precio_total += 5800;
                             precio_silla = 3000;
                             break;
                         case "DISCAPACITADO":
-                            precio_total += 1000;
+                            precio_total += 3800;
                             precio_silla = 1000;
                             break;
                     }
 
-                    tabla_boletas.row.add([nombre_sillas[i], precio_silla]);
+                    tabla_boletas.row.add([nombre_sillas[i], (precio_silla + precio_sala + 2800)]);
 
                 }
                 var total_final = document.getElementById('precio_final');
@@ -321,19 +324,19 @@
 
                     switch (sillas[i]['color']) {
                         case "GENERAL":
-                            precio_total += 2000;
+                            precio_total += 4800;
                             precio_silla = 2000;
                             break;
                         case "PREFERENCIAL":
-                            precio_total += 3000;
+                            precio_total += 5800;
                             precio_silla = 3000;
                             break;
                         case "DISCAPACITADO":
-                            precio_total += 1000;
+                            precio_total += 3800;
                             precio_silla = 1000;
                             break;
                     }
-                    tabla_boletas.row.add([nombre_sillas[i], precio_silla]);
+                    tabla_boletas.row.add([nombre_sillas[i], (precio_silla + precio_sala + 2800)]);
                 }
 
                 var total_final = document.getElementById('precio_final');

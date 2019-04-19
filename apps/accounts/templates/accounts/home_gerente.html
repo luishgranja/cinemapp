@@ -37,14 +37,14 @@
     <div class="col-lg-3 col-xs-6">
     <div class="small-box bg-purple-active">
       <div class="inner">
-        <h3>0</h3>
+        <h3>{{ datos.num_funciones }}</h3>
 
         <p>Funciones</p>
       </div>
       <div class="icon">
         <i class="fa fa-file-movie-o"></i>
       </div>
-      <a href="#" class="small-box-footer">Ver funciones <i class="fa fa-arrow-circle-right"></i></a>
+      <a href="{% url 'funciones:crear' %}" class="small-box-footer">Ver funciones <i class="fa fa-arrow-circle-right"></i></a>
     </div>
   </div>
 
@@ -59,7 +59,7 @@
       <div class="icon">
         <i class="fa fa-sitemap"></i>
       </div>
-      <a href="#" class="small-box-footer">Más información <i class="fa fa-arrow-circle-right"></i></a>
+      <a href="{% url 'salas:crear' %}" class="small-box-footer">Más información <i class="fa fa-arrow-circle-right"></i></a>
     </div>
   </div>
 

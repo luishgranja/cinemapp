@@ -236,6 +236,10 @@
 
 	     $.get('{% url 'accounts:consultar_cliente' %}', {"csrfmiddlewaretoken":'{{ csrf_token }}','cedula': cedula}, function(data){
 
+	         if(data.nombre == ''){
+	             toastr["warning"]("No existe un cliente con esa cédula");
+	         }
+
 	         nombre_cliente.value = data.nombre;
 	         saldo_actual.value = data.saldo_cliente;
 

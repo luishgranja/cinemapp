@@ -5,8 +5,19 @@ from apps.funciones.models import *
 from apps.salas.models import *
 from apps.accounts.models import *
 from django.http.response import JsonResponse
+from django.http import Http404
+from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from apps.accounts.models import *
+from apps.boletas.utilities import generar_pdf_boleta
+from django.http import HttpResponseNotFound
+
+
+def generar_boleta(request, id_boleta):
+    usuario = request.user
+    boleta = get_object_or_404(Boleta, id=id_boleta)
+    if boleta:
+        return generar_pdf_boleta(boleta)
 
 
 # Crear reserva para el Cliente
@@ -20,6 +31,7 @@ def crear_reserva(request, slug, id_funcion):
         lista_sillas = request.POST.get('boletas', None)
         funcion = Funcion.objects.get(id=id_funcion)
         sillas = eval(lista_sillas)
+        precio_final = request.POST.get('precio_final', None)
         flag_error = False
         for silla in sillas:
             i = silla['i']
@@ -58,7 +70,7 @@ def crear_reserva(request, slug, id_funcion):
                         "SALA_4DX": 6000
                     }
 
-                    boleta_aux.total = precio_silla[tipo_silla] + precio_sala[funcion.sala.tipo_sala]
+                    boleta_aux.total = precio_silla[tipo_silla] + precio_sala[funcion.sala.tipo_sala] + 2800
                     boleta_aux.funcion = funcion
                     boleta_aux.reserva = True
                     boleta_aux.silla = silla_aux
@@ -66,6 +78,10 @@ def crear_reserva(request, slug, id_funcion):
                     boleta_aux.cedula_empleado = usuario.cedula
                     boleta_aux.nombre_cliente = form.data["nombre_cliente"]
                     boleta_aux.save()
+                Notificacion.objects.create(usuario=usuario,
+                                            titulo='Reserva de Boletas para ' + str(pelicula.nombre),
+                                            mensaje='Se ha confirmado la reserva de boletas por un valor de $' + str(
+                                                    precio_final), tipo=3)
                 messages.success(request, 'Boletas Reservadas exitosamente!')
                 return redirect('accounts:home')
         else:
@@ -120,7 +136,9 @@ def get_boletas_reservadas(request):
 
 def vender_boleta(request):
     usuario = request.user
-    peliculas = Pelicula.get_pelicula_estreno(True)
+    empleado = Empleado.objects.get(user=usuario)
+    peliculas = Pelicula.objects.filter(funcion__sala__sucursal_id=empleado.sucursal.id)
+    # peliculas = Pelicula.get_pelicula_estreno(True)
 
     if request.method == 'POST':
         lista_sillas = request.POST.get('boletas', None)
@@ -437,11 +455,13 @@ def consultar_pelicula(request):
 
 
 def consultar_funciones(request):
+    usuario = request.user
     if request.is_ajax():
         pelicula_id = request.GET.get('pelicula_id', None)
         try:
             pelicula = Pelicula.objects.get(id=pelicula_id)
-            funciones = Funcion.objects.filter(pelicula=pelicula)
+            empleado = Empleado.objects.get(user=usuario)
+            funciones = Funcion.objects.filter(sala__sucursal=empleado.sucursal, pelicula=pelicula)
             lista_funciones = []
             for funcion in funciones:
                 lista_funciones.append({'id': funcion.id, 'fecha': funcion.fecha_funcion, 'hora': funcion.hora_funcion})

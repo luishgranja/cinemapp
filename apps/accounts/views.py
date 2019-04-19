@@ -76,6 +76,7 @@ def notificaciones(user):
     }
     return notificaciones
 
+
 # Consulta todas las notificaciones del usuario
 def notis_all(user):
     notis = Notificacion.objects.filter(usuario=user)
@@ -84,11 +85,13 @@ def notis_all(user):
     }
     return notificaciones
 
+
 def consultar_notificaciones(request):
     usuario = request.user
     if request.method == 'GET':
         return render(request, 'accounts/notificaciones.html',
         {'notis_all':notis_all(usuario), 'notis': notificaciones(usuario), 'sucursales': Sucursal.get_info()})
+
 
 @login_required
 def home(request):
@@ -99,10 +102,11 @@ def home(request):
         return render(request, 'accounts/home_cliente.html', {'notis':notificaciones(usuario),'user': usuario, 'sucursales': Sucursal.get_info(),
                                                               'peliculas1': listar_cartelera(), 'peliculas2': listar_peliculas_proximo_estreno()})
     elif usuario.get_cargo_empleado() == 'Gerente':
-        return render(request, 'accounts/home_gerente.html', {'user': usuario, 'datos': datos_dashboard_gerente()})
+        return render(request, 'accounts/home_gerente.html', {'user': usuario, 'datos': datos_dashboard_gerente(usuario)})
     elif usuario.get_cargo_empleado() == 'Operador':
         return render(request, 'accounts/home_operador.html', {'user': usuario, 'datos':
-            datos_dashboard_operador(), 'peliculas': listar_cartelera(), 'form_saldo': CargarSaldoForm()})
+            datos_dashboard_operador(), 'peliculas': listar_cartelera_sucursal(Empleado.objects.get(user=usuario).sucursal.id),
+                                                               'form_saldo': CargarSaldoForm()})
 
 
 @check_recaptcha
@@ -200,6 +204,7 @@ def editar_empleado(request, id_user):
         messages.error(request, 'No estas autorizado para realizar esta acción')
         return redirect('accounts:home')
 
+
 def editar_perfil_empleado(request):
     usuario = request.user
     if not (request.user.is_anonymous or usuario.is_cliente):
@@ -279,14 +284,17 @@ def datos_dashboard():
     return datos
 
 
-def datos_dashboard_gerente():
+def datos_dashboard_gerente(usuario):
     num_peliculas_cartelera = (Pelicula.get_pelicula_estreno(True) & Pelicula.get_peliculas_activas()).count()
     num_proximos_estrenos = (Pelicula.get_pelicula_estreno(False) & Pelicula.get_peliculas_activas()).count()
-    num_salas = 0
+    empleado = Empleado.objects.get(user=usuario)
+    num_salas = Sala.objects.filter(sucursal=empleado.sucursal).count()
+    num_funciones = Funcion.get_funciones_actuales(usuario).count()
     datos = {
         'num_peliculas_cartelera': num_peliculas_cartelera,
         'num_proximos_estrenos': num_proximos_estrenos,
-        'num_salas': num_salas
+        'num_salas': num_salas,
+        'num_funciones': num_funciones
     }
 
     return datos
@@ -334,15 +342,22 @@ def cargar_saldo(request):
 def consultar_saldo(request):
     usuario = request.user
     cliente = User.objects.get(cedula=usuario.cedula)
-    saldo = cliente.cliente.saldo
+    try:
+        saldo = cliente.cliente.saldo
+    except User.cliente.RelatedObjectDoesNotExist:
+        return redirect('accounts:home')
     boletas = Boleta.objects.filter(cedula=usuario.cedula)
     if request.method == 'GET':
         return render(request, 'accounts/consultar_saldo.html',{'saldo': saldo, 'boletas': boletas})
 
+
 def guardar_saldo(request):
     usuario = request.user
     cliente = User.objects.get(cedula=usuario.cedula)
-    saldo = cliente.cliente.saldo
+    try:
+        saldo = cliente.cliente.saldo
+    except User.cliente.RelatedObjectDoesNotExist:
+        return redirect('accounts:home')
     boletas = Boleta.objects.filter(cedula=usuario.cedula)
     if request.method == 'GET':
         return render(request, 'accounts/guardar_consulta_saldo.html', {'saldo': saldo, 'boletas': boletas})

@@ -4,6 +4,8 @@ from django.contrib import messages
 from django.http import HttpResponse
 from apps.accounts.decorators import check_recaptcha
 from apps.funciones.models import *
+from datetime import date, timedelta
+
 
 @check_recaptcha
 def crear_pelicula(request):
@@ -35,11 +37,20 @@ def listar_peliculas():
 
 
 def listar_cartelera():
-    return Pelicula.get_pelicula_estreno(True) & Pelicula.get_peliculas_activas()
+    fecha_actual = date.today()
+    funciones = Funcion.objects.filter(fecha_funcion__range=(fecha_actual, fecha_actual + timedelta(days=15)))
+    peliculas = Pelicula.objects.filter(funcion__in=funciones)
+    return (Pelicula.get_pelicula_estreno(True) & Pelicula.get_peliculas_activas() & peliculas).distinct()
+
+
+def listar_cartelera_sucursal(sucursal):
+    peliculas = Pelicula.objects.filter(funcion__sala__sucursal_id=sucursal).distinct()
+    return peliculas
 
 
 def listar_peliculas_proximo_estreno():
     return Pelicula.get_pelicula_estreno(False) & Pelicula.get_peliculas_activas()
+
 
 @check_recaptcha
 def editar_pelicula(request, id_pelicula):
@@ -80,14 +91,20 @@ def listar_pelicula(slug):
 
 def ver_pelicula(request, slug):
     usuario = request.user
+    pelicula = listar_pelicula(slug)
 
     if usuario.is_staff or not usuario.is_cliente:
         base_template_name = 'base.html'
+
+        try:
+            empleado = Empleado.objects.get(user=usuario)
+            funciones = Funcion.objects.filter(sala__sucursal=empleado.sucursal, pelicula=pelicula)
+        except Empleado.DoesNotExist:
+            funciones = Funcion.objects.filter(pelicula=pelicula)
+
     elif usuario.is_anonymous or usuario.is_cliente:
         base_template_name = 'base_cliente.html'
-
-    pelicula = listar_pelicula(slug)
-    funciones = Funcion.objects.filter(pelicula=pelicula)
+        funciones = Funcion.objects.filter(pelicula=pelicula)
 
     return render(request, 'peliculas/consultar_pelicula.html', {'peli': pelicula, 'funciones': funciones,
                                                                  'base_template_name': base_template_name})
@@ -95,6 +112,7 @@ def ver_pelicula(request, slug):
 
 def listar_generos():
     return Genero.get_generos()
+
 
 @check_recaptcha
 def crear_genero(request):
@@ -104,13 +122,13 @@ def crear_genero(request):
         if form.is_valid() and request.recaptcha_is_valid:
             form.save()
             messages.success(request, 'Género creado exitósamente!')
-            return render(request, 'peliculas/gestion_generos.html', {'form': CrearGeneroForm(), 'generos':listar_generos()})
+            return render(request, 'peliculas/gestion_generos.html', {'form': CrearGeneroForm(), 'generos': listar_generos()})
         else:
             messages.error(request, 'Por favor corrige los errores')
-            return render(request, 'peliculas/gestion_generos.html', {'form': form, 'generos':listar_generos()})
+            return render(request, 'peliculas/gestion_generos.html', {'form': form, 'generos': listar_generos()})
     else:
         form = CrearGeneroForm()
-        return render(request, 'peliculas/gestion_generos.html', {'form': form, 'generos':listar_generos()})
+        return render(request, 'peliculas/gestion_generos.html', {'form': form, 'generos': listar_generos()})
 
 
 def busqueda_peliculas(request):
