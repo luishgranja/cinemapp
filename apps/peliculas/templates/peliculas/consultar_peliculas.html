@@ -3,38 +3,39 @@
 {% load bootstrap3 %}
 
 {% block miga_pan %}
-    <li><a href="{% url 'accounts:home'%}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
+<li><a href="{% url 'accounts:home'%}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
+<li class="active">VER PELÍCULAS</li>
 {% endblock miga_pan %}
 
 {% block css %}
-    <style>
+<style>
 
-        img {
-            border-radius: 8px;
+    img {
+        border-radius: 8px;
 
-        }
-    </style>
+    }
+</style>
 {% endblock css %}
 
 {% block titulo %}Ver películas{% endblock titulo %}
 
 {% block contenido %}
-    {% for peli in peliculas %}
-            <div class="col-md-4">
-                <div class="box box-primary">
-                    <div class="box-body">
-                            <div class="col-md-6">
-                                <img src="{{ peli.imagen.url | default_if_none:'#' }}" width="170" height="251"/>
-                            </div>
-                            <div class="col-md-4 col-md-offset-2">
-                                <h5> <a href="{% url 'peliculas:ver_pelicula' peli.slug %}" ><b> {{ peli.nombre }}</b></a></h5>
-                                <p><b>Género: </b>{% for gen in peli.genero.all %} {{ gen }}, {% endfor %} </p>
-                                <p><b>Calificación: </b>{{ peli.calificacion }}</p>
-                            </div>
-                    </div>
-                </div>
+{% for peli in peliculas %}
+<div class="col-md-4">
+    <div class="box box-primary">
+        <div class="box-body">
+            <div class="col-md-6">
+                <img src="{{ peli.imagen.url | default_if_none:'#' }}" width="170" height="251"/>
             </div>
-        {% endfor %}
+            <div class="col-md-4 col-md-offset-2">
+                <h5> <a href="{% url 'peliculas:ver_pelicula' peli.slug %}" ><b> {{ peli.nombre }}</b></a></h5>
+                <p><b>Género: </b>{% for gen in peli.genero.all %} {{ gen }}, {% endfor %} </p>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
 
 {% endblock contenido %}
 

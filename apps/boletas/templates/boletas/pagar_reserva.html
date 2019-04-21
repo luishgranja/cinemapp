@@ -5,63 +5,70 @@
 
 
 {% block miga_pan %}
-	<li><a href="{% url 'accounts:home' %}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
+<li><a href="{% url 'accounts:home' %}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
+<li class="active">CONFIRMAR RESERVAS</li>
 {% endblock miga_pan %}
 
 {% block titulo %}Pagar Reservas{% endblock titulo %}
 
 {% block contenido %}
 
-	<!--panel seleccion cliente-->
-	<div class="col-md-6">
-		<div class="box box-primary">
-			<div class="box-header">
-				<h3 class="box-title">Seleccionar Cliente</h3>
+<!--panel seleccion cliente-->
+<div class="col-md-6 col-md-offset-3">
+	<div class="box box-primary">
+		<div class="box-body">
+			<div class="row">
+				<div class="col-md-12">
+						<div class="box-header">
+							<h3 class="box-title">Confirmar Boletas Reservadas</h3>
+						</div>
+						<div class="box-body">
+							<form method="POST" target="_blank"> {% csrf_token %}
+								{% bootstrap_field form.cliente %}
+								<input class="hidden" name="cedula_cliente" id="cedula_cliente" ></input>
+						</div>
+					</div>
+
 			</div>
-			<div class="box-body">
-				<form method="POST"> {% csrf_token %}
-				{% bootstrap_field form.cliente %}
-					<input class="hidden" name="cedula_cliente" id="cedula_cliente" ></input>
+			<div class="row">
+				<!--panel boletas reservadas-->
+				<div class="col-md-12">
+						<div class="box-body">
+							{% bootstrap_field form.boletas_reservadas %}
+							<button type="submit" onClick="document.location.reload(true)" class="btn btn-success btn-raised">Confirmar Boletas</button>
+							</form>
+						</div>
+					</div>
+
 			</div>
 		</div>
 	</div>
+</div>
 
 
-	<!--panel boletas reservadas-->
-	<div class="col-md-6">
-		<div class="box box-primary">
-			<div class="box-header">
-				<h3 class="box-title">Funciones</h3>
-			</div>
-			<div class="box-body">
-				{% bootstrap_field form.boletas_reservadas %}
-				<button type="submit" class="btn btn-success btn-raised">Pagar reservas</button>
-				</form>
-			</div>
-			</div>
-		</div>
+
 {% endblock contenido %}
 
 {% block js %}
-	<script type="text/javascript">
-        $('#id_cliente').change(function () {
+<script type="text/javascript">
+    $('#id_cliente').change(function () {
 
-            var selector = document.getElementById('id_cliente');
-            var id_cliente_aux = selector[selector.selectedIndex].text;
-            var id_cliente = id_cliente_aux.split(" - ")[0];
-            $('#cedula_cliente').val(id_cliente);
-            $('#id_boletas_reservadas').empty();
+        var selector = document.getElementById('id_cliente');
+        var id_cliente_aux = selector[selector.selectedIndex].text;
+        var id_cliente = id_cliente_aux.split(" - ")[0];
+        $('#cedula_cliente').val(id_cliente);
+        $('#id_boletas_reservadas').empty();
 
-            $.get('{% url 'boletas:get_boletas_reservadas' %}', {
-                "csrfmiddlewaretoken": '{{ csrf_token }}',
-                'id_cliente': id_cliente
-            }, function (data) {
-                $("#id_boletas_reservadas").select2({
-                    data: data.boletas_reservadas
-                });
+        $.get('{% url 'boletas:get_boletas_reservadas' %}', {
+            "csrfmiddlewaretoken": '{{ csrf_token }}',
+            'id_cliente': id_cliente
+        }, function (data) {
+            $("#id_boletas_reservadas").select2({
+                data: data.boletas_reservadas
             });
-
         });
-	</script>
+
+    });
+</script>
 
 {% endblock js %}

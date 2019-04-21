@@ -45,7 +45,7 @@ class SaldoForm(forms.Form):
 class PagarReservaForm(forms.Form):
     cliente = forms.CharField(widget=ModelSelect2Widget(
         model=User,
-        search_fields=['user__cedula__icontains'],
+        search_fields=['cedula__icontains'],
         queryset=User.objects.filter(cedula__in=Boleta.objects.filter(reserva=True).distinct().values('cedula'))
     ), required=False)
 

@@ -19,7 +19,6 @@ def generar_boleta(request, id_boleta):
     if boleta:
         return generar_pdf_boleta(boleta)
 
-
 # Crear reserva para el Cliente
 def crear_reserva(request, slug, id_funcion):
     usuario = request.user
@@ -47,43 +46,49 @@ def crear_reserva(request, slug, id_funcion):
 
         form = CrearBoletaForm(request.POST)
         if form.is_valid() and not flag_error:
-            if form.cleaned_data['medio_pago'] == 'efectivo':
-                for silla in sillas:
-                    i = silla['i']
-                    j = silla['j']
-                    silla_aux = Silla.objects.get(ubicacion_x=i, ubicacion_y=j, sala=funcion.sala)
-                    boleta_aux = Boleta()
+            if form.cleaned_data['medio_pago'] == 'saldo':
+                saldo_actual = usuario.cliente.saldo
+                if saldo_actual >= int(precio_final):
+                    for silla in sillas:
+                        i = silla['i']
+                        j = silla['j']
+                        silla_aux = Silla.objects.get(ubicacion_x=i, ubicacion_y=j, sala=funcion.sala)
+                        boleta_aux = Boleta()
 
-                    # Calculo del precio boleta
-                    tipo_silla = silla_aux.tipo
+                        # Calculo del precio boleta
+                        tipo_silla = silla_aux.tipo
 
-                    precio_silla = {
-                        'GENERAL': 2000,
-                        'PREFERENCIAL': 3000,
-                        'DISCAPACITADO': 1000
-                    }
+                        precio_silla = {
+                            'GENERAL': 2000,
+                            'PREFERENCIAL': 3000,
+                            'DISCAPACITADO': 1000
+                        }
 
-                    precio_sala = {
-                        "SALA_GENERAL": 4000,
-                        "SALA_IMAX": 5000,
-                        "SALA_3D": 4500,
-                        "SALA_4DX": 6000
-                    }
+                        precio_sala = {
+                            "SALA_GENERAL": 4000,
+                            "SALA_IMAX": 5000,
+                            "SALA_3D": 4500,
+                            "SALA_4DX": 6000
+                        }
 
-                    boleta_aux.total = precio_silla[tipo_silla] + precio_sala[funcion.sala.tipo_sala] + 2800
-                    boleta_aux.funcion = funcion
-                    boleta_aux.reserva = True
-                    boleta_aux.silla = silla_aux
-                    boleta_aux.cedula = form.data["cedula"]
-                    boleta_aux.cedula_empleado = usuario.cedula
-                    boleta_aux.nombre_cliente = form.data["nombre_cliente"]
-                    boleta_aux.save()
-                Notificacion.objects.create(usuario=usuario,
-                                            titulo='Reserva de Boletas para ' + str(pelicula.nombre),
-                                            mensaje='Se ha confirmado la reserva de boletas por un valor de $' + str(
+                        boleta_aux.total = precio_silla[tipo_silla] + precio_sala[funcion.sala.tipo_sala] + 2800
+                        boleta_aux.funcion = funcion
+                        boleta_aux.reserva = True
+                        boleta_aux.silla = silla_aux
+                        boleta_aux.cedula = form.data["cedula"]
+                        boleta_aux.cedula_empleado = usuario.cedula
+                        boleta_aux.nombre_cliente = form.data["nombre_cliente"]
+                        boleta_aux.save()
+                    Notificacion.objects.create(usuario=usuario,
+                                                titulo='Reserva de Boletas para ' + str(pelicula.nombre),
+                                                mensaje='Se ha confirmado la reserva de ' + str(
+                                                    len(sillas)) + ' boletas por un valor de $' + str(
                                                     precio_final), tipo=3)
-                messages.success(request, 'Boletas Reservadas exitosamente!')
-                return redirect('accounts:home')
+                    messages.success(request, 'Boletas Reservadas exitosamente!')
+                    return redirect('accounts:home')
+                else:
+                    messages.error(request, 'El usuario no tiene saldo suficiente')
+                    return redirect('accounts:consultar_saldo')
         else:
             messages.error(request, 'Por favor corrige los errores')
             return render(request, 'boletas/reservar_boleta.html',
@@ -93,10 +98,9 @@ def crear_reserva(request, slug, id_funcion):
     else:
         form = CrearBoletaForm()
         form.fields['funcion'].initial = funcion
-        form.fields['medio_pago'].initial = 'efectivo'
-        if not usuario.is_anonymous:
-            form.fields['cedula'].initial = usuario.cedula
-            form.fields['nombre_cliente'].initial = usuario.get_full_name()
+        form.fields['medio_pago'].initial = 'saldo'
+        form.fields['cedula'].initial = usuario.cedula
+        form.fields['nombre_cliente'].initial = usuario.get_full_name()
 
         return render(request, 'boletas/reservar_boleta.html', {'form': form, 'itemlist': list(range(0, 26)),
                                                                'sillas': consultar_sala_comprar(id_funcion),
@@ -110,8 +114,9 @@ def pagar_reserva(request):
         boletas_pagadas = request.POST.getlist('boletas_reservadas')
         boletas = Boleta.objects.filter(id__in=boletas_pagadas)
         boletas.update(reserva=False)
+        boletas_ids =boletas.values_list('id', flat=True)
         messages.success(request, 'Reservas Pagadas exitosamente!')
-        return redirect('accounts:home')
+        return render(request, 'boletas/pdf_boleta.html', {'boletas_ids': boletas_ids})
 
     if request.method == 'GET':
         form = PagarReservaForm()
@@ -149,6 +154,7 @@ def vender_boleta(request):
         pelicula = Pelicula.objects.get(funcion=funcion)
         tipo_sala = funcion.sala.tipo_sala
         sillas = eval(lista_sillas)
+        boletas_ids = []
         flag_error = False
         for silla in sillas:
             i = silla['i']
@@ -199,14 +205,16 @@ def vender_boleta(request):
                             boleta_aux.cedula_empleado = usuario.cedula
                             boleta_aux.nombre_cliente = form.data["nombre_cliente"]
                             boleta_aux.save()
+                            boletas_ids.append(boleta_aux.id)
                         usuario.cliente.saldo = saldo_actual - int(precio_final)
                         usuario.cliente.save()
                         Notificacion.objects.create(usuario=usuario,
                                                     titulo='Compra de Boletas para ' + str(pelicula.nombre),
-                                                    mensaje='Se ha confirmado la compra de boletas por un valor de $' + str(
+                                                    mensaje='Se ha confirmado la compra de ' + str(
+                                                len(sillas)) + ' boletas por un valor de $' + str(
                                                         precio_final), tipo=3)
                         messages.success(request, 'Boletas vendidas exitosamente!')
-                        return redirect('boletas:vender_boleta')
+                        return render(request, 'boletas/pdf_boleta.html', {'boletas_ids': boletas_ids})
                     else:
                         messages.error(request, 'El usuario no tiene saldo suficiente')
                         return render(request, 'boletas/vender_boleta.html',
@@ -252,8 +260,9 @@ def vender_boleta(request):
                     boleta_aux.cedula_empleado = usuario.cedula
                     boleta_aux.nombre_cliente = form.data["nombre_cliente"]
                     boleta_aux.save()
-                messages.success(request, 'Boletas vendidas exitosamente!')
-                return redirect('boletas:vender_boleta')
+                    boletas_ids.append(boleta_aux.id)
+                messages.success(request, 'Boletas vendidas exitósamente!')
+                return render(request, 'boletas/pdf_boleta.html',{'boletas_ids': boletas_ids})
 
         else:
             boletas_compradas = Boleta.objects.filter(funcion=funcion)
@@ -333,7 +342,8 @@ def comprar_boleta(request,slug, id_funcion):
                         usuario.cliente.save()
                         messages.success(request, 'Boletas compradas exitosamente!')
                         Notificacion.objects.create(usuario=usuario, titulo='Compra de Boletas para '+str(pelicula.nombre),
-                                                    mensaje='Se ha confirmado la compra de boletas por un valor de $'+str(precio_final),
+                                                    mensaje='Se ha confirmado la compra de ' + str(
+                                                len(sillas)) + ' boletas por un valor de $'+str(precio_final),
                                                     tipo=3)
                         return redirect('accounts:home')
                     else:

@@ -40,16 +40,14 @@ def listar_cartelera():
     fecha_actual = date.today()
     funciones = Funcion.objects.filter(fecha_funcion__range=(fecha_actual, fecha_actual + timedelta(days=15)))
     peliculas = Pelicula.objects.filter(funcion__in=funciones)
-    return (Pelicula.get_pelicula_estreno(True) & Pelicula.get_peliculas_activas() & peliculas).distinct()
-
+    return (Pelicula.get_pelicula_estreno(True) & peliculas).distinct()
 
 def listar_cartelera_sucursal(sucursal):
-    peliculas = Pelicula.objects.filter(funcion__sala__sucursal_id=sucursal).distinct()
-    return peliculas
-
+    peliculas = Pelicula.objects.filter(funcion__sala__sucursal_id=sucursal)
+    return (Pelicula.get_pelicula_estreno(True) & peliculas).distinct()
 
 def listar_peliculas_proximo_estreno():
-    return Pelicula.get_pelicula_estreno(False) & Pelicula.get_peliculas_activas()
+    return Pelicula.get_pelicula_estreno(False)
 
 
 @check_recaptcha

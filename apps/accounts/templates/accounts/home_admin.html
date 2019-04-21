@@ -10,12 +10,12 @@
     <div class="small-box bg-navy">
       <div class="inner">
         <h3>{{datos.num_empleados}}</h3>
-        <p>Empleados registrados</p>
+        <p>Empleados Registrados</p>
       </div>
       <div class="icon">
         <i class="fa fa-user-plus"></i>
       </div>
-      <a href="{% url 'accounts:registro' %}" class="small-box-footer">Más información <i class="fa fa-arrow-circle-right"></i></a>
+      <a href="{% url 'accounts:registro' %}" class="small-box-footer">Ver Empleados <i class="fa fa-arrow-circle-right"></i></a>
     </div>
   </div>
 
@@ -24,12 +24,12 @@
       <div class="inner">
         <h3>{{datos.num_peliculas_estreno}}</h3>
 
-        <p>Películas en estreno</p>
+        <p>Películas</p>
       </div>
       <div class="icon">
         <i class="fa fa-video-camera"></i>
       </div>
-      <a href="{% url 'peliculas:crear' %}" class="small-box-footer">Más información <i class="fa fa-arrow-circle-right"></i></a>
+      <a href="{% url 'peliculas:crear' %}" class="small-box-footer">Ver Peliculas <i class="fa fa-arrow-circle-right"></i></a>
     </div>
   </div>
 
@@ -39,12 +39,12 @@
       <div class="inner">
         <h3>{{datos.num_sucursales}}</h3>
 
-        <p>Sucursales registradas</p>
+        <p>Sucursales Registradas</p>
       </div>
       <div class="icon">
         <i class="fa fa-sitemap"></i>
       </div>
-      <a href="{% url 'sucursales:crear' %}" class="small-box-footer">Más información <i class="fa fa-arrow-circle-right"></i></a>
+      <a href="{% url 'sucursales:crear' %}" class="small-box-footer">Ver Sucursales<i class="fa fa-arrow-circle-right"></i></a>
     </div>
   </div>
 
@@ -54,12 +54,12 @@
       <div class="inner">
         <h3>{{datos.num_clientes}}</h3>
 
-        <p>Clientes registrados</p>
+        <p>Clientes Registrados</p>
       </div>
       <div class="icon">
         <i class="fa fa-user-circle"></i>
       </div>
-      <a href="#" class="small-box-footer">Más información<i class="fa fa-arrow-circle-right"></i></a>
+      <a href="{% url 'accounts:clientes' %}" class="small-box-footer">Listar Clientes<i class="fa fa-arrow-circle-right"></i></a>
     </div>
   </div>
 </div>

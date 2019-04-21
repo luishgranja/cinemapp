@@ -64,6 +64,11 @@
                         {% bootstrap_field form.is_estreno%}
                     </div>
                 </div>
+	            <div class="row">
+		            <div class="col-sm-3">
+		            <img id="imgSalida" width="50%" height="50%" src="">
+		            </div>
+	            </div>
                 <div class="g-recaptcha" data-sitekey="6LetuIkUAAAAAImaRg4v8bqLpKw-o1cCdLVNZoYs"></div>
                 <button type="submit" class="btn btn-success btn-raised">Registrar</button>
             </form>
@@ -148,7 +153,32 @@
                 "language": {
                         "url": "{% static 'bower_components/datatables.net/spanish.json' %}"
                     }})
-    })
+    });
+
+    $('#imgSalida').attr("hidden",true);
+    $(function() {
+  $('#id_imagen').change(function(e) {
+       $('#imgSalida').attr("hidden",false);
+      addImage(e);
+     });
+
+     function addImage(e){
+      var file = e.target.files[0],
+      imageType = /image.*/;
+
+      if (!file.type.match(imageType))
+       return;
+
+      var reader = new FileReader();
+      reader.onload = fileOnload;
+      reader.readAsDataURL(file);
+     }
+
+     function fileOnload(e) {
+      var result=e.target.result;
+      $('#imgSalida').attr("src",result);
+     }
+    });
 </script>
 
 {% endblock js %}

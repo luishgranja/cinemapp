@@ -7,8 +7,6 @@ from datetime import datetime
 import locale
 
 
-
-
 def generar_pdf_boleta(boleta):
     response = HttpResponse(content_type='application/force-download')
     response['Content-Disposition'] = 'inline; filename="Boleta - "' + str(boleta.id) + '-' + str(boleta.cedula) + '".pdf"'\
@@ -35,9 +33,13 @@ def generar_pdf_boleta(boleta):
     p.drawString(20, 300, "Pelicula")
 
     p.setFillColor(colors.black)
-    p.rect(20, 276, 100, 14, fill=1)  # 20caracteres
+    len_pelicula = len(str(boleta.funcion.pelicula.nombre))
+    rec_size = 5 * len_pelicula
+    if rec_size > 200:
+        rec_size = 180
+    p.rect(20, 276, rec_size, 14, fill=1)  # 20caracteres
     p.setFillColor(colors.white)
-    p.setFont("Helvetica", 12)
+    p.setFont("Helvetica", 10)
     p.drawString(20, 280, boleta.funcion.pelicula.nombre)
 
     # funcion
@@ -45,7 +47,7 @@ def generar_pdf_boleta(boleta):
     p.setFont("Helvetica", 8)
     p.drawString(20, 260, "Fecha función")
     p.setFont("Helvetica", 12)
-    locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
+
     p.drawString(20, 240, str(boleta.funcion.fecha_funcion.strftime("%A %d %B %Y "))
                  + str(boleta.funcion.hora_funcion.strftime("%H:%M")))
 

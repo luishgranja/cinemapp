@@ -58,9 +58,9 @@ class Pelicula(models.Model):
         except Pelicula.DoesNotExist:
             return None
 
-    def get_pelicula_estreno(opcion):
+    def get_pelicula_estreno(bool):
         try:
-            peliculas = Pelicula.objects.filter(is_estreno=opcion)
+            peliculas = Pelicula.objects.filter(is_estreno=bool,is_active=True)
             return peliculas
         except Pelicula.DoesNotExist:
             return None

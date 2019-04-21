@@ -1,40 +1,5 @@
 <div class="navbar-custom-menu">
   <ul class="nav navbar-nav">
-    <!-- Messages: style can be found in dropdown.less-->
-    <li class="dropdown messages-menu">
-      <!-- Menu toggle button -->
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-        <i class="fa fa-envelope-o"></i>
-        <span class="label label-success">4</span>
-      </a>
-      <ul class="dropdown-menu">
-        <li class="header">You have 4 messages</li>
-        <li>
-          <!-- inner menu: contains the messages -->
-          <ul class="menu">
-            <li><!-- start message -->
-              <a href="#">
-                <div class="pull-left">
-                  <!-- User Image
-                  <img src="../../dist/img/user-160x160.jpg" class="img-circle" alt="User Image">-->
-                </div>
-                <!-- Message title and timestamp -->
-                <h4>
-                  Support Team
-                  <small><i class="fa fa-clock-o"></i> 5 mins</small>
-                </h4>
-                <!-- The message -->
-                <p>Why not buy a new awesome theme?</p>
-              </a>
-            </li>
-            <!-- end message -->
-          </ul>
-          <!-- /.menu -->
-        </li>
-        <li class="footer"><a href="#">See All Messages</a></li>
-      </ul>
-    </li>
-    <!-- /.messages-menu -->
 
     <!-- Notifications Menu -->
     <li class="dropdown notifications-menu">
@@ -96,14 +61,8 @@
           <!-- Menu Body -->
           <li class="user-body">
             <div class="row">
-              <div class="col-xs-4 text-center">
-                <a href="#">Favoritos</a>
-              </div>
-              <div class="col-xs-4 text-center">
-                <a href="#">Boletas</a>
-              </div>
-              <div class="col-xs-4 text-center">
-                <a href="{% url 'accounts:consultar_saldo' %}">Saldo</a>
+              <div class="col-xs-12 text-center">
+                <a href="{% url 'accounts:consultar_saldo' %}">Consultar Saldo</a>
               </div>
             </div>
             <!-- /.row -->

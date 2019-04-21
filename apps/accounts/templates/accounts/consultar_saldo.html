@@ -28,8 +28,8 @@
 					<i class="fa fa-money"></i>{{ user.get_full_name }}
 					<small class="pull-right">Fecha: {% now "j F Y" %}</small>
 				</h2>
-				<h4>Boletas | <span class="badge bg-yellow">Reservadas</span> <span
-						class="badge bg-red">Compradas</span></h4>
+				<h4>Boletas | <span class="badge bg-yellow">Reservadas</span>
+					<span class="badge bg-red">Compradas</span></h4>
 			</div>
 		</div>
 
@@ -47,12 +47,13 @@
 							<th>Silla</th>
 							<th>Medio Pago</th>
 							<th>Total</th>
+							<th>Acciones</th>
 						</tr>
 						</thead>
 						<tbody>
 						{% for boleta in fecha.list %}
 							<tr>
-								<td><a href="{% url 'boletas:generar_boleta' boleta.id %}" target="_blank">{{ boleta.funcion.pelicula.nombre }}</a></td>
+								<td><a href="{% url 'peliculas:ver_pelicula' boleta.funcion.pelicula.slug %}">{{ boleta.funcion.pelicula.nombre }}</a></td>
 								<td>{{ boleta.funcion.fecha_funcion|date:"l j F " }} - {{ boleta.funcion.hora_funcion|time:"f A" }}</td>
 								<td>{{ boleta.silla.nombre }}</td>
 								<td>{{ boleta.medio_pago }}</td>
@@ -61,6 +62,12 @@
 								{% else %}
 									<td><span class="badge bg-red">${{ boleta.total }}</span></td>
 								{% endif %}
+								{% if boleta.reserva %}
+									<td>Falta completar pago</td>
+								{% else %}
+									<td><a href="{% url 'boletas:generar_boleta' boleta.id %}" target="_blank">Generar Boleta</a></td>
+								{% endif %}
+
 							</tr>
 						{% endfor %}
 						</tbody>

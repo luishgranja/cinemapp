@@ -12,6 +12,7 @@ urlpatterns = [
         name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('dashboard', home, name='home'),
+    path('ver-clientes', listar_clientes, name='clientes'),
     path('editar/empleado/<int:id_user>', editar_empleado, name='modificar_empleado'),
     path('editar-perfil-empleado', editar_perfil_empleado, name='editar_perfil_empleado'),
     path('editar-perfil', editar_perfil, name='editar_perfil_cliente'),

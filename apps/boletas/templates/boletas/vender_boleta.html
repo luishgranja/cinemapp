@@ -204,7 +204,7 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-md-12">
-					<form method="post" id="formulario">{% csrf_token %}
+					<form method="post" target="_blank" id="formulario">{% csrf_token %}
 						<div class="row">
 							<div class="col-sm-2">
 								{% bootstrap_field form.cedula %}
@@ -224,7 +224,7 @@
 							<input type="hidden" id="pago_cliente" name="pago_cliente" value="">
 
 						</div>
-						<button style="margin-left:39%" class="btn btn-success btn-raised" id="vender_boleta"
+						<button style="margin-left:39%" class="btn btn-success btn-raised" onClick="document.location.reload(true)" id="vender_boleta"
 								type="submit">Vender boleta
 						</button>
 					</form>

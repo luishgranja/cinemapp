@@ -29,6 +29,13 @@ class User(AbstractUser):
             cargo = Empleado.get_cargo(self.id)
             return cargo
 
+    def get_clientes():
+        try:
+            clientes = User.objects.filter(is_cliente=True)
+            return clientes
+        except User.DoesNotExist:
+            return None
+
 
 class Cliente(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, related_name='cliente')

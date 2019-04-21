@@ -1,0 +1,33 @@
+{% extends 'base_cliente.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+
+{% block miga_pan %}
+<li><a href="{% url 'accounts:home' %}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
+<li class="active">Generar PDFs</li>
+{% endblock miga_pan %}
+
+{% block titulo %}Generar PDF{% endblock titulo %}
+
+{% block contenido %}
+
+
+<div class="box">
+    <div style="height: 50%;" class="box-body">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <ul>
+                        {% for id in boletas_ids %}
+                        <li><a href="{% url 'boletas:generar_boleta' id %}" target="_blank">Generar Boleta</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="total"></div>
+</div>
+
+
+{% endblock contenido %}

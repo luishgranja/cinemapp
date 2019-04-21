@@ -10,6 +10,7 @@ from apps.sucursales.models import *
 from apps.peliculas.views import *
 from apps.accounts.decorators import check_recaptcha
 from apps.boletas.models import *
+import datetime
 
 
 # Funcion para cambiar el estado de una notificacion a leida
@@ -256,7 +257,7 @@ def editar_perfil(request):
 
 def datos_dashboard():
     num_empleados = Empleado.objects.all().count()
-    num_peliculas_estreno = Pelicula.objects.filter(is_estreno=True).count()
+    num_peliculas = Pelicula.objects.all().count()
     num_sucursales = Sucursal.objects.all().count()
     num_clientes = Cliente.objects.all().count()
 
@@ -275,7 +276,7 @@ def datos_dashboard():
 
     datos = {
         'num_empleados': num_empleados,
-        'num_peliculas_estreno': num_peliculas_estreno,
+        'num_peliculas_estreno': num_peliculas,
         'num_sucursales': num_sucursales,
         'num_clientes': num_clientes,
         'sucursales_no_gerente': sucursales_no_gerente
@@ -283,10 +284,16 @@ def datos_dashboard():
 
     return datos
 
+def listar_clientes(request):
+    clientes = User.get_clientes()
+    return render(request, 'accounts/listar_clientes.html', {'clientes': clientes})
 
 def datos_dashboard_gerente(usuario):
-    num_peliculas_cartelera = (Pelicula.get_pelicula_estreno(True) & Pelicula.get_peliculas_activas()).count()
-    num_proximos_estrenos = (Pelicula.get_pelicula_estreno(False) & Pelicula.get_peliculas_activas()).count()
+    fecha_actual = date.today()
+    cartelera = Funcion.objects.filter(fecha_funcion__range=(fecha_actual, fecha_actual + timedelta(days=15)))
+    peliculas = Pelicula.objects.filter(funcion__in=cartelera)
+    num_peliculas_cartelera = ((Pelicula.get_pelicula_estreno(True) & peliculas).distinct()).count()
+    num_proximos_estrenos = Pelicula.get_pelicula_estreno(False).count()
     empleado = Empleado.objects.get(user=usuario)
     num_salas = Sala.objects.filter(sucursal=empleado.sucursal).count()
     num_funciones = Funcion.get_funciones_actuales(usuario).count()
@@ -301,7 +308,7 @@ def datos_dashboard_gerente(usuario):
 
 
 def datos_dashboard_operador():
-    num_proximos_estrenos = (Pelicula.get_pelicula_estreno(False) & Pelicula.get_peliculas_activas()).count()
+    num_proximos_estrenos = Pelicula.get_pelicula_estreno(False).count()
     datos = {
         'num_proximos_estrenos': num_proximos_estrenos,
     }

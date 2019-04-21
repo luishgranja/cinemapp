@@ -33,8 +33,7 @@ def crear_sala(request):
                 inst = form.save()
                 proceso_sillas(lista_sillas, inst)
                 messages.success(request, 'Sala registrada exitosamente')
-                return render(request, 'salas/crear_salas.html', {'form': CrearSalaForm(), 'salas': salas,
-                                                                  'itemlist': list(range(0, 26))})
+                return redirect('salas:crear')
             else:
                 messages.error(request, 'Por favor corrige los errores')
                 return render(request, 'salas/crear_salas.html', {'form': form, 'salas': salas,
