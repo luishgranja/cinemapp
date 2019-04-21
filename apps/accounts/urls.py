@@ -23,6 +23,7 @@ urlpatterns = [
     path('api/consultar_cliente', consultar_cliente, name='consultar_cliente'),
     path('api/cargar_saldo', cargar_saldo, name='cargar_saldo'),
     path('consultar-saldo', consultar_saldo, name='consultar_saldo'),
-    path('guardar-saldo', guardar_saldo, name='guardar_saldo')
+    path('guardar-saldo', guardar_saldo, name='guardar_saldo'),
+    path('reportes', reportes, name='reportes')
 
 ]

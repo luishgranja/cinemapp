@@ -10,7 +10,53 @@ from apps.sucursales.models import *
 from apps.peliculas.views import *
 from apps.accounts.decorators import check_recaptcha
 from apps.boletas.models import *
+from apps.accounts.reportes import *
 import datetime
+
+
+# Reportes Admin
+def reportes(request):
+    usuario = request.user
+
+    if usuario.is_staff:
+        datos_boletas = reporte_boletas_diarias(datetime.date.today().year, datetime.date.today().month)
+        datos_venta = reporte_ventas_diarias(datetime.date.today().year, datetime.date.today().month)
+        datos_cliente = reporte_clientes(datetime.date.today().year, datetime.date.today().month)
+        datos_peliculas = reporte_peliculas(datetime.date.today().year, datetime.date.today().month, 4)
+
+        meses = []
+        for i in range(1, 13):
+            datos_mes = {'id': i, 'value': datetime.date(datetime.date.today().year, i, 1).strftime('%B')}
+            meses.append(datos_mes)
+
+        if request.method == 'POST':
+
+            mes = request.POST.get('mes')
+            numero_mes = int(mes)
+
+            datos_boletas = reporte_boletas_diarias(datetime.date.today().year, mes)
+            datos_venta = reporte_ventas_diarias(datetime.date.today().year, mes)
+            datos_cliente = reporte_clientes(datetime.date.today().year, mes)
+            datos_peliculas = reporte_peliculas(datetime.date.today().year, mes, 4)
+
+            return render(request, 'accounts/reportes.html', {'datos_reporte': datos_boletas,
+                                                              'datos_cliente': datos_cliente,
+                                                              'datos_peliculas': datos_peliculas,
+                                                              'datos_venta': datos_venta,
+                                                              'meses': meses,
+                                                              'mes': meses[numero_mes-1]['value']})
+
+        else:
+            return render(request, 'accounts/reportes.html', {'datos_reporte': datos_boletas,
+                                                              'datos_cliente': datos_cliente,
+                                                              'datos_peliculas': datos_peliculas,
+                                                              'datos_venta': datos_venta,
+                                                              'meses': meses})
+    else:
+        messages.error(request, 'No estas autorizado para realizar esta acción')
+        return redirect('accounts:home')
+
+
 
 
 # Funcion para cambiar el estado de una notificacion a leida

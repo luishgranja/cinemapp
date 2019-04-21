@@ -1,31 +1,26 @@
 <!-- Left side column. contains the logo and sidebar -->
 <aside class="main-sidebar">
 
-    <!-- sidebar: style can be found in sidebar.less -->
-    <section class="sidebar">
-        <!-- Sidebar Menu -->
-        <ul class="sidebar-menu" data-widget="tree">
-            <li class="header">MENÚ</li>
-            <!-- Optionally, you can add icons to the links -->
-            <li class="active"><a href="{% url 'accounts:registro' %}"><i class="fa fa-users"></i> <span>Gestionar Usuarios</span></a></li>
-            <li><a href="{% url 'sucursales:crear'  %}"><i class="fa fa-building-o"></i> <span>Gestionar Sucursales</span></a></li>
-            <li><a href="{% url 'peliculas:crear' %}"><i class="fa fa-video-camera"></i> <span>Gestionar Películas</span></a></li>
-             <li><a href="{% url 'peliculas:crear_genero' %}"><i class="fa fa-asterisk"></i> <span>Gestionar Géneros</span></a></li>
-            <li><a href="#"><i class="fa fa-bullhorn"></i> <span>Gestionar Anuncios</span></a></li>
+	<!-- sidebar: style can be found in sidebar.less -->
+	<section class="sidebar">
+		<!-- Sidebar Menu -->
+		<ul class="sidebar-menu" data-widget="tree">
+			<li class="header">MENÚ</li>
+			<!-- Optionally, you can add icons to the links -->
+			<li class="active"><a href="{% url 'accounts:registro' %}"><i class="fa fa-users"></i> <span>Gestionar Usuarios</span></a>
+			</li>
+			<li><a href="{% url 'sucursales:crear' %}"><i class="fa fa-building-o"></i>
+				<span>Gestionar Sucursales</span></a></li>
+			<li><a href="{% url 'peliculas:crear' %}"><i class="fa fa-video-camera"></i>
+				<span>Gestionar Películas</span></a></li>
+			<li><a href="{% url 'peliculas:crear_genero' %}"><i class="fa fa-asterisk"></i>
+				<span>Gestionar Géneros</span></a></li>
+			<li><a href="#"><i class="fa fa-bullhorn"></i> <span>Gestionar Anuncios</span></a></li>
 
-            <li class="treeview">
-                <a href="#"><i class="fa fa-bar-chart"></i> <span>Reportes</span>
-                    <span class="pull-right-container">
-            <i class="fa fa-angle-left pull-right"></i>
-          </span>
-                </a>
-                <ul class="treeview-menu">
-                    <li><a href="#">Películas</a></li>
-                    <li><a href="#">Salas</a></li>
-                </ul>
-            </li>
-        </ul>
-        <!-- /.sidebar-menu -->
-    </section>
-    <!-- /.sidebar -->
+
+			<li><a href="{% url 'accounts:reportes' %}"><i class="fa fa-bar-chart"></i> <span>Reportes</span><span class="pull-right-container"></span> </a></li>
+		</ul>
+		<!-- /.sidebar-menu -->
+	</section>
+	<!-- /.sidebar -->
 </aside>
