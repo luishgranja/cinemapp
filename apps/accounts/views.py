@@ -24,6 +24,12 @@ def reportes(request):
         datos_cliente = reporte_clientes(datetime.date.today().year, datetime.date.today().month)
         datos_peliculas = reporte_peliculas(datetime.date.today().year, datetime.date.today().month, 4)
 
+        sucursales = []
+        sucursales_aux = Sucursal.objects.all()
+        for sucursal in sucursales_aux:
+            sucursales.append(sucursal.nombre)
+
+
         meses = []
         for i in range(1, 13):
             datos_mes = {'id': i, 'value': datetime.date(datetime.date.today().year, i, 1).strftime('%B')}
@@ -44,14 +50,16 @@ def reportes(request):
                                                               'datos_peliculas': datos_peliculas,
                                                               'datos_venta': datos_venta,
                                                               'meses': meses,
-                                                              'mes': meses[numero_mes-1]['value']})
+                                                              'mes': meses[numero_mes-1]['value'],
+                                                              'sucursales': sucursales})
 
         else:
             return render(request, 'accounts/reportes.html', {'datos_reporte': datos_boletas,
                                                               'datos_cliente': datos_cliente,
                                                               'datos_peliculas': datos_peliculas,
                                                               'datos_venta': datos_venta,
-                                                              'meses': meses})
+                                                              'meses': meses,
+                                                              'sucursales': sucursales})
     else:
         messages.error(request, 'No estas autorizado para realizar esta acción')
         return redirect('accounts:home')
