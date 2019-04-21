@@ -67,12 +67,10 @@
 {% endblock contenido %}
 
 {% block js %}
-<script src="{% static 'dist/js/validacion_sucursal.js' %}"></script>
 <script src="{% static 'plugins/toastr/toastr.min.js' %}"></script>
 <script src="{% static 'bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
 <script src="{% static 'bower_components/datatables.net-bs/responsive/dataTables.responsive.min.js' %}"></script>
-{{ form_sucursal.media.js }}
 <script>
     $(function () {
         $('#tabla_funciones').DataTable()

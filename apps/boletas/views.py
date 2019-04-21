@@ -569,6 +569,23 @@ def listar_boletas_operador(usuario):
     return Boleta.get_boletas_operador(usuario)
 
 
+def cancelar_boleta(request):
+    usuario = request.user
+    if request.is_ajax():
+        boleta_id = request.GET.get('boleta', None)
+        try:
+            boleta = Boleta.objects.get(id=boleta_id)
+            boleta.delete()
+            messages.success(request, 'Boleta cancelada exitosamente!')
+            return redirect('boletas:ver_boletas')
+
+        except (User.cliente.RelatedObjectDoesNotExist, User.DoesNotExist):
+            messages.error(request, 'Por favor corrige los errores')
+            return redirect('boletas:ver_boletas')
+
+    return redirect('boletas:ver_boletas')
+
+
 def ver_boletas(request):
     usuario = request.user
     try:

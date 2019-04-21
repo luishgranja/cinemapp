@@ -15,5 +15,6 @@ urlpatterns = [
     path('api/consultar-funciones', consultar_funciones, name='consultar_funciones'),
     path('api/consultar-sala', consultar_sala, name='consultar_sala'),
     path('api/consultar-boletas-funcion', consultar_boletas_funcion, name='consultar_boletas_funcion'),
+    path('api/cancelar_boleta', cancelar_boleta, name='cancelar_boleta'),
 
 ]
