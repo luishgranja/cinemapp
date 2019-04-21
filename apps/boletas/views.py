@@ -138,7 +138,6 @@ def get_boletas_reservadas(request):
         except Funcion.DoesNotExist:
             return JsonResponse({'response': 0})
 
-
 def vender_boleta(request):
     usuario = request.user
     empleado = Empleado.objects.get(user=usuario)
@@ -200,7 +199,7 @@ def vender_boleta(request):
                             boleta_aux.total = precio_silla[tipo_silla] + precio_sala[funcion.sala.tipo_sala]
                             boleta_aux.funcion = funcion
                             boleta_aux.silla = silla_aux
-                            boleta_aux.medio_pago = form.cleaned_data['medio_pago']
+                            boleta_aux.medio_pago = medio_pago
                             boleta_aux.cedula = form.data["cedula"]
                             boleta_aux.cedula_empleado = usuario.cedula
                             boleta_aux.nombre_cliente = form.data["nombre_cliente"]
@@ -211,8 +210,7 @@ def vender_boleta(request):
                         Notificacion.objects.create(usuario=usuario,
                                                     titulo='Compra de Boletas para ' + str(pelicula.nombre),
                                                     mensaje='Se ha confirmado la compra de ' + str(
-                                                len(sillas)) + ' boletas por un valor de $' + str(
-                                                        precio_final), tipo=3)
+                                                len(sillas)) + ' boletas por un valor de $' + str(precio_final), tipo=3)
                         messages.success(request, 'Boletas vendidas exitosamente!')
                         return render(request, 'boletas/pdf_boleta.html', {'boletas_ids': boletas_ids})
                     else:
@@ -255,7 +253,7 @@ def vender_boleta(request):
                     boleta_aux.total = precio_silla[tipo_silla] + precio_sala[funcion.sala.tipo_sala]
                     boleta_aux.funcion = funcion
                     boleta_aux.silla = silla_aux
-                    boleta_aux.medio_pago = form.cleaned_data['medio_pago']
+                    boleta_aux.medio_pago = medio_pago
                     boleta_aux.cedula = form.data["cedula"]
                     boleta_aux.cedula_empleado = usuario.cedula
                     boleta_aux.nombre_cliente = form.data["nombre_cliente"]
@@ -557,3 +555,34 @@ def consultar_boletas_funcion(request):
 
         except Funcion.DoesNotExist:
             return JsonResponse({'response': 0})
+
+
+def listar_boletas():
+    return Boleta.get_boletas()
+
+
+def listar_boletas_gerente(usuario):
+    return Boleta.get_boletas_sucursal(usuario)
+
+
+def listar_boletas_operador(usuario):
+    return Boleta.get_boletas_operador(usuario)
+
+
+def ver_boletas(request):
+    usuario = request.user
+    try:
+        empleado = Empleado.objects.get(user=usuario)
+        cargo = empleado.cargo
+    except Empleado.DoesNotExist:
+        cargo = ''
+
+    if usuario.is_staff:
+        boletas = listar_boletas()
+        return render(request, 'boletas/lista_boletas.html', {'boletas': boletas})
+    elif cargo == 'Gerente':
+        boletas = listar_boletas_gerente(usuario)
+        return render(request, 'boletas/lista_boletas.html', {'boletas': boletas})
+    elif cargo == 'Operador':
+        boletas = listar_boletas_operador(usuario)
+        return render(request, 'boletas/lista_boletas.html', {'boletas': boletas})

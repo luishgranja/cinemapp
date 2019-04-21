@@ -5,6 +5,7 @@ app_name = 'boletas'
 
 urlpatterns = [
     path('vender-boleta', vender_boleta, name='vender_boleta'),
+    path('ver-boletas', ver_boletas, name='ver_boletas'),
     path('generar-boleta/<int:id_boleta>', generar_boleta, name='generar_boleta'),
     path('comprar-boleta/<slug:slug>/<int:id_funcion>', comprar_boleta, name='comprar_boleta'),
     path('reservar-boleta/<slug:slug>/<int:id_funcion>', crear_reserva, name='crear_reserva'),

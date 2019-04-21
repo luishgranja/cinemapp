@@ -23,6 +23,29 @@ class Boleta(models.Model):
     class Meta:
         ordering = ['-fecha_compra']
 
+    @staticmethod
+    def get_boletas_operador(usuario):
+        try:
+            boletas = Boleta.objects.filter(cedula_empleado=usuario.cedula, reserva=False)
+            return boletas
+        except Sala.DoesNotExist and Funcion.DoesNotExist:
+            return None
+
+    @staticmethod
+    def get_boletas_sucursal(usuario):
+        try:
+            boletas = Boleta.objects.filter(funcion__sala__sucursal=Empleado.objects.get(user=usuario).sucursal, reserva=False)
+            return boletas
+        except Sala.DoesNotExist and Funcion.DoesNotExist:
+            return None
+
+    def get_boletas():
+        try:
+            boletas = Boleta.objects.filter(reserva=False)
+            return boletas
+        except Funcion.DoesNotExist:
+            return None
+
 
 
 
