@@ -34,10 +34,11 @@ def generar_pdf_boleta(boleta):
 
     p.setFillColor(colors.black)
     len_pelicula = len(str(boleta.funcion.pelicula.nombre))
-    rec_size = 5 * len_pelicula
+    rec_size = 8 * len_pelicula
+    print(rec_size)
     if rec_size > 200:
         rec_size = 180
-    p.rect(20, 276, rec_size, 14, fill=1)  # 20caracteres
+    p.rect(20, 276, rec_size, 14, fill=1)
     p.setFillColor(colors.white)
     p.setFont("Helvetica", 10)
     p.drawString(20, 280, boleta.funcion.pelicula.nombre)
@@ -56,7 +57,7 @@ def generar_pdf_boleta(boleta):
     p.setFont("Helvetica", 8)
     p.drawString(20, 220, "Ubicación")
 
-    p.rect(20, 196, 80, 14, fill=1)  # 20caracteres
+    p.rect(20, 196, 80, 14, fill=1)
     p.setFillColor(colors.white)
     p.setFont("Helvetica", 12)
     p.drawString(20, 200, str(boleta.funcion.sala))
@@ -66,7 +67,7 @@ def generar_pdf_boleta(boleta):
     p.setFont("Helvetica", 8)
     p.drawString(20, 180, "Silla")
 
-    p.rect(20, 156, 20, 14, fill=1)  # 20caracteres
+    p.rect(20, 156, 20, 14, fill=1)
     p.setFillColor(colors.white)
     p.setFont("Helvetica", 12)
     p.drawString(20, 160, boleta.silla.nombre)

@@ -4,6 +4,7 @@ from apps.boletas.views import *
 app_name = 'boletas'
 
 urlpatterns = [
+    path('tabla-precios', tabla_precios, name='tabla_precios'),
     path('vender-boleta', vender_boleta, name='vender_boleta'),
     path('ver-boletas', ver_boletas, name='ver_boletas'),
     path('generar-boleta/<int:id_boleta>', generar_boleta, name='generar_boleta'),

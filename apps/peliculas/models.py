@@ -32,6 +32,7 @@ class Pelicula(models.Model):
     is_active = models.BooleanField(default=True)
     slug = models.SlugField(unique=True, default='')
     is_estreno = models.BooleanField(default=True)
+    video = models.CharField(max_length=20, default='')
 
     def __str__(self):
         return self.nombre
@@ -60,7 +61,7 @@ class Pelicula(models.Model):
 
     def get_pelicula_estreno(bool):
         try:
-            peliculas = Pelicula.objects.filter(is_estreno=bool,is_active=True)
+            peliculas = Pelicula.objects.filter(is_estreno=bool, is_active=True)
             return peliculas
         except Pelicula.DoesNotExist:
             return None

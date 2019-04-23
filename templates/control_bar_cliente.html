@@ -1,82 +1,81 @@
 <div class="navbar-custom-menu">
-  <ul class="nav navbar-nav">
+	<ul class="nav navbar-nav">
 
-    <!-- Notifications Menu -->
-    <li class="dropdown notifications-menu">
-      <!-- Menu toggle button -->
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-        <i class="fa fa-bell-o"></i>
-        <span class="label label-warning" id="num_notis">{% if notis.num_notis == 0 %}{% else %}{{notis.num_notis}}{% endif %}</span>
-      </a>
-      <ul class="dropdown-menu">
-        <li class="header" id="label_notificaciones">
-        {% if notis.num_notis == 0 %} Has leído todas las notificaciones
-        {% else %}Tienes {{notis.num_notis}} notificaciones sin leer
-        {% endif %}
-        </li>
-        <li>
-          <!-- Inner Menu: contains the notifications -->
-          <ul class="menu notificaciones">
+		<!-- Notifications Menu -->
+		<li class="dropdown notifications-menu">
+			<!-- Menu toggle button -->
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+				<i class="fa fa-bell-o"></i>
+				<span class="label label-warning" id="num_notis">{% if notis.num_notis == 0 %}{% else %}
+					{{ notis.num_notis }}{% endif %}</span>
+			</a>
+			<ul class="dropdown-menu">
+				<li class="header" id="label_notificaciones">
+					{% if notis.num_notis == 0 %} Has leído todas las notificaciones
+					{% else %}Tienes {{ notis.num_notis }} notificaciones sin leer
+					{% endif %}
+				</li>
+				<li>
+					<!-- Inner Menu: contains the notifications -->
+					<ul class="menu notificaciones">
 
-            {% for n in notis.notis %}
-            <li>
-              <a href="#" id="noti_{{n.id}}" class="modal-notificacion" title="{{n.fecha_envio}}" data-target="#modal-noti" data-toggle="modal"
-                    data-titulo="{{ n.titulo }}"
-                    data-mensaje="{{ n.mensaje }}"
-                    data-icono="{{ n.get_icono }}"
-                    data-id="{{ n.id }}">
-                <h5 style="margin-top: 0px;">
-                  <small> <i class="fa fa-clock-o"></i> Hace {{n.fecha_envio|timesince }}</small>
-                </h5>
-                <i class='{{ n.get_icono }}'></i> {{n.mensaje}}
-                <div class="ripple-container"></div>
-              </a>
-              </li>
-              {% endfor %}
+						{% for n in notis.notis %}
+							<li>
+								<a href="#" id="noti_{{ n.id }}" class="modal-notificacion" title="{{ n.fecha_envio }}"
+								   data-target="#modal-noti" data-toggle="modal"
+								   data-titulo="{{ n.titulo }}"
+								   data-mensaje="{{ n.mensaje }}"
+								   data-icono="{{ n.get_icono }}"
+								   data-id="{{ n.id }}">
+									<h5 style="margin-top: 0px;">
+										<small><i class="fa fa-clock-o"></i> Hace {{ n.fecha_envio|timesince }}</small>
+									</h5>
+									<i class='{{ n.get_icono }}'></i> {{ n.mensaje }}
+									<div class="ripple-container"></div>
+								</a>
+							</li>
+						{% endfor %}
 
-            </ul>
-          </li>
-          <li class="footer"><a href="{% url 'accounts:notificaciones' %}">Ver todas</a></li>
-        </ul>
-      </li>
+					</ul>
+				</li>
+				<li class="footer"><a href="{% url 'accounts:notificaciones' %}">Ver todas</a></li>
+			</ul>
+		</li>
 
-      <!-- User Account Menu -->
-      <li class="dropdown user user-menu">
-        <!-- Menu Toggle Button -->
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-          <!-- The user image in the navbar-->
-          <!--<img src="dist/img/user-160x160.jpg" class="user-image" alt="User Image">-->
-          <!-- hidden-xs hides the username on small devices so only the image appears. -->
-          <span class="hidden-xs">{{ user.username }}</span>
-        </a>
-        <ul class="dropdown-menu">
-          <!-- The user image in the menu -->
-          <li class="user-header">
-            <!-- <img src="dist/img/user-160x160.jpg" class="img-circle" alt="User Image">-->
-
-            <p>
-              {{ user.get_full_name }}
-            </p>
-          </li>
-          <!-- Menu Body -->
-          <li class="user-body">
-            <div class="row">
-              <div class="col-xs-12 text-center">
-                <a href="{% url 'accounts:consultar_saldo' %}">Consultar Saldo</a>
-              </div>
-            </div>
-            <!-- /.row -->
-          </li>
-          <!-- Menu Footer-->
-          <li class="user-footer">
-            <div class="pull-left">
-              <a href="{% url 'accounts:editar_perfil_cliente'%}" class="btn btn-default btn-flat">Mi perfil</a>
-            </div>
-            <div class="pull-right">
-              <a href="{% url 'accounts:logout' %}" class="btn btn-default btn-flat">Salir</a>
-            </div>
-          </li>
-        </ul>
-      </li>
-    </ul>
-  </div>
+		<!-- User Account Menu -->
+		<li class="dropdown user user-menu">
+			<!-- Menu Toggle Button -->
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+				<!-- The user image in the navbar-->
+				<!--<img src="dist/img/user-160x160.jpg" class="user-image" alt="User Image">-->
+				<!-- hidden-xs hides the username on small devices so only the image appears. -->
+				<span class="hidden-xs">{{ user.username }}</span>
+			</a>
+			<ul class="dropdown-menu">
+				<!-- The user image in the menu -->
+				<li class="user-header" style="height: 55px;">
+					<p> {{ user.get_full_name }} </p>
+				</li>
+				<!-- Menu Body -->
+				<li class="user-body">
+					<div class="row">
+						<div class="col-xs-12 text-center">
+							<a href="{% url 'accounts:consultar_saldo' %}">Consultar Saldo</a>
+						</div>
+					</div>
+					<!-- /.row -->
+				</li>
+				<!-- Menu Footer-->
+				<li class="user-footer">
+					<div class="pull-left">
+						<a href="{% url 'accounts:editar_perfil_cliente' %}" class="btn btn-default btn-flat">Mi
+							perfil</a>
+					</div>
+					<div class="pull-right">
+						<a href="{% url 'accounts:logout' %}" class="btn btn-default btn-flat">Salir</a>
+					</div>
+				</li>
+			</ul>
+		</li>
+	</ul>
+</div>

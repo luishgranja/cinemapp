@@ -1,15 +1,15 @@
 from django.urls import path , include
 from apps.accounts.views import *
 from django.contrib.auth import views as auth_views
-#from apps.accounts.decorators import check_recaptcha
+from apps.accounts.decorators import check_recaptcha
 
 app_name = 'accounts'
 
 urlpatterns = [
     path('gestion-empleados', signup, name='registro'),
     path('registrarse', signup_cliente, name='registro_cliente'),
-    path('', check_recaptcha(auth_views.LoginView.as_view(redirect_authenticated_user=True, template_name='accounts/login.html')),
-        name='login'),
+    path('', check_recaptcha(auth_views.LoginView.as_view(redirect_authenticated_user=True,
+                                                          template_name='accounts/login.html')), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('dashboard', home, name='home'),
     path('ver-clientes', listar_clientes, name='clientes'),

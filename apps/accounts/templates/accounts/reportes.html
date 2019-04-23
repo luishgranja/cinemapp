@@ -4,157 +4,158 @@
 {% block titulo %} Reportes {% endblock titulo %}
 
 {% block css %}
-<link rel="stylesheet" href="{% static 'bower_components/select2/dist/css/select2.min.css' %}">
+	<link rel="stylesheet" href="{% static 'bower_components/select2/dist/css/select2.min.css' %}">
 {% endblock css %}
 
 {% block miga_pan %}
-<li><a href="{% url 'accounts:home'%}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
-<li class="active">REPORTES</li>
+	<li><a href="{% url 'accounts:home' %}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
+	<li class="active">REPORTES</li>
 {% endblock miga_pan %}
 
-{% block titulo_pagina %} Reportes del mes de {% if mes %} {{ mes }} {% else %} {% now "F" %}{% endif %}{% endblock titulo_pagina %}
+{% block titulo_pagina %} Reportes del mes de {% if mes %} {{ mes }} {% else %} {% now "F" %}
+{% endif %}{% endblock titulo_pagina %}
 
 {% block contenido %}
 
-<div class="row">
-	<div class="col-md-12">
-		<span>Seleccione el mes: </span>
-		<form method="POST"> {% csrf_token %}
-			<select style="width: 150px" class="select-mes" name="mes">
-				{% for mes in meses %}
-				<option value="{{ mes.id }}">{{ mes.value }}</option>
-				{% endfor %}
-			</select>
-			<button type="submit" class="btn btn-success btn-raised">Generar Reportes</button>
-		</form>
+	<div class="row">
+		<div class="col-md-12">
+			<span>Seleccione el mes: </span>
+			<form method="POST"> {% csrf_token %}
+				<select style="width: 150px" class="select-mes" name="mes">
+					{% for mes in meses %}
+						<option value="{{ mes.id }}">{{ mes.value }}</option>
+					{% endfor %}
+				</select>
+				<button type="submit" class="btn btn-success btn-raised">Generar Reportes</button>
+			</form>
+		</div>
+
 	</div>
 
-</div>
+	<!-- reportes -->
+	<div class="row">
 
-<!-- reportes -->
-<div class="row">
-
-	<div class="col-md-6">
-		<div class="box box-primary">
-			<div class="box-header with-border">
-				<h3 class="box-title">VENTAS MENSUALES EN PESOS</h3>
+		<div class="col-md-6">
+			<div class="box box-primary">
+				<div class="box-header with-border">
+					<h3 class="box-title">VENTAS MENSUALES EN PESOS</h3>
+				</div>
+				<div class="box-body chart-responsive">
+					<div class="chart" id="reporte-ventas"></div>
+				</div>
 			</div>
-			<div class="box-body chart-responsive">
-				<div class="chart" id="reporte-ventas"></div>
+		</div>
+
+		<div class="col-md-6">
+			<div class="box box-primary">
+				<div class="box-header with-border">
+					<h3 class="box-title"> NÚMERO DE BOLETAS MENSUALES</h3>
+				</div>
+				<div class="box-body chart-responsive">
+					<div class="chart" id="reporte-boletas"></div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-md-6">
+			<div class="box box-danger">
+				<div class="box-header with-border">
+					<h3 class="box-title">VENTAS POR CLIENTES</h3>
+				</div>
+				<div class="box-body chart-responsive">
+					<div class="chart" id="reporte-clientes" style="height: 300px; position: relative;"></div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-md-6">
+			<div class="box box-danger">
+				<div class="box-header with-border">
+					<h3 class="box-title">LAS MÁS VISTAS</h3>
+				</div>
+				<div class="box-body chart-responsive">
+					<div class="chart" id="reporte-peliculas" style="height: 300px; position: relative;"></div>
+				</div>
 			</div>
 		</div>
 	</div>
-
-	<div class="col-md-6">
-		<div class="box box-primary">
-			<div class="box-header with-border">
-				<h3 class="box-title"> NÚMERO DE BOLETAS MENSUALES</h3>
-			</div>
-			<div class="box-body chart-responsive">
-				<div class="chart" id="reporte-boletas"></div>
-			</div>
-		</div>
-	</div>
-
-	<div class="col-md-6">
-		<div class="box box-danger">
-			<div class="box-header with-border">
-				<h3 class="box-title">VENTAS POR CLIENTES</h3>
-			</div>
-			<div class="box-body chart-responsive">
-				<div class="chart" id="reporte-clientes" style="height: 300px; position: relative;"></div>
-			</div>
-		</div>
-	</div>
-
-	<div class="col-md-6">
-		<div class="box box-danger">
-			<div class="box-header with-border">
-				<h3 class="box-title">LAS MÁS VISTAS</h3>
-			</div>
-			<div class="box-body chart-responsive">
-				<div class="chart" id="reporte-peliculas" style="height: 300px; position: relative;"></div>
-			</div>
-		</div>
-	</div>
-</div>
 
 {% endblock contenido %}
 
 {% block js %}
 
 
-<!-- Morris.js charts -->
-<script src="{% static 'bower_components/raphael/raphael.min.js' %}"></script>
-<script src="{% static 'bower_components/morris.js/morris.min.js' %}"></script>
-<script src="{% static 'bower_components/select2/dist/js/select2.min.js' %}"></script>
+	<!-- Morris.js charts -->
+	<script src="{% static 'bower_components/raphael/raphael.min.js' %}"></script>
+	<script src="{% static 'bower_components/morris.js/morris.min.js' %}"></script>
+	<script src="{% static 'bower_components/select2/dist/js/select2.min.js' %}"></script>
 
 
-<script>
+	<script>
 
-    $(document).ready(function () {
-        $('.select-mes').select2({
-            width: 'resolve'
-        });
-    });
-
-
-    $(function () {
-            // AREA CHART VENTAS
-            var area = new Morris.Area({
-                element: 'reporte-ventas',
-                resize: true,
-                data: {{ datos_venta|safe }},
-            xkey: 'y',
-                parseTime: false,
-                ykeys: {{ sucursales|safe }},
-            labels: {{ sucursales|safe }},
-            fillOpacity: 0.6,
-                hideHover: 'auto',
-                behaveLikeLine: true,
-                pointFillColors: ['#ffffff'],
-                pointStrokeColors: ['black'],
-                lineColors: ['#a0d0e0', '#a361bc', '#a0dd63', '#4ccc2c'],
-                hideHover: false
+        $(document).ready(function () {
+            $('.select-mes').select2({
+                width: 'resolve'
+            });
         });
 
-            // AREA CHART VENTAS BOLETAS
-            var area = new Morris.Area({
-                element: 'reporte-boletas',
-                resize: true,
-                data: {{ datos_reporte|safe }},
-            xkey: 'y',
-                parseTime: false,
-                ykeys: {{ sucursales|safe }},
-            labels: {{ sucursales|safe }},
-            fillOpacity: 0.6,
-                hideHover: 'auto',
-                behaveLikeLine: true,
-                pointFillColors: ['#ffffff'],
-                pointStrokeColors: ['black'],
-                lineColors: ['#fc6429', '#63bc41', '#a0dd63', '#4ccc2c'],
-                hideHover: false
-        });
 
-            //DONUT CHART TIPO_CLIENTE
-            var donut = new Morris.Donut({
-                element: 'reporte-clientes',
-                resize: true,
-                colors: ["#63bc41", "#f5e800"],
-                data: {{ datos_cliente | safe }},
-            hideHover: 'auto'
-        });
+        $(function () {
+                // AREA CHART VENTAS
+                var area = new Morris.Area({
+                    element: 'reporte-ventas',
+                    resize: true,
+                    data: {{ datos_venta|safe }},
+                    xkey: 'y',
+                    parseTime: false,
+                    ykeys: {{ sucursales|safe }},
+                    labels: {{ sucursales|safe }},
+                    fillOpacity: 0.6,
+                    hideHover: 'auto',
+                    behaveLikeLine: true,
+                    pointFillColors: ['#ffffff'],
+                    pointStrokeColors: ['black'],
+                    lineColors: ['#a0d0e0', '#a361bc', '#a0dd63', '#4ccc2c'],
+                    hideHover: false
+                });
 
-            //DONUT CHART PELICULAS
-            var donut = new Morris.Donut({
-                element: 'reporte-peliculas',
-                resize: true,
-                colors: ["#55bcb3", "#d862f5", "#fc6429", "#bc4c19"],
-                data: {{ datos_peliculas | safe }},
-            hideHover: 'auto'
-        });
-        }
-    )
-</script>
+                // AREA CHART VENTAS BOLETAS
+                var area = new Morris.Area({
+                    element: 'reporte-boletas',
+                    resize: true,
+                    data: {{ datos_reporte|safe }},
+                    xkey: 'y',
+                    parseTime: false,
+                    ykeys: {{ sucursales|safe }},
+                    labels: {{ sucursales|safe }},
+                    fillOpacity: 0.6,
+                    hideHover: 'auto',
+                    behaveLikeLine: true,
+                    pointFillColors: ['#ffffff'],
+                    pointStrokeColors: ['black'],
+                    lineColors: ['#fc6429', '#63bc41', '#a0dd63', '#4ccc2c'],
+                    hideHover: false
+                });
+
+                //DONUT CHART TIPO_CLIENTE
+                var donut = new Morris.Donut({
+                    element: 'reporte-clientes',
+                    resize: true,
+                    colors: ["#63bc41", "#f5e800"],
+                    data: {{ datos_cliente | safe }},
+                    hideHover: 'auto'
+                });
+
+                //DONUT CHART PELICULAS
+                var donut = new Morris.Donut({
+                    element: 'reporte-peliculas',
+                    resize: true,
+                    colors: ["#55bcb3", "#d862f5", "#fc6429", "#bc4c19"],
+                    data: {{ datos_peliculas | safe }},
+                    hideHover: 'auto'
+                });
+            }
+        )
+	</script>
 
 {% endblock js %}

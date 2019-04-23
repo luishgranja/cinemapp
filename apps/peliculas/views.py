@@ -1,13 +1,12 @@
-from django.shortcuts import render, redirect
-from .forms import *
-from django.contrib import messages
-from django.http import HttpResponse
-from apps.accounts.decorators import check_recaptcha
-from apps.funciones.models import *
 from datetime import date, timedelta
 
+from django.contrib import messages
+from django.shortcuts import render, redirect
 
-@check_recaptcha
+from apps.funciones.models import *
+from .forms import *
+
+
 def crear_pelicula(request):
     # Usuario que hizo la peticion a la funcion (usuario que esta en la sesion)
     usuario = request.user
@@ -15,13 +14,15 @@ def crear_pelicula(request):
     if usuario.is_staff or True:
         if request.method == 'POST':
             form = CrearPeliculaForm(request.POST, request.FILES)
-            if form.is_valid() and request.recaptcha_is_valid:
+            if form.is_valid():
                 form.save()
                 messages.success(request, 'Película registrada exitosamente')
-                return render(request, 'peliculas/crear_peliculas.html', {'form': CrearPeliculaForm(), 'peliculas': listar_peliculas()})
+                return render(request, 'peliculas/crear_peliculas.html', {'form': CrearPeliculaForm(),
+                                                                          'peliculas': listar_peliculas()})
             else:
                 messages.error(request, 'Por favor corrige los errores')
-                return render(request, 'peliculas/crear_peliculas.html', {'form': form, 'peliculas': listar_peliculas()})
+                return render(request, 'peliculas/crear_peliculas.html', {'form': form,
+                                                                          'peliculas': listar_peliculas()})
         else:
             form = CrearPeliculaForm()
             return render(request, 'peliculas/crear_peliculas.html', {'form': form, 'peliculas': listar_peliculas()})
@@ -42,23 +43,24 @@ def listar_cartelera():
     peliculas = Pelicula.objects.filter(funcion__in=funciones)
     return (Pelicula.get_pelicula_estreno(True) & peliculas).distinct()
 
+
 def listar_cartelera_sucursal(sucursal):
     peliculas = Pelicula.objects.filter(funcion__sala__sucursal_id=sucursal)
     return (Pelicula.get_pelicula_estreno(True) & peliculas).distinct()
+
 
 def listar_peliculas_proximo_estreno():
     return Pelicula.get_pelicula_estreno(False)
 
 
-@check_recaptcha
 def editar_pelicula(request, id_pelicula):
     usuario = request.user
     pelicula = Pelicula.objects.get(id=id_pelicula)
 
-    if True:
+    if usuario.is_staff:
         if request.method == 'POST':
             form = CrearPeliculaForm(request.POST, request.FILES, instance=pelicula)
-            if form.is_valid() and request.recaptcha_is_valid:
+            if form.is_valid():
                 form.save()
                 messages.success(request, 'Película modificada exitosamente!')
                 return redirect('peliculas:crear')
@@ -76,11 +78,11 @@ def editar_pelicula(request, id_pelicula):
 
 
 def consultar_cartelera(request):
-    return render(request,'peliculas/consultar_peliculas.html', {'peliculas': listar_cartelera()})
+    return render(request, 'peliculas/consultar_peliculas.html', {'peliculas': listar_cartelera()})
 
 
 def consultar_proximos_estrenos(request):
-    return render(request,'peliculas/consultar_peliculas.html', {'peliculas': listar_peliculas_proximo_estreno()})
+    return render(request, 'peliculas/consultar_peliculas.html', {'peliculas': listar_peliculas_proximo_estreno()})
 
 
 def listar_pelicula(slug):
@@ -112,15 +114,15 @@ def listar_generos():
     return Genero.get_generos()
 
 
-@check_recaptcha
 def crear_genero(request):
     usuario = request.user
     if request.method == 'POST':
         form = CrearGeneroForm(request.POST)
-        if form.is_valid() and request.recaptcha_is_valid:
+        if form.is_valid():
             form.save()
             messages.success(request, 'Género creado exitósamente!')
-            return render(request, 'peliculas/gestion_generos.html', {'form': CrearGeneroForm(), 'generos': listar_generos()})
+            return render(request, 'peliculas/gestion_generos.html', {'form': CrearGeneroForm(),
+                                                                      'generos': listar_generos()})
         else:
             messages.error(request, 'Por favor corrige los errores')
             return render(request, 'peliculas/gestion_generos.html', {'form': form, 'generos': listar_generos()})

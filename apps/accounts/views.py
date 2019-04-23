@@ -10,6 +10,7 @@ from apps.sucursales.models import *
 from apps.peliculas.views import *
 from apps.accounts.decorators import check_recaptcha
 from apps.boletas.models import *
+from apps.anuncios.models import *
 from apps.accounts.reportes import *
 import datetime
 
@@ -29,14 +30,12 @@ def reportes(request):
         for sucursal in sucursales_aux:
             sucursales.append(sucursal.nombre)
 
-
         meses = []
         for i in range(1, 13):
             datos_mes = {'id': i, 'value': datetime.date(datetime.date.today().year, i, 1).strftime('%B')}
             meses.append(datos_mes)
 
         if request.method == 'POST':
-
             mes = request.POST.get('mes')
             numero_mes = int(mes)
 
@@ -60,11 +59,51 @@ def reportes(request):
                                                               'datos_venta': datos_venta,
                                                               'meses': meses,
                                                               'sucursales': sucursales})
+
+    elif not usuario.is_cliente:
+
+        sucursal = Empleado.objects.get(user=usuario).sucursal
+
+        datos_boletas = reporte_boletas_diarias_sucursal(datetime.date.today().year, datetime.date.today().month, sucursal)
+        datos_venta = reporte_ventas_diarias_sucursal(datetime.date.today().year, datetime.date.today().month, sucursal)
+        datos_cliente = reporte_clientes_sucursal(datetime.date.today().year, datetime.date.today().month, sucursal)
+        datos_peliculas = reporte_peliculas_sucursal(datetime.date.today().year, datetime.date.today().month, 4, sucursal)
+
+        sucursales = [sucursal.nombre]
+
+        meses = []
+        for i in range(1, 13):
+            datos_mes = {'id': i, 'value': datetime.date(datetime.date.today().year, i, 1).strftime('%B')}
+            meses.append(datos_mes)
+
+        if request.method == 'POST':
+            mes = request.POST.get('mes')
+            numero_mes = int(mes)
+
+            datos_boletas = reporte_boletas_diarias_sucursal(datetime.date.today().year, mes, sucursal)
+            datos_venta = reporte_ventas_diarias_sucursal(datetime.date.today().year, mes, sucursal)
+            datos_cliente = reporte_clientes_sucursal(datetime.date.today().year, mes, sucursal)
+            datos_peliculas = reporte_peliculas_sucursal(datetime.date.today().year, mes, 4, sucursal)
+
+            return render(request, 'accounts/reportes.html', {'datos_reporte': datos_boletas,
+                                                              'datos_cliente': datos_cliente,
+                                                              'datos_peliculas': datos_peliculas,
+                                                              'datos_venta': datos_venta,
+                                                              'meses': meses,
+                                                              'mes': meses[numero_mes-1]['value'],
+                                                              'sucursales': sucursales})
+
+        else:
+            return render(request, 'accounts/reportes.html', {'datos_reporte': datos_boletas,
+                                                              'datos_cliente': datos_cliente,
+                                                              'datos_peliculas': datos_peliculas,
+                                                              'datos_venta': datos_venta,
+                                                              'meses': meses,
+                                                              'sucursales': sucursales})
+
     else:
         messages.error(request, 'No estas autorizado para realizar esta acción')
         return redirect('accounts:home')
-
-
 
 
 # Funcion para cambiar el estado de una notificacion a leida
@@ -74,7 +113,7 @@ def notificacion_leida(request):
         id_notificacion = request.GET.get('id', None)
         if id_notificacion:
             notificacion = Notificacion.objects.filter(id=id_notificacion).update(leido=True)
-        return JsonResponse({'response':'ok'})
+        return JsonResponse({'response': 'ok'})
 
 
 # Funcion para verificar que un username esta disponible
@@ -86,8 +125,10 @@ def checkusername(request):
     if username:
         u = User.objects.filter(username=username).count()
         # Si el username esta disponible es True
-        if u == 0: response = True
-        else: response = False
+        if u == 0:
+            response = True
+        else:
+            response = False
     return JsonResponse({'response': response})
 
 
@@ -145,26 +186,40 @@ def consultar_notificaciones(request):
     usuario = request.user
     if request.method == 'GET':
         return render(request, 'accounts/notificaciones.html',
-        {'notis_all':notis_all(usuario), 'notis': notificaciones(usuario), 'sucursales': Sucursal.get_info()})
+                      {'notis_all': notis_all(usuario), 'notis': notificaciones(usuario),
+                       'sucursales': Sucursal.get_info()})
 
 
 @login_required
 def home(request):
     usuario = request.user
     if usuario.is_staff:
-        return render(request, 'accounts/home_admin.html', {'notis':notificaciones(usuario),'user': usuario, 'datos': datos_dashboard()})
+        return render(request, 'accounts/home_admin.html', {'notis': notificaciones(usuario),
+                                                            'user': usuario, 'datos': datos_dashboard()})
     elif usuario.is_cliente:
-        return render(request, 'accounts/home_cliente.html', {'notis':notificaciones(usuario),'user': usuario, 'sucursales': Sucursal.get_info(),
-                                                              'peliculas1': listar_cartelera(), 'peliculas2': listar_peliculas_proximo_estreno()})
+        fecha_actual = datetime.date.today()
+        try:
+            anuncio = Anuncio.objects.get(ubicacion_anuncio='dashboard', fecha_inicio__lte=fecha_actual,
+                                             fecha_final__gte=fecha_actual)
+        except Anuncio.DoesNotExist:
+            anuncio = None
+
+        return render(request, 'accounts/home_cliente.html', {'notis':notificaciones(usuario), 'user': usuario,
+                                                              'sucursales': Sucursal.get_info(),
+                                                              'peliculas1': listar_cartelera(),
+                                                              'peliculas2': listar_peliculas_proximo_estreno(),
+                                                              'anuncio': anuncio})
     elif usuario.get_cargo_empleado() == 'Gerente':
-        return render(request, 'accounts/home_gerente.html', {'user': usuario, 'datos': datos_dashboard_gerente(usuario)})
+        return render(request, 'accounts/home_gerente.html', {'user': usuario,
+                                                              'datos': datos_dashboard_gerente(usuario)})
     elif usuario.get_cargo_empleado() == 'Operador':
-        return render(request, 'accounts/home_operador.html', {'user': usuario, 'datos':
-            datos_dashboard_operador(), 'peliculas': listar_cartelera_sucursal(Empleado.objects.get(user=usuario).sucursal.id),
+        peliculas = listar_cartelera_sucursal(Empleado.objects.get(user=usuario).sucursal.id)
+        return render(request, 'accounts/home_operador.html', {'user': usuario,
+                                                               'datos': datos_dashboard_operador(),
+                                                               'peliculas': peliculas,
                                                                'form_saldo': CargarSaldoForm()})
 
 
-@check_recaptcha
 def signup(request):
     # Usuario que hizo la peticion a la funcion (usuario que esta en la sesion)
     usuario = request.user
@@ -247,13 +302,15 @@ def editar_empleado(request, id_user):
                 return redirect('accounts:registro')
             else:
                 messages.error(request, 'Por favor corrige los errores')
-                return render(request, 'accounts/editar_empleado.html', {'form': form, 'form_empleado': form_empleado, 'form_empleado_extra': form_empleado_extra})
+                return render(request, 'accounts/editar_empleado.html', {'form': form, 'form_empleado': form_empleado,
+                                                                         'form_empleado_extra': form_empleado_extra})
 
         else:
             form = EditarEmpleado(instance=user)
             form_empleado = FormEmpleado(instance=empleado)
             form_empleado_extra = EditarEmpleadoExtra(instance=user)
-            return render(request, 'accounts/editar_empleado.html', {'form': form, 'form_empleado': form_empleado, 'form_empleado_extra': form_empleado_extra})
+            return render(request, 'accounts/editar_empleado.html', {'form': form, 'form_empleado': form_empleado,
+                                                                     'form_empleado_extra': form_empleado_extra})
 
     else:
         messages.error(request, 'No estas autorizado para realizar esta acción')
@@ -303,7 +360,8 @@ def editar_perfil(request):
         else:
             form = EditarPerfilCliente(instance=usuario)
             form_cliente = FormCliente(instance=cliente)
-            return render(request, 'accounts/editar_perfil_cliente.html', {'form': form, 'form_cliente': form_cliente, 'sucursales': Sucursal.get_info()})
+            return render(request, 'accounts/editar_perfil_cliente.html', {'form': form, 'form_cliente': form_cliente,
+                                                                           'sucursales': Sucursal.get_info()})
     else:
         messages.error(request, 'No estas autorizado para realizar esta acción')
         return redirect('accounts:home')
@@ -338,9 +396,11 @@ def datos_dashboard():
 
     return datos
 
+
 def listar_clientes(request):
     clientes = User.get_clientes()
     return render(request, 'accounts/listar_clientes.html', {'clientes': clientes})
+
 
 def datos_dashboard_gerente(usuario):
     fecha_actual = date.today()
@@ -397,7 +457,7 @@ def cargar_saldo(request):
         except (User.cliente.RelatedObjectDoesNotExist, User.DoesNotExist):
             return JsonResponse({'saldo': 0})
 
-    return JsonResponse({'error':'error'})
+    return JsonResponse({'error': 'error'})
 
 
 def consultar_saldo(request):
@@ -409,7 +469,7 @@ def consultar_saldo(request):
         return redirect('accounts:home')
     boletas = Boleta.objects.filter(cedula=usuario.cedula)
     if request.method == 'GET':
-        return render(request, 'accounts/consultar_saldo.html',{'saldo': saldo, 'boletas': boletas})
+        return render(request, 'accounts/consultar_saldo.html', {'saldo': saldo, 'boletas': boletas})
 
 
 def guardar_saldo(request):
@@ -422,4 +482,3 @@ def guardar_saldo(request):
     boletas = Boleta.objects.filter(cedula=usuario.cedula)
     if request.method == 'GET':
         return render(request, 'accounts/guardar_consulta_saldo.html', {'saldo': saldo, 'boletas': boletas})
-

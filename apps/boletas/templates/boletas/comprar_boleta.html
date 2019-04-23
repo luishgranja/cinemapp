@@ -131,6 +131,14 @@
 
 {% block contenido %}
 
+	{% if anuncio %}
+	<div class="row">
+		<div class="col-md-12">
+			<a  href="{% url 'anuncios:ver_anuncio' anuncio.id %}"><img class="center-block" width="100%" height="100%" src="{{ anuncio.imagen.url | default_if_none:'#' }}" style="padding-bottom: 10px;"></a>
+		</div>
+	</div>
+	{% endif %}
+
 	<div class="col-md-6">
 		<div class="box">
 			<div class="box-header with-border">
@@ -173,7 +181,9 @@
 						<label for="d">Discapacitado = $1000</label>
 					</div>
 					<div>{{ sillas|safe }}</div>
-					<button type="submit" class="btn btn-success btn-raised pull-right">Comprar boletas</button>
+					<hr>
+					<div class="g-recaptcha" data-sitekey="6LetuIkUAAAAAImaRg4v8bqLpKw-o1cCdLVNZoYs"></div>
+					<button type="submit" class="btn btn-success btn-raised pull-left">Comprar boletas</button>
 				</form>
 			</div>
 		</div>
@@ -181,19 +191,24 @@
 
 
 	<div class="col-md-6">
-		<div class="box">
-			<div class="box-header with-border">
-				<h3 class="box-title total"></h3>
-			</div>
-			<div class="box-body">
-				<table class="table table-bordered table-responsive" id="tabla_boletas">
-					<thead>
-					<th>Silla</th>
-					<th>Precio</th>
-					</thead>
-					<tbody>
-					</tbody>
-				</table>
+		<div class="row">
+			<div class="box">
+				<div class="box-header with-border">
+					<h3 class="box-title total"></h3>
+				</div>
+				<div class="box-body">
+					<table class="table table-bordered table-responsive" id="tabla_boletas">
+						<thead>
+						<th>Silla</th>
+						<th>Precio</th>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+				<div class="box-footer">
+					<a href="{% url 'boletas:tabla_precios' %}">Tabla de Precios</a>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -203,6 +218,7 @@
 
 {% block js %}
 
+	<script src='https://www.google.com/recaptcha/api.js'></script>
 	<script src="{% static 'bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
 	<script src="{% static 'bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
 	<script src="{% static 'bower_components/datatables.net-bs/responsive/dataTables.responsive.min.js' %}"></script>
@@ -210,11 +226,11 @@
 	{{ form.media.js }}
 	<script type="text/javascript">
 
-		var tipo_sala;
+        var tipo_sala;
 
         function iniciar_tabla_boletas() {
             tabla_boletas = $('#tabla_boletas').DataTable({
-                "pageLength": 13,
+                "pageLength": 5,
                 "lengthChange": false,
                 "searching": false,
                 "info": false,
@@ -292,7 +308,7 @@
                             break;
                     }
 
-                    tabla_boletas.row.add([nombre_sillas[i], precio_silla+precio_sala]);
+                    tabla_boletas.row.add([nombre_sillas[i], precio_silla + precio_sala]);
 
                 }
                 var total_final = document.getElementById('precio_final');
@@ -333,7 +349,7 @@
                             precio_silla = 1000;
                             break;
                     }
-                    tabla_boletas.row.add([nombre_sillas[i], precio_silla+precio_sala]);
+                    tabla_boletas.row.add([nombre_sillas[i], precio_silla + precio_sala]);
                 }
 
                 var total_final = document.getElementById('precio_final');

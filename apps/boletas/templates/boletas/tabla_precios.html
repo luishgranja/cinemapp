@@ -1,0 +1,68 @@
+{% extends 'base_cliente.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+
+
+{% block miga_pan %}
+	<li><a href="{% url 'accounts:home' %}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
+	<li class="active">TABLA DE PRECIOS</li>
+{% endblock miga_pan %}
+
+{% block titulo %}Tabla de precios{% endblock titulo %}
+
+{% block contenido %}
+<div class="row">
+        <div class="col-xs-12">
+          <div class="box">
+            <div class="box-header">
+              <h3 class="box-title">Tabla de Precios</h3>
+
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body table-responsive no-padding">
+              <table class="table table-hover">
+                <tbody><tr>
+                  <th>TIPO SALA</th>
+                  <th><span class="label label-success">GENERAL</span></th>
+                  <th><span class="label label-danger">PREFERENCIAL</span></th>
+                  <th><span class="label label-info">DISCAPACITADOS</span></th>
+                  <th><span class="label label-warning">RESERVA</span></th>
+                </tr>
+                <tr>
+                  <td>General</td>
+                  <td>$6000</td>
+                  <td>$7000</td>
+                  <td>$5000</td>
+                  <td>$2800</td>
+                </tr>
+                <tr>
+                  <td>IMAX</td>
+                  <td>$7000</td>
+                  <td>$8000</td>
+                  <td>$6000</td>
+                  <td>$2800</td>
+                </tr>
+                <tr>
+                  <td>3D</td>
+                  <td>$6500</td>
+                  <td>$7500</td>
+                  <td>$5500</td>
+                  <td>$2800</td>
+                </tr>
+                <tr>
+                  <td>4DX</td>
+                  <td>$8000</td>
+                  <td>$9000</td>
+                  <td>$7000</td>
+                  <td>$2800</td>
+                </tr>
+              </tbody></table>
+            </div>
+          </div>
+        </div>
+      </div>
+{% endblock contenido %}
+
+{% block js %}
+
+{% endblock js %}

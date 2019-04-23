@@ -10,18 +10,7 @@
             <li><a href="{% url 'salas:crear' %}"><i class="fa fa-building"></i> <span>Gestionar Salas</span></a></li>
             <li><a href="{% url 'funciones:crear' %}"><i class="fa fa-video-camera"></i> <span>Gestionar Funciones</span></a></li>
             <li><a href="{% url 'boletas:ver_boletas' %}"><i class="fa fa-ticket"></i> <span>Gestionar Boletas</span></a></li>
-
-            <li class="treeview">
-                <a href="#"><i class="fa fa-bar-chart"></i> <span>Reportes</span>
-                    <span class="pull-right-container">
-            <i class="fa fa-angle-left pull-right"></i>
-          </span>
-                </a>
-                <ul class="treeview-menu">
-                    <li><a href="#">Películas</a></li>
-                    <li><a href="#">Salas</a></li>
-                </ul>
-            </li>
+	        <li><a href="{% url 'accounts:reportes' %}"><i class="fa fa-bar-chart"></i> <span>Reportes</span></a></li>
         </ul>
         <!-- /.sidebar-menu -->
     </section>

@@ -133,6 +133,17 @@
 
 {% block contenido %}
 
+	{% if anuncio %}
+		<div class="row">
+			<div class="col-md-12">
+				<a href="{% url 'anuncios:ver_anuncio' anuncio.id %}"><img class="center-block" width="100%"
+				                                                           height="100%"
+				                                                           src="{{ anuncio.imagen.url | default_if_none:'#' }}"
+				                                                           style="padding-bottom: 10px;"></a>
+			</div>
+		</div>
+	{% endif %}
+
 	<div class="col-md-6">
 		<div class="box">
 			<div class="box-header with-border">
@@ -175,7 +186,9 @@
 						<label for="d">Discapacitado = $1000</label>
 					</div>
 					<div>{{ sillas|safe }}</div>
-					<button type="submit" class="btn btn-success btn-raised pull-right">Reservar boletas</button>
+					<hr>
+					<div class="g-recaptcha" data-sitekey="6LetuIkUAAAAAImaRg4v8bqLpKw-o1cCdLVNZoYs"></div>
+					<button type="submit" class="btn btn-success btn-raised pull-left">Reservar boletas</button>
 				</form>
 			</div>
 		</div>
@@ -198,6 +211,9 @@
 				</table>
 				<small>El valor de la reserva es de $2800</small>
 			</div>
+			<div class="box-footer">
+				<a href="{% url 'boletas:tabla_precios' %}">Tabla de Precios</a>
+			</div>
 		</div>
 	</div>
 
@@ -206,6 +222,7 @@
 
 {% block js %}
 
+	<script src='https://www.google.com/recaptcha/api.js'></script>
 	<script src="{% static 'bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
 	<script src="{% static 'bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
 	<script src="{% static 'bower_components/datatables.net-bs/responsive/dataTables.responsive.min.js' %}"></script>

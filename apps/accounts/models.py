@@ -87,8 +87,8 @@ class Empleado(models.Model):
 
 class Notificacion(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='notificaciones')
-    titulo = models.CharField(max_length=50, blank=True)
-    mensaje = models.TextField(max_length=300)
+    titulo = models.CharField(max_length=120, blank=True)
+    mensaje = models.TextField(max_length=350)
     fecha_envio = models.DateTimeField(auto_now_add=True)
     leido = models.BooleanField(default=False)
     # 1:warning 2:error 3:compras 4:promociones 5:peliculas

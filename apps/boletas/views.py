@@ -5,12 +5,18 @@ from apps.funciones.models import *
 from apps.salas.models import *
 from apps.accounts.models import *
 from django.http.response import JsonResponse
-from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from apps.accounts.models import *
 from apps.boletas.utilities import generar_pdf_boleta
-from django.http import HttpResponseNotFound
+from django.db import DataError
+import datetime
+from apps.anuncios.models import *
+
+
+def tabla_precios(request):
+    if request.method == 'GET':
+        return render(request, 'boletas/tabla_precios.html')
 
 
 def generar_boleta(request, id_boleta):
@@ -19,12 +25,20 @@ def generar_boleta(request, id_boleta):
     if boleta:
         return generar_pdf_boleta(boleta)
 
+
 # Crear reserva para el Cliente
 def crear_reserva(request, slug, id_funcion):
     usuario = request.user
     funcion = Funcion.objects.get(id=id_funcion)
     pelicula = Pelicula.objects.get(funcion=funcion)
     tipo_sala = funcion.sala.tipo_sala
+
+    fecha_actual = datetime.date.today()
+    try:
+        anuncio = Anuncio.objects.get(ubicacion_anuncio='reserva_boletas', fecha_inicio__lte=fecha_actual,
+                                      fecha_final__gte=fecha_actual)
+    except Anuncio.DoesNotExist:
+        anuncio = None
 
     if request.method == 'POST':
         lista_sillas = request.POST.get('boletas', None)
@@ -79,11 +93,14 @@ def crear_reserva(request, slug, id_funcion):
                         boleta_aux.cedula_empleado = usuario.cedula
                         boleta_aux.nombre_cliente = form.data["nombre_cliente"]
                         boleta_aux.save()
-                    Notificacion.objects.create(usuario=usuario,
-                                                titulo='Reserva de Boletas para ' + str(pelicula.nombre),
-                                                mensaje='Se ha confirmado la reserva de ' + str(
-                                                    len(sillas)) + ' boletas por un valor de $' + str(
-                                                    precio_final), tipo=3)
+                    try:
+                        Notificacion.objects.create(usuario=usuario,
+                                                    titulo='Reserva de Boletas para ' + str(pelicula.nombre),
+                                                    mensaje='Se ha confirmado la reserva de ' + str(
+                                                        len(sillas)) + ' boletas por un valor de $' + str(
+                                                        int(precio_final)), tipo=3)
+                    except DataError:
+                        print(0)
                     messages.success(request, 'Boletas Reservadas exitosamente!')
                     return redirect('accounts:home')
                 else:
@@ -94,7 +111,7 @@ def crear_reserva(request, slug, id_funcion):
             return render(request, 'boletas/reservar_boleta.html',
                           {'form': form, 'itemlist': list(range(0, 26)),
                            'sillas': consultar_sala_comprar(id_funcion),
-                           'pelicula': pelicula, 'funcion': funcion, 'tipo_sala': tipo_sala})
+                           'pelicula': pelicula, 'funcion': funcion, 'tipo_sala': tipo_sala, 'anuncio': anuncio})
     else:
         form = CrearBoletaForm()
         form.fields['funcion'].initial = funcion
@@ -103,9 +120,9 @@ def crear_reserva(request, slug, id_funcion):
         form.fields['nombre_cliente'].initial = usuario.get_full_name()
 
         return render(request, 'boletas/reservar_boleta.html', {'form': form, 'itemlist': list(range(0, 26)),
-                                                               'sillas': consultar_sala_comprar(id_funcion),
-                                                               'pelicula': pelicula, 'funcion': funcion,
-                                                               'tipo_sala': tipo_sala})
+                                                                'sillas': consultar_sala_comprar(id_funcion),
+                                                                'pelicula': pelicula, 'funcion': funcion,
+                                                                'tipo_sala': tipo_sala, 'anuncio': anuncio})
 
 
 def pagar_reserva(request):
@@ -114,7 +131,7 @@ def pagar_reserva(request):
         boletas_pagadas = request.POST.getlist('boletas_reservadas')
         boletas = Boleta.objects.filter(id__in=boletas_pagadas)
         boletas.update(reserva=False)
-        boletas_ids =boletas.values_list('id', flat=True)
+        boletas_ids = boletas.values_list('id', flat=True)
         messages.success(request, 'Reservas Pagadas exitosamente!')
         return render(request, 'boletas/pdf_boleta.html', {'boletas_ids': boletas_ids})
 
@@ -137,6 +154,7 @@ def get_boletas_reservadas(request):
 
         except Funcion.DoesNotExist:
             return JsonResponse({'response': 0})
+
 
 def vender_boleta(request):
     usuario = request.user
@@ -282,6 +300,13 @@ def comprar_boleta(request,slug, id_funcion):
     pelicula = Pelicula.objects.get(funcion=funcion)
     tipo_sala = funcion.sala.tipo_sala
 
+    fecha_actual = datetime.date.today()
+    try:
+        anuncio = Anuncio.objects.get(ubicacion_anuncio='compra_boletas', fecha_inicio__lte=fecha_actual,
+                                      fecha_final__gte=fecha_actual)
+    except Anuncio.DoesNotExist:
+        anuncio = None
+
     if request.method == 'POST':
         lista_sillas = request.POST.get('boletas', None)
         precio_final = request.POST.get('precio_final', None)
@@ -349,14 +374,16 @@ def comprar_boleta(request,slug, id_funcion):
                         return render(request, 'boletas/comprar_boleta.html',
                                       {'form': form, 'itemlist': list(range(0, 26)),
                                        'sillas': consultar_sala_comprar(id_funcion),
-                                       'pelicula': pelicula, 'funcion': funcion, 'tipo_sala': tipo_sala})
+                                       'pelicula': pelicula, 'funcion': funcion, 'tipo_sala': tipo_sala,
+                                       'anuncio': anuncio})
 
                 except(User.cliente.RelatedObjectDoesNotExist, User.DoesNotExist):
                     messages.error(request, 'El usuario no puede pagar con saldo')
                     return render(request, 'boletas/comprar_boleta.html',
                                   {'form': form, 'itemlist': list(range(0, 26)),
                                    'sillas': consultar_sala_comprar(id_funcion),
-                                   'pelicula': pelicula, 'funcion': funcion, 'tipo_sala': tipo_sala})
+                                   'pelicula': pelicula, 'funcion': funcion, 'tipo_sala': tipo_sala,
+                                   'anuncio': anuncio})
 
             elif form.cleaned_data['medio_pago'] == 'efectivo':
                 for silla in sillas:
@@ -396,7 +423,7 @@ def comprar_boleta(request,slug, id_funcion):
             return render(request, 'boletas/comprar_boleta.html',
                           {'form': form, 'itemlist': list(range(0, 26)),
                            'sillas': consultar_sala_comprar(id_funcion),
-                           'pelicula': pelicula, 'funcion': funcion, 'tipo_sala': tipo_sala})
+                           'pelicula': pelicula, 'funcion': funcion, 'tipo_sala': tipo_sala, 'anuncio': anuncio})
     else:
         form = CrearBoletaForm()
         form.fields['funcion'].initial = funcion
@@ -408,7 +435,7 @@ def comprar_boleta(request,slug, id_funcion):
         return render(request, 'boletas/comprar_boleta.html', {'form': form, 'itemlist': list(range(0, 26)),
                                                                'sillas': consultar_sala_comprar(id_funcion),
                                                                'pelicula': pelicula, 'funcion': funcion,
-                                                               'tipo_sala': tipo_sala})
+                                                               'tipo_sala': tipo_sala, 'anuncio': anuncio})
 
 
 def consultar_sala_comprar(funcion_id):
