@@ -70,12 +70,14 @@
 				<div class="col-xs-15">
 					<div class="g-recaptcha" data-sitekey="6LetuIkUAAAAAImaRg4v8bqLpKw-o1cCdLVNZoYs"></div>
 					<button type="submit" class="btn btn-success btn-raised btn-block btn-flat">Iniciar sesión</button>
+					<a href="{% url 'accounts:registro_cliente' %}" class="btn btn-primary btn-raised btn-block btn-flat">Registrarse</a>
 				</div>
 				<!-- /.col -->
 			</div>
 		</form>
 
-		<a href="{% url 'accounts:registro_cliente' %}" class="text-center">Registrarse</a>
+
+		<a href="{% url 'accounts:home' %}" class="text-center">Volver al Inicio</a>
 
 	</div>
 	<!-- /.login-box-body -->

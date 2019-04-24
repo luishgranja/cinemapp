@@ -9,15 +9,17 @@ from .models import *
 class CrearPeliculaForm(forms.ModelForm):
     class Meta:
         model = Pelicula
-        fields = ('nombre', 'nombre_director', 'genero', 'sinopsis', 'reparto', 'imagen', 'is_active',
+        fields = ('nombre', 'nombre_director', 'genero', 'sinopsis', 'reparto', 'imagen', 'calificacion','is_active',
                   'is_estreno', 'video')
         widgets = {
             'genero': Select2MultipleWidget(),
             'sinopsis': forms.Textarea(attrs={'rows': 4}),
+            'calificacion': forms.NumberInput(attrs={'step': 1.0}),
         }
         labels = {
             'is_active': 'Activo',
             'is_estreno': '¿La película esta en estreno?',
+            'calificacion':'Calificación'
         }
 
         help_texts = {

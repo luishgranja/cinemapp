@@ -12,13 +12,16 @@ from apps.accounts.decorators import check_recaptcha
 from apps.boletas.models import *
 from apps.anuncios.models import *
 from apps.accounts.reportes import *
-import datetime
+import datetime, locale
 
 
 # Reportes Admin
 def reportes(request):
     usuario = request.user
-
+    # Español en Windows
+    locale.setlocale(locale.LC_ALL, "esp")
+    # Español en Linux
+    # locale.setlocale(locale.LC_ALL, "es_ES.UTF-8")
     if usuario.is_staff:
         datos_boletas = reporte_boletas_diarias(datetime.date.today().year, datetime.date.today().month)
         datos_venta = reporte_ventas_diarias(datetime.date.today().year, datetime.date.today().month)
@@ -189,26 +192,36 @@ def consultar_notificaciones(request):
                       {'notis_all': notis_all(usuario), 'notis': notificaciones(usuario),
                        'sucursales': Sucursal.get_info()})
 
-
-@login_required
 def home(request):
     usuario = request.user
-    if usuario.is_staff:
+    if usuario.is_anonymous:
+        fecha_actual = datetime.date.today()
+        try:
+            anuncios = Anuncio.objects.filter(ubicacion_anuncio='dashboard', fecha_inicio__lte=fecha_actual,
+                                             fecha_final__gte=fecha_actual)
+        except Anuncio.DoesNotExist:
+            anuncios = None
+
+        return render(request, 'accounts/home_anonimo.html', {'sucursales': Sucursal.get_info(),
+                                                              'peliculas1': listar_cartelera(),
+                                                              'peliculas2': listar_peliculas_proximo_estreno(),
+                                                              'anuncios': anuncios})
+    elif usuario.is_staff:
         return render(request, 'accounts/home_admin.html', {'notis': notificaciones(usuario),
                                                             'user': usuario, 'datos': datos_dashboard()})
     elif usuario.is_cliente:
         fecha_actual = datetime.date.today()
         try:
-            anuncio = Anuncio.objects.get(ubicacion_anuncio='dashboard', fecha_inicio__lte=fecha_actual,
+            anuncios = Anuncio.objects.filter(ubicacion_anuncio='dashboard', fecha_inicio__lte=fecha_actual,
                                              fecha_final__gte=fecha_actual)
         except Anuncio.DoesNotExist:
-            anuncio = None
+            anuncios = None
 
         return render(request, 'accounts/home_cliente.html', {'notis':notificaciones(usuario), 'user': usuario,
                                                               'sucursales': Sucursal.get_info(),
                                                               'peliculas1': listar_cartelera(),
                                                               'peliculas2': listar_peliculas_proximo_estreno(),
-                                                              'anuncio': anuncio})
+                                                              'anuncios': anuncios})
     elif usuario.get_cargo_empleado() == 'Gerente':
         return render(request, 'accounts/home_gerente.html', {'user': usuario,
                                                               'datos': datos_dashboard_gerente(usuario)})

@@ -11,6 +11,7 @@ from apps.accounts.models import *
 from apps.boletas.utilities import generar_pdf_boleta
 from django.db import DataError
 import datetime
+from django.contrib.auth.decorators import login_required
 from apps.anuncios.models import *
 
 
@@ -27,6 +28,7 @@ def generar_boleta(request, id_boleta):
 
 
 # Crear reserva para el Cliente
+@login_required
 def crear_reserva(request, slug, id_funcion):
     usuario = request.user
     funcion = Funcion.objects.get(id=id_funcion)
@@ -35,10 +37,10 @@ def crear_reserva(request, slug, id_funcion):
 
     fecha_actual = datetime.date.today()
     try:
-        anuncio = Anuncio.objects.get(ubicacion_anuncio='reserva_boletas', fecha_inicio__lte=fecha_actual,
+        anuncios = Anuncio.objects.filter(ubicacion_anuncio='reserva_boletas', fecha_inicio__lte=fecha_actual,
                                       fecha_final__gte=fecha_actual)
     except Anuncio.DoesNotExist:
-        anuncio = None
+        anuncios = None
 
     if request.method == 'POST':
         lista_sillas = request.POST.get('boletas', None)
@@ -111,7 +113,7 @@ def crear_reserva(request, slug, id_funcion):
             return render(request, 'boletas/reservar_boleta.html',
                           {'form': form, 'itemlist': list(range(0, 26)),
                            'sillas': consultar_sala_comprar(id_funcion),
-                           'pelicula': pelicula, 'funcion': funcion, 'tipo_sala': tipo_sala, 'anuncio': anuncio})
+                           'pelicula': pelicula, 'funcion': funcion, 'tipo_sala': tipo_sala, 'anuncios': anuncios})
     else:
         form = CrearBoletaForm()
         form.fields['funcion'].initial = funcion
@@ -122,7 +124,7 @@ def crear_reserva(request, slug, id_funcion):
         return render(request, 'boletas/reservar_boleta.html', {'form': form, 'itemlist': list(range(0, 26)),
                                                                 'sillas': consultar_sala_comprar(id_funcion),
                                                                 'pelicula': pelicula, 'funcion': funcion,
-                                                                'tipo_sala': tipo_sala, 'anuncio': anuncio})
+                                                                'tipo_sala': tipo_sala, 'anuncios': anuncios})
 
 
 def pagar_reserva(request):
@@ -293,7 +295,7 @@ def vender_boleta(request):
                                                               'lista_sillas': 'lista_sillas', 'peliculas': peliculas,
                                                               'form_saldo': SaldoForm()})
 
-
+@login_required
 def comprar_boleta(request,slug, id_funcion):
     usuario = request.user
     funcion = Funcion.objects.get(id=id_funcion)
@@ -302,10 +304,10 @@ def comprar_boleta(request,slug, id_funcion):
 
     fecha_actual = datetime.date.today()
     try:
-        anuncio = Anuncio.objects.get(ubicacion_anuncio='compra_boletas', fecha_inicio__lte=fecha_actual,
+        anuncios = Anuncio.objects.filter(ubicacion_anuncio='compra_boletas', fecha_inicio__lte=fecha_actual,
                                       fecha_final__gte=fecha_actual)
     except Anuncio.DoesNotExist:
-        anuncio = None
+        anuncios = None
 
     if request.method == 'POST':
         lista_sillas = request.POST.get('boletas', None)
@@ -375,7 +377,7 @@ def comprar_boleta(request,slug, id_funcion):
                                       {'form': form, 'itemlist': list(range(0, 26)),
                                        'sillas': consultar_sala_comprar(id_funcion),
                                        'pelicula': pelicula, 'funcion': funcion, 'tipo_sala': tipo_sala,
-                                       'anuncio': anuncio})
+                                       'anuncios': anuncios})
 
                 except(User.cliente.RelatedObjectDoesNotExist, User.DoesNotExist):
                     messages.error(request, 'El usuario no puede pagar con saldo')
@@ -383,7 +385,7 @@ def comprar_boleta(request,slug, id_funcion):
                                   {'form': form, 'itemlist': list(range(0, 26)),
                                    'sillas': consultar_sala_comprar(id_funcion),
                                    'pelicula': pelicula, 'funcion': funcion, 'tipo_sala': tipo_sala,
-                                   'anuncio': anuncio})
+                                   'anuncios': anuncios})
 
             elif form.cleaned_data['medio_pago'] == 'efectivo':
                 for silla in sillas:
@@ -423,7 +425,7 @@ def comprar_boleta(request,slug, id_funcion):
             return render(request, 'boletas/comprar_boleta.html',
                           {'form': form, 'itemlist': list(range(0, 26)),
                            'sillas': consultar_sala_comprar(id_funcion),
-                           'pelicula': pelicula, 'funcion': funcion, 'tipo_sala': tipo_sala, 'anuncio': anuncio})
+                           'pelicula': pelicula, 'funcion': funcion, 'tipo_sala': tipo_sala, 'anuncios': anuncios})
     else:
         form = CrearBoletaForm()
         form.fields['funcion'].initial = funcion
@@ -435,7 +437,7 @@ def comprar_boleta(request,slug, id_funcion):
         return render(request, 'boletas/comprar_boleta.html', {'form': form, 'itemlist': list(range(0, 26)),
                                                                'sillas': consultar_sala_comprar(id_funcion),
                                                                'pelicula': pelicula, 'funcion': funcion,
-                                                               'tipo_sala': tipo_sala, 'anuncio': anuncio})
+                                                               'tipo_sala': tipo_sala, 'anuncios': anuncios})
 
 
 def consultar_sala_comprar(funcion_id):

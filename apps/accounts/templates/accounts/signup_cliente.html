@@ -75,7 +75,9 @@
         {% bootstrap_form form %}
           <div class="g-recaptcha" data-sitekey="6LetuIkUAAAAAImaRg4v8bqLpKw-o1cCdLVNZoYs"></div>
         <button type="submit" class="btn btn-success btn-raised btn-block btn-flat">Registrarse</button>
+        <a href="{% url 'accounts:login' %}" class="btn btn-primary btn-raised btn-block btn-flat">Iniciar Sesión</a>
       </form>
+      <a href="{% url 'accounts:home' %}" class="text-center">Volver al Inicio</a>
     </div>
   </div>
 </div>

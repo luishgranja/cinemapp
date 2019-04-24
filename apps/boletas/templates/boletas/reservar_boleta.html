@@ -6,221 +6,253 @@
 
 {% block titulo %}Reservar Boletas - {{ pelicula.nombre }}{% endblock titulo %}
 {% block descripcion_pagina %}{{ funcion.fecha_funcion | date:"l j F" }} {{ funcion.hora_funcion }} |
-	{{ funcion.sala }} {% endblock descripcion_pagina %}
+{{ funcion.sala }} {% endblock descripcion_pagina %}
 {% block miga_pan %}
-	<li><a href="{% url 'accounts:home' %}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
+<li><a href="{% url 'accounts:home' %}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
 {% endblock miga_pan %}
 
 {% block css %}
-	<link rel="stylesheet" href="{% static 'bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
-	<link href="{% static 'bower_components/datatables.net-bs/responsive/responsive.dataTables.min.css' %}"
-	      rel="stylesheet">
-	{{ form.media.css }}
+<link rel="stylesheet" href="{% static 'bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
+<link href="{% static 'bower_components/datatables.net-bs/responsive/responsive.dataTables.min.css' %}"
+	  rel="stylesheet">
+{{ form.media.css }}
 
-	<style media="screen">
-		.select2-container {
-			width: 100% !important;
-			height: 100% !important;
-		}
+<style media="screen">
+	.select2-container {
+		width: 100% !important;
+		height: 100% !important;
+	}
 
-		.rectangulo {
-			background-color: black;
-			width: 250px;
-			margin: 10px;
-			margin-left: auto;
-			margin-right: auto;
+	.rectangulo {
+		background-color: black;
+		width: 250px;
+		margin: 10px;
+		margin-left: auto;
+		margin-right: auto;
 
-		}
+	}
 
-		.flex-container {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			border: 1px;
-		}
+	.flex-container {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border: 1px;
+	}
 
-		.flex-container > div {
-			border: 1px;
-			background-color: white;
-			color: white;
-			width: 18px;
-			margin: 0px;
-			padding: 0px;
-			text-align: center;
-			line-height: 13px;
-		}
+	.flex-container > div {
+		border: 1px;
+		background-color: white;
+		color: white;
+		width: 18px;
+		margin: 0px;
+		padding: 0px;
+		text-align: center;
+		line-height: 13px;
+	}
 
+	input[type=checkbox]::after {
+		display: block;
+		content: attr(hola);
+		position: absolute;
+		color: black;
+		font-weight: 500;
+		font-size: 8px;
+		margin-left: 10% auto;
+		margin-top: 0.3%;
+		width: 2.5%;
+	}
+
+	@media screen and (max-width: 600px) {
 		input[type=checkbox]::after {
-			display: block;
-			content: attr(hola);
-			position: absolute;
-			color: black;
-			font-weight: 500;
-			font-size: 8px;
-			margin-left: 10% auto;
-			margin-top: 0.3%;
-			width: 2.5%;
-
+			display: none;
 		}
+	}
 
-		input[type='checkbox'] {
-			content: '';
-			display: inline-block;
-			-webkit-appearance: none;
-			-moz-appearance: none;
-			margin: 0;
-			width: 16px;
-			height: 16px;
+	input[type='checkbox'] {
+		content: '';
+		display: inline-block;
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		margin: 0;
+		width: 85%;
+		height: 16px;
 
-		}
+	}
 
-		input[type='checkbox']:checked {
-			text-align: center;
-		}
+	input[type='checkbox']:checked {
+		text-align: center;
+	}
 
-		input[type=checkbox]:hover {
-			filter: brightness(10%);
+	input[type=checkbox]:hover {
+		filter: brightness(10%);
 
-		}
+	}
 
-		input[type='radio'] {
-			content: '';
-			display: inline-block;
-			-webkit-appearance: none;
-			-moz-appearance: none;
-			margin-left: 5px;
-			width: 13px;
-			height: 13px;
-		}
+	input[type='radio'] {
+		content: '';
+		display: inline-block;
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		margin-left: 5px;
+		width: 13px;
+		height: 13px;
+	}
 
-		input[type='radio']:checked {
-			text-align: center;
-			font-size: 10px;
-		}
+	input[type='radio']:checked {
+		text-align: center;
+		font-size: 10px;
+	}
 
-		input[type=radio]:hover {
-			filter: brightness(10%);
+	input[type=radio]:hover {
+		filter: brightness(10%);
 
-		}
+	}
 
-		.SIN_MARCAR {
-			background: rgb(238, 238, 235);
-		}
+	.SIN_MARCAR {
+		background: rgb(238, 238, 235);
+	}
 
-		.PREFERENCIAL {
-			background: rgb(255, 91, 185);
-		}
+	.PREFERENCIAL {
+		background: rgb(255, 91, 185);
+	}
 
-		.GENERAL {
-			background: rgb(24, 215, 79);
-		}
+	.GENERAL {
+		background: rgb(24, 215, 79);
+	}
 
-		.DISCAPACITADO {
-			background: rgb(0, 185, 240);
-		}
+	.DISCAPACITADO {
+		background: rgb(0, 185, 240);
+	}
 
-		.MARCADO {
-			background: rgb(0, 0, 0);
-		}
+	.MARCADO {
+		background: rgb(0, 0, 0);
+	}
 
-		.OCUPADO {
-			background: rgb(255, 0, 0);
-		}
-	</style>
+	.OCUPADO {
+		background: rgb(255, 0, 0);
+	}
+</style>
 
 
 {% endblock css %}
 
 {% block contenido %}
 
-	{% if anuncio %}
-		<div class="row">
-			<div class="col-md-12">
-				<a href="{% url 'anuncios:ver_anuncio' anuncio.id %}"><img class="center-block" width="100%"
-				                                                           height="100%"
-				                                                           src="{{ anuncio.imagen.url | default_if_none:'#' }}"
-				                                                           style="padding-bottom: 10px;"></a>
-			</div>
+<div class="col-md-6">
+	<div class="box">
+		<div class="box-header with-border">
+			<h3 class="box-title">Sillas Disponibles</h3>
 		</div>
+		<div class="box-body">
+
+			<form method="post" enctype="multipart/form-data"> {% csrf_token %}
+				<div class="row">
+					<div class="col-sm-4 hidden">
+						{% bootstrap_field form.medio_pago %}
+					</div>
+					<div class="col-sm-2 hidden">
+						{% bootstrap_field form.cedula %}
+					</div>
+					<div class="col-sm-2 hidden">
+						{% bootstrap_field form.nombre_cliente %}
+					</div>
+					<div class="col-sm-2 hidden">
+						{% bootstrap_field form.funcion %}
+					</div>
+					<input type="hidden" id="boletas_seleccionadas" name="boletas" value="">
+					<input type="hidden" id="precio_final" name="precio_final" value="">
+				</div>
+
+				<div class="rectangulo">
+					<center>
+						<font color="white" size="5">Pantalla</font>
+					</center>
+				</div>
+
+				<div style='text-align:center'>
+					<input type="radio" class="PREFERENCIAL" id="p" name="drone" value="Preferencial">
+					<label for="p">Preferencial = $3000</label>
+
+					<input type="radio" class="GENERAL" id="g" name="drone" value="General">
+					<label for="g">General = $2000</label>
+
+					<input type="radio" class="DISCAPACITADO" id="d" name="drone" value="Discapacitados">
+					<label for="d">Discapacitado = $1000</label>
+				</div>
+				<div>{{ sillas|safe }}</div>
+				<hr>
+				<div class="g-recaptcha" data-sitekey="6LetuIkUAAAAAImaRg4v8bqLpKw-o1cCdLVNZoYs"></div>
+				<button type="submit" class="btn btn-success btn-raised pull-left">Reservar boletas</button>
+			</form>
+		</div>
+	</div>
+</div>
+
+
+<div class="col-md-6">
+	<div class="box">
+		<div class="box-header with-border">
+			<h3 class="box-title total"></h3>
+		</div>
+		<div class="box-body">
+			<table class="table table-bordered table-responsive" id="tabla_boletas">
+				<thead>
+				<th>Silla</th>
+				<th>Precio (con reserva)</th>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<small>El valor de la reserva es de $2800</small>
+		</div>
+		<div class="box-footer">
+			<a href="{% url 'boletas:tabla_precios' %}">Tabla de Precios</a>
+		</div>
+	</div>
+</div>
+
+{% if anuncios %}
+<div class="row">
+	<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+		<ol class="carousel-indicators">
+			{% for anuncio in anuncios %}
+			{% if forloop.counter0 == 0 %}
+			<li data-target="{% url 'anuncios:ver_anuncio' anuncio.id %}" data-slide-to="{{forloop.counter0}}" class="active"></li>
+			{% else %}
+			<li data-target="{% url 'anuncios:ver_anuncio' anuncio.id %}" data-slide-to="{{forloop.counter0}}" class=""></li>
+			{% endif %}
+			{% endfor %}
+		</ol>
+		<div class="carousel-inner">
+			{% for anuncio in anuncios %}
+			{% if forloop.counter0 == 0 %}
+			<div class="item active">
+				{% else %}
+				<div class="item">
+					{% endif %}
+					<img class="center-block" src="{{ anuncio.imagen.url | default_if_none:'#' }}" style="padding-bottom: 10px;" alt="{{ anuncio.nombre }}">
+					<div class="carousel-caption">
+						{{ anuncio.nombre }}
+					</div>
+				</div>
+				{% endfor %}
+
+			</div>
+			<a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
+				<span class="fa fa-angle-left"></span>
+			</a>
+			<a class="right carousel-control" href="#carousel-example-generic" data-slide="next">
+				<span class="fa fa-angle-right"></span>
+			</a>
+		</div>
+	</div>
+
 	{% endif %}
 
-	<div class="col-md-6">
-		<div class="box">
-			<div class="box-header with-border">
-				<h3 class="box-title">Sillas Disponibles</h3>
-			</div>
-			<div class="box-body">
-
-				<form method="post" enctype="multipart/form-data"> {% csrf_token %}
-					<div class="row">
-						<div class="col-sm-4 hidden">
-							{% bootstrap_field form.medio_pago %}
-						</div>
-						<div class="col-sm-2 hidden">
-							{% bootstrap_field form.cedula %}
-						</div>
-						<div class="col-sm-2 hidden">
-							{% bootstrap_field form.nombre_cliente %}
-						</div>
-						<div class="col-sm-2 hidden">
-							{% bootstrap_field form.funcion %}
-						</div>
-						<input type="hidden" id="boletas_seleccionadas" name="boletas" value="">
-						<input type="hidden" id="precio_final" name="precio_final" value="">
-					</div>
-
-					<div class="rectangulo">
-						<center>
-							<font color="white" size="5">Pantalla</font>
-						</center>
-					</div>
-
-					<div style='text-align:center'>
-						<input type="radio" class="PREFERENCIAL" id="p" name="drone" value="Preferencial">
-						<label for="p">Preferencial = $3000</label>
-
-						<input type="radio" class="GENERAL" id="g" name="drone" value="General">
-						<label for="g">General = $2000</label>
-
-						<input type="radio" class="DISCAPACITADO" id="d" name="drone" value="Discapacitados">
-						<label for="d">Discapacitado = $1000</label>
-					</div>
-					<div>{{ sillas|safe }}</div>
-					<hr>
-					<div class="g-recaptcha" data-sitekey="6LetuIkUAAAAAImaRg4v8bqLpKw-o1cCdLVNZoYs"></div>
-					<button type="submit" class="btn btn-success btn-raised pull-left">Reservar boletas</button>
-				</form>
-			</div>
-		</div>
-	</div>
+	{% endblock contenido %}
 
 
-	<div class="col-md-6">
-		<div class="box">
-			<div class="box-header with-border">
-				<h3 class="box-title total"></h3>
-			</div>
-			<div class="box-body">
-				<table class="table table-bordered table-responsive" id="tabla_boletas">
-					<thead>
-					<th>Silla</th>
-					<th>Precio (con reserva)</th>
-					</thead>
-					<tbody>
-					</tbody>
-				</table>
-				<small>El valor de la reserva es de $2800</small>
-			</div>
-			<div class="box-footer">
-				<a href="{% url 'boletas:tabla_precios' %}">Tabla de Precios</a>
-			</div>
-		</div>
-	</div>
-
-{% endblock contenido %}
-
-
-{% block js %}
+	{% block js %}
 
 	<script src='https://www.google.com/recaptcha/api.js'></script>
 	<script src="{% static 'bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
@@ -364,4 +396,4 @@
         }
 
 	</script>
-{% endblock js %}
+	{% endblock js %}

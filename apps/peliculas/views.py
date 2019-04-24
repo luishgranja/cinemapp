@@ -93,7 +93,11 @@ def ver_pelicula(request, slug):
     usuario = request.user
     pelicula = listar_pelicula(slug)
 
-    if usuario.is_staff or not usuario.is_cliente:
+    if usuario.is_anonymous:
+        base_template_name = 'base_anonimo.html'
+        funciones = Funcion.objects.filter(pelicula=pelicula)
+
+    elif usuario.is_staff or not usuario.is_cliente:
         base_template_name = 'base.html'
 
         try:
@@ -102,7 +106,7 @@ def ver_pelicula(request, slug):
         except Empleado.DoesNotExist:
             funciones = Funcion.objects.filter(pelicula=pelicula)
 
-    elif usuario.is_anonymous or usuario.is_cliente:
+    elif usuario.is_cliente:
         base_template_name = 'base_cliente.html'
         funciones = Funcion.objects.filter(pelicula=pelicula)
 

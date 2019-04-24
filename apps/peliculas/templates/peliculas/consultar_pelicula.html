@@ -5,69 +5,69 @@
 
 
 {% block miga_pan %}
-	<li><a href="{% url 'accounts:home' %}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
-	<li class="active">VER PELICULA</li>
+<li><a href="{% url 'accounts:home' %}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
+<li class="active">VER PELICULA</li>
 {% endblock miga_pan %}
 
 {% block titulo %}Ver {{ peli.nombre }}{% endblock titulo %}
 
 {% block contenido %}
 
-	<div class="col-md-12">
-		<div class="box box-primary">
-			<div class="box-body">
-				<div class="row">
+<div class="col-md-12">
+	<div class="box box-primary">
+		<div class="box-body">
+			<div class="row">
 
-					<div style="padding-left: 60px; padding-top: 20px" class="col-md-3">
-						<img src="{{ peli.imagen.url | default_if_none:'#' }}" width="170" height="251"/>
-					</div>
+				<div style="padding-left: 60px; padding-top: 20px" class="col-md-3">
+					<img src="{{ peli.imagen.url | default_if_none:'#' }}" width="170" height="251"/>
+				</div>
 
-					<div class="col-md-6">
-						<h3><b> {{ peli.nombre }}</b></h3>
-						<p>{{ peli.sinopsis }}</p>
-						<p><b>Reparto: </b>{{ peli.reparto }}</p>
-						<p><b>Director(a): </b>{{ peli.nombre_director }}</p>
-						<p><b>Género: </b>{% for gen in peli.genero.all %} {{ gen }}, {% endfor %} </p>
-						<p><b>Calificación: </b>{{ peli.calificacion }}</p>
-					</div>
+				<div class="col-md-6">
+					<h3><b> {{ peli.nombre }}</b></h3>
+					<p>{{ peli.sinopsis }}</p>
+					<p><b>Reparto: </b>{{ peli.reparto }}</p>
+					<p><b>Director(a): </b>{{ peli.nombre_director }}</p>
+					<p><b>Género: </b>{% for gen in peli.genero.all %} {{ gen }}, {% endfor %} </p>
+					<p><b>Calificación: </b>{{ peli.calificacion }}</p>
+				</div>
 
-					<div class="col-md-3">
-						<h3><b>Funciones</b></h3>
-						<div class="box-body">
-							{% regroup funciones by sala.sucursal as sucursales %}
-							{% for sucursal in sucursales %}
-								<h4><b>{{ sucursal.grouper }}</b></h4>
-								{% for funcion in sucursal.list %}
-									{% if funcion.pelicula.is_estreno %}
-										<a href="{% url 'boletas:comprar_boleta' funcion.pelicula.slug funcion.id %}">
-											<p>{{ funcion.fecha_funcion | date:"l j F" }} {{ funcion.hora_funcion }}
-												| {{ funcion.sala }}</p></a>
-									{% else %}
-										<a href="{% url 'boletas:crear_reserva' funcion.pelicula.slug funcion.id %}">
-											<p>{{ funcion.fecha_funcion | date:"l j F" }} {{ funcion.hora_funcion }}
-												| {{ funcion.sala }}</p></a>
-									{% endif %}
-								{% endfor %}
-							{% endfor %}
-						</div>
+				<div class="col-md-3">
+					<h3><b>Funciones</b></h3>
+					<div class="box-body">
+						{% regroup funciones by sala.sucursal as sucursales %}
+						{% for sucursal in sucursales %}
+						<h4><b>{{ sucursal.grouper }}</b></h4>
+						{% for funcion in sucursal.list %}
+						{% if funcion.pelicula.is_estreno %}
+						<a href="{% url 'boletas:comprar_boleta' funcion.pelicula.slug funcion.id %}">
+							<p>{{ funcion.fecha_funcion | date:"l j F" }} {{ funcion.hora_funcion }}
+								| {{ funcion.sala }}</p></a>
+						{% else %}
+						<a href="{% url 'boletas:crear_reserva' funcion.pelicula.slug funcion.id %}">
+							<p>{{ funcion.fecha_funcion | date:"l j F" }} {{ funcion.hora_funcion }}
+								| {{ funcion.sala }}</p></a>
+						{% endif %}
+						{% endfor %}
+						{% endfor %}
 					</div>
 				</div>
+			</div>
 			<hr>
-				<div class="row">
-					<div class="col-md-6 col-md-offset-3">
-						<div class="box-body">
-							<iframe width="560" height="315"
-							        src="https://www.youtube.com/embed/{{ peli.video }}"
-							        frameborder="0"
-							        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-							        allowfullscreen></iframe>
-						</div>
+			<div class="row">
+				<div class="col-md-6 col-md-offset-3">
+					<div class="box-body">
+						<iframe width="100%" height="317px"
+								src="https://www.youtube.com/embed/{{ peli.video }}"
+								frameborder="0"
+								allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+								allowfullscreen></iframe>
 					</div>
-
 				</div>
 
 			</div>
+
 		</div>
 	</div>
+</div>
 
 {% endblock contenido %}

@@ -125,8 +125,13 @@
                 format: 'dd/mm/yyyy',
                 language: 'es',
                 orientation: 'bottom',
-                startDate: '+0d'
+                startDate: 'd'
+            }).on('changeDate', function (selected) {
+                var minDate = new Date(selected.date.valueOf());
+                $('#id_fecha_final').datepicker('setStartDate', minDate);
+                $('#id_fecha_final').datepicker('setDate', minDate); // <--THIS IS THE LINE ADDED
             });
+            ;
         });
 
         $(function () {
@@ -136,23 +141,10 @@
                 language: 'es',
                 orientation: 'bottom',
                 startDate: '+1d'
+            }).on('changeDate', function (selected) {
+                var maxDate = new Date(selected.date.valueOf());
+                $('#id_fecha_inicio').datepicker('setEndDate', maxDate);
             });
-        });
-
-        $(function () {
-            $('#id_fecha_inicio').datepicker({
-                onSelect: function (dateText, inst) {
-                    $('#id_fecha_final').datepicker('option', 'minDate', new Date(dateText));
-                }
-            })
-        });
-
-        $(function () {
-            $('#id_fecha_final').datepicker({
-                onSelect: function (dateText, inst) {
-                    $('#id_fecha_inicio').datepicker('option', 'maxDate', new Date(dateText));
-                }
-            })
         });
 
         $('#imgSalida').attr("hidden", true);

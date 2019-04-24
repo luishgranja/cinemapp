@@ -43,6 +43,10 @@ def generar_pdf_boleta(boleta):
     p.setFont("Helvetica", 10)
     p.drawString(20, 280, boleta.funcion.pelicula.nombre)
 
+    # Español en Windows
+    locale.setlocale(locale.LC_ALL, "esp")
+    # Español en Linux
+    # locale.setlocale(locale.LC_ALL, "es_ES.UTF-8")
     # funcion
     p.setFillColor(colors.black)
     p.setFont("Helvetica", 8)
