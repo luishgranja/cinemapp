@@ -13,6 +13,33 @@ from django.db import DataError
 import datetime
 from django.contrib.auth.decorators import login_required
 from apps.anuncios.models import *
+from django.core import signing
+from django.core.signing import Signer
+
+from django.core import signing
+
+
+def validar_boleta(request, code):
+    usuario = request.user
+
+    if request.method == 'GET':
+
+        try:
+            boleta_id = signing.loads(code)
+            boleta = Boleta.objects.get(id=boleta_id)
+            estado = boleta.estado
+        except Boleta.DoesNotExist and signing.BadSignature:
+            context = {
+                'mensaje': 'Boleta no registrada'
+            }
+
+            return render(request, 'boletas/validar_boleta.html', {'extra': context})
+
+        if not (usuario.is_anonymous or usuario.is_cliente):
+            boleta.estado = False
+            boleta.save()
+
+        return render(request, 'boletas/validar_boleta.html', {'boleta': boleta, 'estado': estado})
 
 
 def tabla_precios(request):

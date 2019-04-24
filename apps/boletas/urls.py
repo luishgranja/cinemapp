@@ -17,5 +17,5 @@ urlpatterns = [
     path('api/consultar-sala', consultar_sala, name='consultar_sala'),
     path('api/consultar-boletas-funcion', consultar_boletas_funcion, name='consultar_boletas_funcion'),
     path('api/cancelar_boleta', cancelar_boleta, name='cancelar_boleta'),
-
+    path('validar-boleta/<str:code>', validar_boleta, name='validar_boleta'),
 ]

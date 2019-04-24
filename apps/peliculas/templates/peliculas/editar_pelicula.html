@@ -9,7 +9,7 @@
     <li class="active">EDITAR PELÍCULA</li>
 {% endblock miga_pan %}
 
-{% block titulo %}Editar sucursal{% endblock titulo %}
+{% block titulo %}Editar película{% endblock titulo %}
 
 {% block css %}
     {{ form.media.css }}
@@ -26,7 +26,7 @@
     <div class="col-md-6 col-md-offset-3">
         <div class="box box-primary">
             <div class="box-header">
-                <h3 class="box-title">Editar Pelicula</h3>
+                <h3 class="box-title">Editar Película</h3>
             </div>
             <div class="box-body">
                 <form method="POST" enctype="multipart/form-data"> {% csrf_token %}

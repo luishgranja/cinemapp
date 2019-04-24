@@ -1,0 +1,86 @@
+{% load staticfiles %}
+{% load bootstrap3 %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Validar Boleta | CINEMAPP</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="shortcut icon" href="{% static 'favicon/favicon.ico' %}">
+    <!-- Bootstrap 3.3.7 -->
+    <link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{% static 'bower_components/font-awesome/css/font-awesome.min.css' %}">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{% static 'dist/css/AdminLTE.min.css' %}">
+    <!-- Material Design -->
+    <link rel="stylesheet" href="{% static 'dist/css/bootstrap-material-design.min.css' %}">
+    <link rel="stylesheet" href="{% static 'dist/css/MaterialAdminLTE.min.css' %}">
+    <!-- AdminLTE Skin -->
+    <link rel="stylesheet" href="{% static 'dist/css/skins/all-md-skins.min.css' %}">
+
+    <section class="content">
+
+        {% if extra %}
+
+            <div class="col-md-8 col-md-offset-2">
+                <div class="box box-danger box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Boleta no registrada</h3>
+
+                        <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                    class="fa fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        {% else %}
+
+            <div class="col-md-8 col-md-offset-2">
+
+                {% if estado %}
+                    <div class="box box-success box-solid">
+                {% else %}
+                    <div class="box box-danger box-solid">
+                {% endif %}
+
+                <div class="box-header with-border">
+                    <h3 class="box-title">Estado Boleta</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="box-body">
+                    <ul class="list-group list-group-unbordered">
+                        <li class="list-group-item">
+                            <b>Fecha Compra</b>
+                            <p class="pull-right">{{ boleta.fecha_compra }}</p>
+                        </li>
+                        <li class="list-group-item">
+                            <b>Película</b>
+                            <p class="pull-right">{{ boleta.funcion.pelicula.nombre }}</p>
+                        </li>
+                        <li class="list-group-item">
+                            <b>Silla</b>
+                            <p class="pull-right">{{ boleta.silla.nombre }}</p>
+                        </li>
+                        <li class="list-group-item">
+                            <b>Fecha Funcion</b>
+                            <p class="pull-right">{{ boleta.funcion.fecha_funcion|date:"l j F" }} {{ boleta.funcion.hora_funcion|time:"H:i" }} </p>
+                        </li>
+                    </ul>
+                </div>
+                </div>
+                </div>
+            </div>
+        {% endif %}
+    </section>

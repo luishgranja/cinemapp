@@ -3,8 +3,15 @@ import io
 from django.http import HttpResponse
 from reportlab.lib import colors
 from reportlab.pdfgen import canvas
+from reportlab.graphics.barcode.qr import QrCodeWidget
+from reportlab.graphics.shapes import Drawing
+from reportlab.graphics import renderPDF
 from datetime import datetime
 import locale
+from django.core import signing
+from django.core.signing import Signer
+from django.urls import reverse
+
 
 
 def generar_pdf_boleta(boleta):
@@ -21,6 +28,27 @@ def generar_pdf_boleta(boleta):
     # Configuracion de pagina
     p.setPageSize((200, 350))
 
+    # Signature data
+    code = signing.dumps(str(boleta.id), compress=True)
+    url = reverse('boletas:validar_boleta', args=[code])
+
+    # Path
+    # TODO Cambiar dependiendo de dominio
+    path = 'http://localhost:8000'
+
+    # signer = Signer()
+    # value = signer.sign(str(boleta.id))
+    # url = reverse('boletas:validar_boleta', args=[value])
+
+    # codigo QR
+    qr = QrCodeWidget(path + url, barLevel='H')
+    b = qr.getBounds()
+    w = b[2] - b[0]
+    h = b[3] - b[1]
+    d = Drawing(45, 45, transform=[45. / w, 0, 0, 45. / h, 0, 0])
+    d.add(qr)
+    renderPDF.draw(d, p, 140, 300)
+
     # Draw things on the PDF. Here's where the PDF generation happens.
     # See the ReportLab documentation for the full list of functionality.
 
@@ -35,7 +63,6 @@ def generar_pdf_boleta(boleta):
     p.setFillColor(colors.black)
     len_pelicula = len(str(boleta.funcion.pelicula.nombre))
     rec_size = 8 * len_pelicula
-    print(rec_size)
     if rec_size > 200:
         rec_size = 180
     p.rect(20, 276, rec_size, 14, fill=1)
@@ -44,9 +71,9 @@ def generar_pdf_boleta(boleta):
     p.drawString(20, 280, boleta.funcion.pelicula.nombre)
 
     # Español en Windows
-    locale.setlocale(locale.LC_ALL, "esp")
+    # locale.setlocale(locale.LC_ALL, "esp")
     # Español en Linux
-    # locale.setlocale(locale.LC_ALL, "es_ES.UTF-8")
+    locale.setlocale(locale.LC_ALL, "es_ES.UTF-8")
     # funcion
     p.setFillColor(colors.black)
     p.setFont("Helvetica", 8)

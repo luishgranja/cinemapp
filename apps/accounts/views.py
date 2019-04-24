@@ -19,9 +19,9 @@ import datetime, locale
 def reportes(request):
     usuario = request.user
     # Español en Windows
-    locale.setlocale(locale.LC_ALL, "esp")
+    # locale.setlocale(locale.LC_ALL, "esp")
     # Español en Linux
-    # locale.setlocale(locale.LC_ALL, "es_ES.UTF-8")
+    locale.setlocale(locale.LC_ALL, "es_ES.UTF-8")
     if usuario.is_staff:
         datos_boletas = reporte_boletas_diarias(datetime.date.today().year, datetime.date.today().month)
         datos_venta = reporte_ventas_diarias(datetime.date.today().year, datetime.date.today().month)
@@ -191,6 +191,7 @@ def consultar_notificaciones(request):
         return render(request, 'accounts/notificaciones.html',
                       {'notis_all': notis_all(usuario), 'notis': notificaciones(usuario),
                        'sucursales': Sucursal.get_info()})
+
 
 def home(request):
     usuario = request.user
