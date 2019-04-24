@@ -1,7 +1,9 @@
+{% load pwa %}
 {% load staticfiles %}
 <!DOCTYPE html>
 <html>
 <head>
+    {% progressive_web_app_meta %}
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>{% block titulo %}{% endblock titulo %} | CINEMAPP</title>
@@ -170,7 +172,7 @@
                 "showEasing": "swing",
                 "extendedTimeOut": 30000,
                 "timeOut": 4000
-            }
+            };
             toastr["{{ msg.tags }}"]("{{ msg }}")
         }, 500);
     });

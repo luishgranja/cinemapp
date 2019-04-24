@@ -11,4 +11,5 @@ urlpatterns = [
     path('funciones/', include('apps.funciones.urls')),
     path('anuncios/', include('apps.anuncios.urls')),
     path('select2/', include('django_select2.urls')),
+    path('', include('pwa.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT, show_indexes=True)
