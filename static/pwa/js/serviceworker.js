@@ -1,10 +1,10 @@
-var staticCacheName = "cinemapp-v2";
-
+var staticCacheName = "cinemapp-v" + new Date().getTime();;
 
 self.addEventListener("install", function (event) {
     event.waitUntil(
         caches.open(staticCacheName).then(function (cache) {
             return cache.addAll([
+                "/manifest.json",
                 "/home",
                 "/consultar-saldo",
                 "/notificaciones",
@@ -26,11 +26,8 @@ self.addEventListener("install", function (event) {
     );
 });
 
-
-
 self.addEventListener('activate', event => {
   const cacheWhitelist = [staticCacheName];
-
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
@@ -44,17 +41,16 @@ self.addEventListener('activate', event => {
   );
 });
 
-
 self.addEventListener('fetch', event => {
-  console.log('Fetch event for ', event.request.url);
+  //console.log('Fetch event for ', event.request.url);
   event.respondWith(
     caches.match(event.request)
     .then(response => {
       if (response) {
-        console.log('Found ', event.request.url, ' in cache');
+        //console.log('Found ', event.request.url, ' in cache');
         return response;
       }
-      console.log('Network request for ', event.request.url);
+      //console.log('Network request for ', event.request.url);
       return fetch(event.request)
       .then(response => {
         if (response.status === 404) {
@@ -67,9 +63,8 @@ self.addEventListener('fetch', event => {
         });
       });
     }).catch(error => {
-      console.log('Error, ', error);
+      //console.log('Error, ', error);
       return caches.match('static/pwa/html/offline.html');
     })
   );
 });
-
