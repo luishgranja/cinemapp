@@ -12,7 +12,7 @@ class Boleta(models.Model):
     fecha_compra = models.DateTimeField(auto_now=True)
     total = models.IntegerField(default=0, blank=False)
     reserva = models.BooleanField(default=False)
-    estado = models.BooleanField(default=False)
+    estado = models.BooleanField(default=True)
 
     MEDIOS_PAGO = (
         ('efectivo', 'Efectivo'),
@@ -46,8 +46,3 @@ class Boleta(models.Model):
             return boletas
         except Funcion.DoesNotExist:
             return None
-
-
-
-
-

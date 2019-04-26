@@ -24,7 +24,6 @@ class SignUpForm(UserCreationForm):
         nombre = self.cleaned_data['first_name']
         apellido = self.cleaned_data['last_name']
         cedula = self.cleaned_data['cedula']
-        username = self.cleaned_data['username']
         correo = self.cleaned_data['email']
         telefono = self.cleaned_data['telefono']
 
@@ -47,11 +46,6 @@ class SignUpForm(UserCreationForm):
 
         if not regex_telefono.match(telefono):
             self.add_error('telefono','Teléfono deber ser entre 7 y 11 números')
-
-        u = User.objects.filter(username=username).count()
-        # Si el username esta disponible es True
-        if not u == 0:
-            self.add_error('username','Nombre de usuario no disponible')
 
         return self.cleaned_data
 

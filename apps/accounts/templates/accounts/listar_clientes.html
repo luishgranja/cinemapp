@@ -3,8 +3,8 @@
 {% load bootstrap3 %}
 
 
-{% block titulo %}Lista de funciones{% endblock titulo %}
-{% block descripcion_pagina %} Lista las funciones CINEMAPP {% endblock descripcion_pagina %}
+{% block titulo %}Lista de Clientes{% endblock titulo %}
+{% block descripcion_pagina %} Información general de clientes {% endblock descripcion_pagina %}
 {% block miga_pan %}
 	<li><a href="{% url 'accounts:home' %}"><i class="fa fa-dashboard"></i> DASHBOARD</a></li>
 	<li class="active">LISTAR CLIENTES</li>
@@ -66,5 +66,12 @@
 	<script src="{% static 'bower_components/datatables.net-bs/responsive/dataTables.responsive.min.js' %}"></script>
 
 	{{ form.media.js }}
+
+	<script type="text/javascript">
+$('#tabla_funciones').DataTable( {
+	responsive: true
+} );
+</script>
+
 
 {% endblock js %}

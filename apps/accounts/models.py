@@ -7,7 +7,7 @@ class User(AbstractUser):
     telefono = models.CharField(max_length=11)
     cedula = models.CharField(max_length=11, unique=True)
 
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'cedula', 'email', 'is_active', 'cargo', 'telefono',
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'cedula', 'email', 'is_active', 'telefono',
                        'is_cliente']
     USERNAME_FIELD = 'username'
 

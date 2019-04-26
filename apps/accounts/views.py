@@ -21,7 +21,7 @@ def reportes(request):
     # Español en Windows
     # locale.setlocale(locale.LC_ALL, "esp")
     # Español en Linux
-    locale.setlocale(locale.LC_ALL, "es_ES.UTF-8")
+    locale.setlocale(locale.LC_ALL, "es_CO.utf8")
     if usuario.is_staff:
         datos_boletas = reporte_boletas_diarias(datetime.date.today().year, datetime.date.today().month)
         datos_venta = reporte_ventas_diarias(datetime.date.today().year, datetime.date.today().month)
@@ -242,7 +242,7 @@ def signup(request):
         if request.method == 'POST':
             form = SignUpForm(request.POST)
             user_data = FormEmpleado(request.POST)
-            if form.is_valid() and user_data.is_valid() and request.recaptcha_is_valid:
+            if form.is_valid() and user_data.is_valid():
                 messages.success(request, 'Empleado registrado exitosamente')
 
                 user = form.save(commit=False)

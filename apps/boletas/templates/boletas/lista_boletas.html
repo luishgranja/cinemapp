@@ -102,9 +102,9 @@
 <script src="{% static 'bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
 <script src="{% static 'bower_components/datatables.net-bs/responsive/dataTables.responsive.min.js' %}"></script>
 <script>
-    $(function () {
-        $('#tabla_boletas').DataTable()
-    })
+$('#tabla_boletas').DataTable({
+	scrollX: true
+});
 
     var boleta;
 

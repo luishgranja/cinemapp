@@ -146,12 +146,11 @@
 <script src="{% static 'dist/js/validacion_registro_empleados.js' %}"></script>
 <script src="{% static 'plugins/toastr/toastr.min.js' %}"></script>
 {{ form_empleado.media.js }}
-<script>
+<script type="text/javascript">
     $(function () {
         $('#tabla_empleados').DataTable({
-            "language": {
-                        "url": "{% static 'bower_components/datatables.net/spanish.json' %}"
-                    }
+            "language": { "url": "{% static 'bower_components/datatables.net/spanish.json' %}" },
+	        "responsive": true
         })
     })
 </script>

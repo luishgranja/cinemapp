@@ -34,7 +34,7 @@ def generar_pdf_boleta(boleta):
 
     # Path
     # TODO Cambiar dependiendo de dominio
-    path = 'http://localhost:8000'
+    path = 'https://cinemapp-uv.herokuapp.com'
 
     # signer = Signer()
     # value = signer.sign(str(boleta.id))
@@ -73,7 +73,7 @@ def generar_pdf_boleta(boleta):
     # Español en Windows
     # locale.setlocale(locale.LC_ALL, "esp")
     # Español en Linux
-    locale.setlocale(locale.LC_ALL, "es_ES.UTF-8")
+    locale.setlocale(locale.LC_ALL, "es_CO.utf8")
     # funcion
     p.setFillColor(colors.black)
     p.setFont("Helvetica", 8)

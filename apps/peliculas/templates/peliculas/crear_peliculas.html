@@ -96,7 +96,7 @@
 						<th>Nombre</th>
 						<th>Director</th>
 						<th>Género</th>
-						<th>Reparto</th>
+						<th>Tipo</th>
 						<th>Calificación</th>
 						<th>Estado</th>
 						<th>Acciones</th>
@@ -110,7 +110,11 @@
 							<td>
 								{% for gen in pelicula.genero.all %} {{ gen }}, {% endfor %}
 							</td>
-							<td>{{ pelicula.reparto }}</td>
+							<td>
+								{% if pelicula.is_estreno %} <span class="badge bg-green">Cartelera</span>
+								{% else %} <span class="badge bg-yellow">Próximo estreno</span>
+								{% endif %}
+							</td>
 							<td>{{ pelicula.calificacion }}</td>
 							<td>
 								{% if pelicula.is_active %} <span class="badge bg-green">Activo</span>
@@ -156,9 +160,10 @@
 	<script src="{% static 'bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
 	<script src="{% static 'bower_components/datatables.net-bs/responsive/dataTables.responsive.min.js' %}"></script>
 	{{ form.media.js }}
-	<script>
+	<script type="text/javascript">
         $(function () {
             $('#tabla_peliculas').DataTable({
+								"responsive": true,
                 "pageLength": 5,
                 "lengthChange": false,
                 "info": false,
